@@ -1,0 +1,1 @@
+Coloca aquí cada actividad (una subcarpeta con actividad.yml).

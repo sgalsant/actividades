@@ -1,0 +1,44 @@
+schema_version: "1.0"
+
+actividad:
+  id: kea-dhcp-servicios-en-red
+  titulo: Kea DHCP en Servicios en red
+  subtitulo: Configuracion, ampliacion y verificacion de un servidor DHCP
+  version: 1.0.0
+  descripcion: >
+    El alumnado instala y configura Kea DHCP en Ubuntu Server, valida la
+    asignacion dinamica en una primera red, amplia el servicio a una segunda
+    red y crea una reserva fija por MAC.
+  autor: LLM Wiki Template
+  modulo: Servicios en red
+  curso: 2º SMR
+  duracion_minutos: 120
+  tema: oceano
+
+navegacion:
+  modo: asistente
+  permitir_anterior: true
+  permitir_saltar: true
+  mostrar_indice: true
+  mostrar_progreso: true
+  exigir_obligatorios_para_avanzar: false
+
+alumno:
+  campos:
+    - id: nombre
+      etiqueta: Nombre y apellidos
+      tipo: texto
+      obligatorio: true
+
+trabajo:
+  autoguardado: true
+  intervalo_autoguardado_segundos: 5
+  permitir_exportar: true
+  permitir_importar: true
+  extension: aulawork
+  patron_nombre: "{actividad}_{alumno}_{fecha}.aulawork"
+
+limites:
+  tamano_maximo_captura_mb: 8
+  tamano_maximo_adjunto_mb: 20
+  tamano_maximo_paquete_mb: 100
