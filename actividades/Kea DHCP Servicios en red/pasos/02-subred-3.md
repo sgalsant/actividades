@@ -7,6 +7,35 @@ obligatorio: true
 
 Configura Kea para repartir direcciones en la red interna **192.168.3.0/24**.
 
+### Configuración base de Kea
+
+```json
+{
+  "Dhcp4": {
+    "interfaces-config": {
+      "interfaces": [ "enp0s8" ]
+    },
+    "lease-database": {
+      "type": "memfile",
+      "persist": true,
+      "name": "/var/lib/kea/kea-leases4.csv"
+    },
+    "subnet4": [
+      {
+        "subnet": "192.168.3.0/24",
+        "pools": [
+          { "pool": "192.168.3.100 - 192.168.3.200" }
+        ],
+        "option-data": [
+          { "name": "routers", "data": "192.168.3.1" },
+          { "name": "domain-name-servers", "data": "8.8.8.8" }
+        ]
+      }
+    ]
+  }
+}
+```
+
 :::task{id="configurar-subred-3" required="true"}
 Edita `/etc/kea/kea-dhcp4.conf`, define la interfaz correcta y crea un pool para `192.168.3.100 - 192.168.3.200`.
 :::
