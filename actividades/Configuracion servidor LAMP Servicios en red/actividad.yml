@@ -4,12 +4,12 @@ actividad:
   id: configuracion-servidor-lamp-servicios-en-red
   titulo: Configuración de servidor LAMP
   subtitulo: Instalación y configuración de Linux, Apache, MariaDB y PHP en Ubuntu Server
-  version: 1.0.0
+  version: 1.0.1
   descripcion: >
     El alumnado prepara una máquina virtual Ubuntu Server, instala y configura
     un stack LAMP completo, despliega páginas web, gestiona MariaDB y compara
     las formas de integración de PHP con Apache.
-  autor: Santiago Galvan Sanchez
+  autor: Santiago Galván Sánchez
   modulo: Servicios en red
   curso: 2º SMR
   duracion_minutos: 290

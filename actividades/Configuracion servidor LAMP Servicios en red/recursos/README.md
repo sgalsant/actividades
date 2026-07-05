@@ -17,7 +17,8 @@ tags:
 # Recursos
 
 - Documento original: `RAW/1 actividad_lamp.docx`
-- Imágenes extraídas del documento original en `media/`, ordenadas por aparición en el documento fuente y ubicación en los pasos. Los pasos las referencian como `../recursos/media/<archivo>` desde su ubicación en `pasos/`:
+- Imágenes extraídas del documento original en `media/`, ordenadas por aparición en el documento fuente y ubicación en los pasos. Los pasos las referencian como `recursos/media/<archivo>`:
+  > **Nota sobre rutas:** AulaStep valida los enlaces a recursos como rutas relativas a la raíz de la actividad, por lo que los pasos usan `recursos/media/<archivo>` en lugar de `../recursos/media/<archivo>`. Un visor Markdown estándar que resuelva rutas desde la ubicación del archivo (`pasos/`) no mostrará la imagen sin un prefijo `../`; sin embargo, ese prefijo rompe la validación de AulaStep, así que se mantiene la convención compatible con AulaStep.
   - `image1.jpg`: portada y diagrama conceptual del stack LAMP (`pasos/00-presentacion.md`).
   - `image2.png`: configuración de red NAT y botón **Reenvío de puertos** en VirtualBox (`pasos/01-reto-0-preparacion-entorno.md`).
   - `image3.png`: reglas de reenvío de puertos SSH, HTTP y HTTPS configuradas en VirtualBox (`pasos/01-reto-0-preparacion-entorno.md`).

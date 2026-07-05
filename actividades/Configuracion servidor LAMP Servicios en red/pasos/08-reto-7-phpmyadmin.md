@@ -32,12 +32,17 @@ sudo systemctl restart apache2
 Accede a `http://localhost:8080/phpmyadmin` e inicia sesión con usuario `root` y la contraseña de root de MariaDB.
 :::
 
-:::task{id="opcional-alias" required="false"}
-Opcional: cambia el alias de phpMyAdmin editando `/etc/apache2/conf-available/phpmyadmin.conf` y reinicia Apache.
+:::warning{}
+**Buenas prácticas con phpMyAdmin en producción:**
+
+- Cambia la URL por defecto (por ejemplo, `/gestordb`).
+- Configura autenticación adicional con `.htaccess`.
+- Restringe el acceso por IP.
+- Usa siempre HTTPS.
 :::
 
-:::warning{}
-En producción, cambia la URL por defecto, restringe el acceso por IP y usa HTTPS.
+:::task{id="opcional-alias" required="false"}
+Opcional: cambia el alias de phpMyAdmin editando `/etc/apache2/conf-available/phpmyadmin.conf`. Por ejemplo, sustituye `Alias /phpmyadmin /usr/share/phpmyadmin` por `Alias /[tu-nombre]db /usr/share/phpmyadmin` y reinicia Apache.
 :::
 
 :::evidence{id="captura-phpmyadmin" type="screenshot" required="true"}

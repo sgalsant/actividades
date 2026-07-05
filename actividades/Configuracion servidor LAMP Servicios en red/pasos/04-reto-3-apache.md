@@ -5,7 +5,15 @@ duracion_minutos: 20
 obligatorio: true
 ---
 
-Apache HTTP Server recibe peticiones HTTP de los navegadores y responde con páginas web, imágenes y otros recursos.
+Apache HTTP Server es el servidor web más utilizado del mundo. Recibe peticiones HTTP de los navegadores y responde con páginas web, imágenes y otros recursos.
+
+:::note{}
+**Estructura básica de Apache en Ubuntu:**
+
+- **DocumentRoot:** directorio donde se almacenan los archivos web (`/var/www/html` por defecto).
+- **Configuración:** archivos en `/etc/apache2/`.
+- **Logs:** registros de acceso y errores en `/var/log/apache2/`.
+:::
 
 :::task{id="instalar-apache" required="true"}
 Instala Apache y verifica que el servicio está activo y habilitado al arranque.
@@ -20,7 +28,7 @@ sudo systemctl is-enabled apache2
 :::task{id="probar-apache" required="true"}
 Abre el navegador en el anfitrión y visita `http://localhost:8080`. Deberías ver la página por defecto de Apache.
 
-![Página por defecto de Apache2 Ubuntu Default Page](../recursos/media/image9.png)
+![Página por defecto de Apache2 Ubuntu Default Page](recursos/media/image9.png)
 :::
 
 :::task{id="personalizar-index" required="true"}
@@ -28,7 +36,7 @@ Edita `/var/www/html/index.html` para que aparezca tu nombre tras el texto `It w
 
 Recarga la página y comprueba que aparece tu nombre en el recuadro naranja:
 
-![Página de Apache personalizada con el nombre del alumno](../recursos/media/image10.png)
+![Página de Apache personalizada con el nombre del alumno](recursos/media/image10.png)
 :::
 
 ```bash

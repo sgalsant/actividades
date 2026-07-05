@@ -22,7 +22,7 @@ Busca la línea que contiene el hostname antiguo tras `127.0.1.1` y cámbiala po
 127.0.1.1 server_[tu_nombre]
 ```
 
-![Edición del archivo /etc/hosts con el nuevo hostname](../recursos/media/image8.png)
+![Edición del archivo /etc/hosts con el nuevo hostname](recursos/media/image8.png)
 
 :::task{id="reiniciar-hostname" required="true"}
 Reinicia el servidor y vuelve a conectar por SSH para verificar el nuevo prompt.

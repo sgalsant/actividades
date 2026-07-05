@@ -15,4 +15,8 @@ Exporta tu trabajo en formato `.aulawork` antes de cerrar la actividad.
 
 Recuerda incluir todas las evidencias solicitadas y comprobar que el nombre del archivo exportado sigue el patrón de la actividad.
 
-![Ilustración de cierre: aula completando la instalación LAMP](../recursos/media/image13.jpg)
+:::note{}
+**Conceptos clave trabajados:** virtualización y redes (NAT, port forwarding), acceso remoto seguro (SSH), transferencia segura de archivos (SFTP), gestión de servicios en Linux, servidor web Apache, base de datos relacional MariaDB, integración de PHP (`mod_php` y PHP-FPM), principios de seguridad (firewall, permisos) y gestión de usuarios y privilegios en bases de datos.
+:::
+
+![Ilustración de cierre: aula completando la instalación LAMP](recursos/media/image13.jpg)

@@ -5,7 +5,11 @@ duracion_minutos: 15
 obligatorio: true
 ---
 
-UFW (Uncomplicated Firewall) permite gestionar el firewall de Ubuntu de forma sencilla. Aplicaremos el principio de mínimo privilegio: cerrar todos los puertos y abrir solo los imprescindibles.
+Un firewall es un sistema que controla el tráfico de red entrante y saliente según reglas de seguridad. UFW (Uncomplicated Firewall) permite gestionar el firewall de Ubuntu de forma sencilla.
+
+:::note{}
+**Principio de mínimo privilegio:** por defecto cerraremos todos los puertos y solo abriremos los necesarios (SSH, HTTP y HTTPS). Esto reduce la superficie de ataque del servidor.
+:::
 
 :::warning{}
 Permite SSH **antes** de activar UFW. Si no, perderás el acceso remoto.

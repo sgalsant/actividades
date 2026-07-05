@@ -7,6 +7,10 @@ obligatorio: true
 
 Aplicarás el principio de mínimo privilegio creando un usuario administrador con control total sobre tu base de datos y un usuario operador con permisos CRUD.
 
+:::note{}
+En seguridad informática, cada usuario debe tener únicamente los permisos necesarios para realizar su trabajo. A esto se le llama **principio de mínimo privilegio**.
+:::
+
 :::warning{}
 Sustituye `bd_ejemplo` por el nombre único que elijas para tu base de datos, por ejemplo `bd_[tu_nombre]`.
 :::
@@ -24,6 +28,11 @@ sudo mysql -u root -p
 CREATE DATABASE bd_ejemplo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
+:::note{}
+- `CHARACTER SET utf8mb4`: soporte completo de UTF-8, incluidos emojis.
+- `COLLATE utf8mb4_unicode_ci`: reglas de comparación insensibles a mayúsculas/minúsculas.
+:::
+
 :::task{id="crear-admin-bd" required="true"}
 Crea el usuario administrador y otórgale todos los permisos sobre tu base de datos.
 :::
@@ -34,6 +43,12 @@ CREATE USER 'admin_bd_ejemplo'@'localhost' IDENTIFIED BY 'PassAdmin123!';
 GRANT ALL PRIVILEGES ON bd_ejemplo.* TO 'admin_bd_ejemplo'@'localhost';
 ```
 
+:::note{}
+- `ALL PRIVILEGES`: todos los permisos (`CREATE`, `DROP`, `SELECT`, `INSERT`, `UPDATE`, `DELETE`, etc.).
+- `bd_ejemplo.*`: sobre todas las tablas de esa base de datos.
+- `'admin_bd_ejemplo'@'localhost'`: solo desde localhost, nunca desde la red.
+:::
+
 :::task{id="crear-operador-bd" required="true"}
 Crea el usuario operador con permisos limitados.
 :::
@@ -43,6 +58,10 @@ Crea el usuario operador con permisos limitados.
 CREATE USER 'operador_bd_ejemplo'@'localhost' IDENTIFIED BY 'PassOper456!';
 GRANT SELECT, INSERT, UPDATE, DELETE ON bd_ejemplo.* TO 'operador_bd_ejemplo'@'localhost';
 ```
+
+:::note{}
+El usuario operador **no** tiene permisos para `CREATE`, `DROP`, `ALTER` ni `GRANT`: no puede modificar la estructura de la base de datos ni gestionar permisos de otros usuarios.
+:::
 
 :::task{id="aplicar-permisos" required="true"}
 Aplica los cambios, verifica los usuarios creados y sal.

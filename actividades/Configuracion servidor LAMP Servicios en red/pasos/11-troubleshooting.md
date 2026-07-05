@@ -62,6 +62,36 @@ sudo mysql -u root -p -e "SHOW GRANTS FOR 'tu_usuario'@'localhost';"
 
 Recuerda ejecutar `FLUSH PRIVILEGES;` tras cambiar permisos.
 
+## Error "Permission denied" al transferir archivos
+
+Verifica primero que SSH funciona:
+
+```powershell
+ssh analuisa@localhost -p 2222
+```
+
+Si usas `scp`, el puerto se indica con `-P` mayúscula:
+
+```powershell
+scp -P 2222 archivo.txt analuisa@localhost:/home/analuisa/
+```
+
+Comprueba también los permisos del directorio destino en el servidor:
+
+```bash
+ls -ld /home/analuisa
+```
+
+## No aparece nada en el navegador
+
+```bash
+sudo systemctl status apache2
+sudo ufw status
+curl localhost
+```
+
+Verifica también el reenvío de puertos en VirtualBox.
+
 :::question{id="primer-diagnostico" type="short-text" required="true"}
 Si Apache no sirve una página, indica los dos primeros comandos que ejecutarías para diagnosticar el problema.
 :::

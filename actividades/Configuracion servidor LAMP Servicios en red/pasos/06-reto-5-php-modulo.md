@@ -5,7 +5,19 @@ duracion_minutos: 25
 obligatorio: true
 ---
 
-PHP permite crear páginas dinámicas que interactúan con bases de datos. En este paso lo instalamos como módulo de Apache (`mod_php`).
+PHP (Hypertext Preprocessor) es un lenguaje de programación del lado del servidor diseñado para desarrollo web. Permite crear páginas dinámicas que interactúan con bases de datos. En este paso lo instalamos como módulo de Apache (`mod_php`).
+
+:::note{}
+**Integración con Apache: `mod_php`**
+
+`mod_php` integra PHP directamente en el proceso de Apache, de modo que cada proceso de Apache puede ejecutar código PHP.
+
+| Ventajas | Desventajas |
+|---|---|
+| Configuración simple y rápida. | Mayor consumo de memoria (cada proceso Apache carga PHP). |
+| Menor latencia al no haber comunicación entre procesos. | Menos eficiente con contenido estático. |
+| Ideal para sitios pequeños y medianos. | Todos los procesos corren con los mismos permisos. |
+:::
 
 :::task{id="instalar-php" required="true"}
 Instala PHP y los módulos necesarios.

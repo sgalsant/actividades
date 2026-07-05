@@ -5,7 +5,22 @@ duracion_minutos: 25
 obligatorio: true
 ---
 
-Aprenderás a crear una página HTML en el anfitrión y transferirla al servidor mediante SFTP, que funciona sobre SSH.
+Aprenderás a crear una página HTML en el anfitrión y transferirla al servidor mediante **SFTP** (SSH File Transfer Protocol), que funciona sobre SSH.
+
+:::note{}
+SFTP es un protocolo de red que permite transferir archivos de forma segura entre dos ordenadores a través de una red, incluso si esta es insegura. En nuestro caso, al no disponer de `scp` en los equipos Windows de clase, usamos `sftp`.
+:::
+
+:::tip{}
+**Flujo de trabajo:**
+
+1. Crear el archivo en el anfitrión (Notepad, VS Code, etc.).
+2. Guardarlo en una carpeta conocida.
+3. Copiarlo al servidor con SFTP.
+4. Moverlo al DocumentRoot de Apache.
+5. Ajustar los permisos.
+6. Probarlo en el navegador.
+:::
 
 :::task{id="crear-html-anfitrion" required="true"}
 En tu equipo anfitrión crea una carpeta `web_lamp` y un archivo `index.html` con este contenido:
@@ -41,6 +56,11 @@ sudo mv /home/analuisa/index.html /var/www/html/
 sudo chown www-data:www-data /var/www/html/index.html
 sudo chmod 644 /var/www/html/index.html
 ```
+
+:::note{}
+- `www-data`: usuario bajo el que se ejecuta Apache en Ubuntu.
+- `644`: lectura y escritura para el propietario, y solo lectura para el resto.
+:::
 
 :::task{id="probar-html" required="true"}
 Abre `http://localhost:8080/index.html` y comprueba que se muestra tu página personalizada.
