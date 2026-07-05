@@ -1,0 +1,67 @@
+---
+id: troubleshooting-comun
+titulo: Troubleshooting - Problemas comunes
+duracion_minutos: 15
+obligatorio: true
+---
+
+## Apache no arranca
+
+```bash
+sudo apache2ctl configtest
+sudo tail -n 50 /var/log/apache2/error.log
+sudo netstat -tlnp | grep :80
+```
+
+## No puedo conectar por SSH
+
+```bash
+sudo systemctl status ssh
+sudo ufw status
+```
+
+Verifica tambien el reenvio de puertos en VirtualBox.
+
+## Error de permisos al acceder a paginas web
+
+```bash
+sudo chown -R www-data:www-data /var/www/html
+sudo chmod -R 755 /var/www/html
+sudo chmod 644 /var/www/html/*.html /var/www/html/*.php
+```
+
+## Las paginas PHP no funcionan
+
+Con `mod_php`:
+
+```bash
+apache2ctl -M | grep php
+```
+
+Con PHP-FPM:
+
+```bash
+sudo systemctl status phpX.X-fpm
+apache2ctl configtest
+```
+
+## phpMyAdmin muestra pagina en blanco
+
+```bash
+sudo tail -n 50 /var/log/apache2/error.log
+php -m | grep mbstring
+sudo systemctl restart apache2
+```
+
+## Error "Access denied" en MariaDB
+
+```bash
+sudo mysql -u root -p -e "SELECT user, host FROM mysql.user;"
+sudo mysql -u root -p -e "SHOW GRANTS FOR 'tu_usuario'@'localhost';"
+```
+
+Recuerda ejecutar `FLUSH PRIVILEGES;` tras cambiar permisos.
+
+:::question{id="primer-diagnostico" type="short-text" required="true"}
+Si Apache no sirve una pagina, indica los dos primeros comandos que ejecutarias para diagnosticar el problema.
+:::

@@ -21,17 +21,19 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0   # historial completo: las fechas de actualización salen de git
 
       - name: Instalar uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v8.1.0
 
       - name: Instalar AulaStep
         # Instala la herramienta desde tu repositorio de AulaStep.
-        # Cambia sgalsant por tu usuario de GitHub.
+        # Cambia TUUSUARIO por tu usuario de GitHub.
         run: |
           uv venv
-          uv pip install "aulastep @ git+https://github.com/sgalsant/aulastep"
+          uv pip install "aulastep @ git+https://github.com/TUUSUARIO/aulastep"
 
       - name: Validar y compilar todas las actividades
         run: uv run aulastep publish actividades --output _site --clean --title "Actividades · Santiago Galván"
