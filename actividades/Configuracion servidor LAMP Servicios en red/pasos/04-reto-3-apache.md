@@ -19,10 +19,16 @@ sudo systemctl is-enabled apache2
 
 :::task{id="probar-apache" required="true"}
 Abre el navegador en el anfitrion y visita `http://localhost:8080`. Deberias ver la pagina por defecto de Apache.
+
+![Pagina por defecto de Apache2 Ubuntu Default Page](recursos/media/image9.png)
 :::
 
 :::task{id="personalizar-index" required="true"}
 Edita `/var/www/html/index.html` para que aparezca tu nombre tras el texto `It works!`.
+
+Recarga la pagina y comprueba que aparece tu nombre en el recuadro naranja:
+
+![Pagina de Apache personalizada con el nombre del alumno](recursos/media/image10.png)
 :::
 
 ```bash

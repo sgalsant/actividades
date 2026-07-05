@@ -42,4 +42,10 @@ Completa esta tabla a medida que avances. La necesitaras durante toda la activid
 Sustituye `[tu_nombre]` por tu nombre en hostname, usuarios y base de datos para personalizar la actividad.
 :::
 
-![Diagrama conceptual del stack LAMP](recursos/media/image7.svg)
+![Portada y diagrama conceptual del stack LAMP](recursos/media/image1.jpg)
+
+## Licencia
+
+Esta actividad se distribuye bajo la licencia Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0 Internacional.
+
+![Licencia CC BY-NC-SA 4.0](recursos/media/image7.svg)

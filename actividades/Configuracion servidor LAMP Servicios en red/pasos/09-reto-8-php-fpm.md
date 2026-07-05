@@ -25,6 +25,10 @@ php -v
 ls /run/php/
 ```
 
+Anota el socket de PHP-FPM que aparece en `/run/php/`, por ejemplo `php8.3-fpm.sock`:
+
+![Version de PHP y socket de PHP-FPM en /run/php](recursos/media/image11.png)
+
 :::task{id="deshabilitar-mod-php" required="true"}
 Deshabilita `mod_php` y habilita los modulos necesarios para PHP-FPM. Sustituye `X.X` por tu version de PHP.
 :::
@@ -46,6 +50,8 @@ sudo systemctl status phpX.X-fpm
 
 :::task{id="verificar-fpm" required="true"}
 Accede de nuevo a `http://localhost:8080/index.php`, busca la linea `Server API` y comprueba que ahora indica `FPM/FastCGI`.
+
+![phpinfo() mostrando Server API FPM/FastCGI](recursos/media/image12.png)
 :::
 
 :::evidence{id="captura-fpm" type="screenshot" required="true"}

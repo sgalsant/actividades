@@ -14,3 +14,5 @@ Exporta tu trabajo en formato `.aulawork` antes de cerrar la actividad.
 :::
 
 Recuerda incluir todas las evidencias solicitadas y comprobar que el nombre del archivo exportado sigue el patron de la actividad.
+
+![Ilustracion de cierre: aula completando la instalacion LAMP](recursos/media/image13.jpg)
