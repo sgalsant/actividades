@@ -1,18 +1,18 @@
 ---
 id: reto-9-gestion-bd
-titulo: Reto 9 - Gestion basica de bases de datos
+titulo: Reto 9 - Gestión básica de bases de datos
 duracion_minutos: 35
 obligatorio: true
 ---
 
-Aplicaras el principio de minimo privilegio creando un usuario administrador con control total sobre tu base de datos y un usuario operador con permisos CRUD.
+Aplicarás el principio de mínimo privilegio creando un usuario administrador con control total sobre tu base de datos y un usuario operador con permisos CRUD.
 
 :::warning{}
-Sustituye `bd_ejemplo` por el nombre unico que elijas para tu base de datos, por ejemplo `bd_[tu_nombre]`.
+Sustituye `bd_ejemplo` por el nombre único que elijas para tu base de datos, por ejemplo `bd_[tu_nombre]`.
 :::
 
 :::task{id="crear-bd" required="true"}
-Conectate a MariaDB como root y crea tu base de datos.
+Conéctate a MariaDB como root y crea tu base de datos.
 :::
 
 ```bash
@@ -25,7 +25,7 @@ CREATE DATABASE bd_ejemplo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 :::task{id="crear-admin-bd" required="true"}
-Crea el usuario administrador y otorgale todos los permisos sobre tu base de datos.
+Crea el usuario administrador y otórgale todos los permisos sobre tu base de datos.
 :::
 
 ```sql
@@ -56,11 +56,11 @@ EXIT;
 ```
 
 :::task{id="probar-admin-phpmyadmin" required="true"}
-En phpMyAdmin, conectate como `admin_bd_ejemplo` y crea una tabla `clientes` con columnas `id` (INT, AUTO_INCREMENT, Primary) y `nombre` (VARCHAR(100)).
+En phpMyAdmin, conéctate como `admin_bd_ejemplo` y crea una tabla `clientes` con columnas `id` (INT, AUTO_INCREMENT, Primary) y `nombre` (VARCHAR(100)).
 :::
 
 :::task{id="probar-operador-phpmyadmin" required="true"}
-Cierra la sesion del administrador, conectate como `operador_bd_ejemplo` e inserta dos registros en la tabla `clientes`.
+Cierra la sesión del administrador, conéctate como `operador_bd_ejemplo` e inserta dos registros en la tabla `clientes`.
 :::
 
 :::evidence{id="captura-usuarios-bd" type="screenshot" required="true"}

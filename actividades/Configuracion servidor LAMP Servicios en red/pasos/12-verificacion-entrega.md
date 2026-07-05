@@ -1,6 +1,6 @@
 ---
 id: verificacion-entrega
-titulo: Verificacion final y entrega
+titulo: Verificación final y entrega
 duracion_minutos: 15
 obligatorio: true
 ---
@@ -14,11 +14,11 @@ OVA importada y renombrada correctamente.
 :::
 
 :::checkpoint{id="check-puertos" required="true"}
-Reenvio de puertos configurado en VirtualBox.
+Reenvío de puertos configurado en VirtualBox.
 :::
 
 :::checkpoint{id="check-ssh" required="true"}
-OpenSSH Server instalado y funcionando desde el anfitrion.
+OpenSSH Server instalado y funcionando desde el anfitrión.
 :::
 
 :::checkpoint{id="check-hostname" required="true"}
@@ -34,7 +34,7 @@ Firewall UFW configurado y activo.
 :::
 
 :::checkpoint{id="check-apache" required="true"}
-Apache sirviendo paginas web.
+Apache sirviendo páginas web.
 :::
 
 :::checkpoint{id="check-mariadb" required="true"}
@@ -42,11 +42,11 @@ MariaDB instalada y asegurada.
 :::
 
 :::checkpoint{id="check-php" required="true"}
-PHP funcionando con mod_php y despues con PHP-FPM.
+PHP funcionando con mod_php y después con PHP-FPM.
 :::
 
 :::checkpoint{id="check-paginas" required="true"}
-Pagina HTML estatica y pagina PHP desplegadas.
+Página HTML estática y página PHP desplegadas.
 :::
 
 :::checkpoint{id="check-phpmyadmin" required="true"}
@@ -62,7 +62,7 @@ Script SQL ejecutado correctamente: la base de datos, el usuario administrador y
 :::
 
 :::checkpoint{id="check-php-datos" required="true"}
-Script PHP mostrando datos correctamente: la pagina `index.php` carga en el navegador y muestra la informacion de PHP; si has creado un script adicional que consulte la base de datos, comprueba que devuelve los registros esperados.
+Script PHP mostrando datos correctamente: la página `index.php` carga en el navegador y muestra la información de PHP; si has creado un script adicional que consulte la base de datos, comprueba que devuelve los registros esperados.
 :::
 
 :::checkpoint{id="check-capturas" required="true"}
@@ -75,8 +75,8 @@ Todas las evidencias solicitadas capturadas.
 |---|---|
 | Documento original | `RAW/1 actividad_lamp.docx` |
 | Ficha de actividad | [[Actividad - Configuracion servidor LAMP Servicios en red]] |
-| Patron reusable | [[Patron - Practica LAMP Servicios en red]] |
+| Patrón reusable | [[Patron - Practica LAMP Servicios en red]] |
 
 :::task{id="snapshot" required="false"}
-Opcional pero recomendado: haz un snapshot de la maquina virtual para poder retomar el estado actual en futuras actividades.
+Opcional pero recomendado: haz un snapshot de la máquina virtual para poder retomar el estado actual en futuras actividades.
 :::

@@ -7,16 +7,16 @@ obligatorio: true
 
 PHP-FPM ejecuta PHP como un proceso separado que se comunica con Apache mediante FastCGI. Frente a `mod_php`, consume menos memoria y escala mejor.
 
-| Caracteristica | mod_php | PHP-FPM |
-|---|---|---|
-| Integracion | Modulo dentro de Apache | Proceso independiente |
+| Característica | mod_php | PHP-FPM |
+|---|---|---|---|
+| Integración | Módulo dentro de Apache | Proceso independiente |
 | Consumo de memoria | Mayor | Menor |
-| Contenido estatico | Menos eficiente | Mas eficiente |
+| Contenido estático | Menos eficiente | Más eficiente |
 | Escalabilidad | Limitada | Mejor |
-| Uso ideal | Sitios pequenos/medios | Alto trafico, multisitio |
+| Uso ideal | Sitios pequeños/medios | Alto tráfico, multisitio |
 
 :::task{id="instalar-php-fpm" required="true"}
-Instala PHP-FPM y anota la version y el socket.
+Instala PHP-FPM y anota la versión y el socket.
 :::
 
 ```bash
@@ -27,10 +27,10 @@ ls /run/php/
 
 Anota el socket de PHP-FPM que aparece en `/run/php/`, por ejemplo `php8.3-fpm.sock`:
 
-![Version de PHP y socket de PHP-FPM en /run/php](recursos/media/image11.png)
+![Versión de PHP y socket de PHP-FPM en /run/php](../recursos/media/image11.png)
 
 :::task{id="deshabilitar-mod-php" required="true"}
-Deshabilita `mod_php` y habilita los modulos necesarios para PHP-FPM. Sustituye `X.X` por tu version de PHP.
+Deshabilita `mod_php` y habilita los módulos necesarios para PHP-FPM. Sustituye `X.X` por tu versión de PHP.
 :::
 
 ```bash
@@ -40,7 +40,7 @@ sudo a2enconf phpX.X-fpm
 ```
 
 :::task{id="reiniciar-servicios-fpm" required="true"}
-Reinicia Apache y PHP-FPM, y verifica que PHP-FPM esta corriendo.
+Reinicia Apache y PHP-FPM, y verifica que PHP-FPM está corriendo.
 :::
 
 ```bash
@@ -49,9 +49,9 @@ sudo systemctl status phpX.X-fpm
 ```
 
 :::task{id="verificar-fpm" required="true"}
-Accede de nuevo a `http://localhost:8080/index.php`, busca la linea `Server API` y comprueba que ahora indica `FPM/FastCGI`.
+Accede de nuevo a `http://localhost:8080/index.php`, busca la línea `Server API` y comprueba que ahora indica `FPM/FastCGI`.
 
-![phpinfo() mostrando Server API FPM/FastCGI](recursos/media/image12.png)
+![phpinfo() mostrando Server API FPM/FastCGI](../recursos/media/image12.png)
 :::
 
 :::evidence{id="captura-fpm" type="screenshot" required="true"}

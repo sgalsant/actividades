@@ -1,14 +1,14 @@
 ---
 id: reto-6-paginas-web
-titulo: Reto 6 - Creacion y transferencia de paginas web
+titulo: Reto 6 - Creación y transferencia de páginas web
 duracion_minutos: 25
 obligatorio: true
 ---
 
-Aprenderas a crear una pagina HTML en el anfitrion y transferirla al servidor mediante SFTP, que funciona sobre SSH.
+Aprenderás a crear una página HTML en el anfitrión y transferirla al servidor mediante SFTP, que funciona sobre SSH.
 
 :::task{id="crear-html-anfitrion" required="true"}
-En tu equipo anfitrion crea una carpeta `web_lamp` y un archivo `index.html` con este contenido:
+En tu equipo anfitrión crea una carpeta `web_lamp` y un archivo `index.html` con este contenido:
 :::
 
 ```html
@@ -22,7 +22,7 @@ En tu equipo anfitrion crea una carpeta `web_lamp` y un archivo `index.html` con
 ```
 
 :::task{id="transferir-sftp" required="true"}
-Desde PowerShell, conectate por SFTP y sube el archivo.
+Desde PowerShell, conéctate por SFTP y sube el archivo.
 :::
 
 ```powershell
@@ -43,13 +43,13 @@ sudo chmod 644 /var/www/html/index.html
 ```
 
 :::task{id="probar-html" required="true"}
-Abre `http://localhost:8080/index.html` y comprueba que se muestra tu pagina personalizada.
+Abre `http://localhost:8080/index.html` y comprueba que se muestra tu página personalizada.
 :::
 
 :::question{id="usuario-apache" type="short-text" required="true"}
-Bajo que usuario de sistema se ejecuta Apache en Ubuntu?
+¿Bajo qué usuario de sistema se ejecuta Apache en Ubuntu?
 :::
 
 :::evidence{id="captura-html" type="screenshot" required="true"}
-Captura del navegador mostrando tu pagina HTML personalizada.
+Captura del navegador mostrando tu página HTML personalizada.
 :::

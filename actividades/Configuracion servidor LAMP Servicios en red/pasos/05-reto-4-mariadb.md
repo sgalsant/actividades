@@ -1,11 +1,11 @@
 ---
 id: reto-4-mariadb
-titulo: Reto 4 - Instalacion de MariaDB
+titulo: Reto 4 - Instalación de MariaDB
 duracion_minutos: 25
 obligatorio: true
 ---
 
-MariaDB es un sistema de gestion de bases de datos relacional, fork de MySQL. Permite almacenar y consultar datos de forma estructurada mediante SQL.
+MariaDB es un sistema de gestión de bases de datos relacional, fork de MySQL. Permite almacenar y consultar datos de forma estructurada mediante SQL.
 
 :::task{id="instalar-mariadb" required="true"}
 Instala MariaDB Server.
@@ -18,9 +18,9 @@ sudo apt install -y mariadb-server
 :::task{id="segurizar-mariadb" required="true"}
 Ejecuta `mysql_secure_installation` y responde al asistente:
 
-- Enter current password for root: introduce la contrasena de root elegida.
+- Enter current password for root: introduce la contraseña de root elegida.
 - Switch to unix_socket authentication? `N`.
-- Change the root password? `Y` y anotala.
+- Change the root password? `Y` y apúntala.
 - Remove anonymous users? `Y`.
 - Disallow root login remotely? `Y`.
 - Remove test database? `Y`.
@@ -32,7 +32,7 @@ sudo mysql_secure_installation
 ```
 
 :::task{id="probar-mariadb" required="true"}
-Conectate como root, consulta la version y sal.
+Conéctate como root, consulta la versión y sal.
 :::
 
 ```bash
@@ -42,7 +42,7 @@ EXIT;
 ```
 
 :::task{id="habilitar-mariadb" required="true"}
-Verifica que MariaDB se inicia automaticamente.
+Verifica que MariaDB se inicia automáticamente.
 :::
 
 ```bash

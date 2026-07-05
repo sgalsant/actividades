@@ -20,9 +20,9 @@ sudo systemctl status ssh
 sudo ufw status
 ```
 
-Verifica tambien el reenvio de puertos en VirtualBox.
+Verifica también el reenvío de puertos en VirtualBox.
 
-## Error de permisos al acceder a paginas web
+## Error de permisos al acceder a páginas web
 
 ```bash
 sudo chown -R www-data:www-data /var/www/html
@@ -30,7 +30,7 @@ sudo chmod -R 755 /var/www/html
 sudo chmod 644 /var/www/html/*.html /var/www/html/*.php
 ```
 
-## Las paginas PHP no funcionan
+## Las páginas PHP no funcionan
 
 Con `mod_php`:
 
@@ -45,7 +45,7 @@ sudo systemctl status phpX.X-fpm
 apache2ctl configtest
 ```
 
-## phpMyAdmin muestra pagina en blanco
+## phpMyAdmin muestra página en blanco
 
 ```bash
 sudo tail -n 50 /var/log/apache2/error.log
@@ -63,5 +63,5 @@ sudo mysql -u root -p -e "SHOW GRANTS FOR 'tu_usuario'@'localhost';"
 Recuerda ejecutar `FLUSH PRIVILEGES;` tras cambiar permisos.
 
 :::question{id="primer-diagnostico" type="short-text" required="true"}
-Si Apache no sirve una pagina, indica los dos primeros comandos que ejecutarias para diagnosticar el problema.
+Si Apache no sirve una página, indica los dos primeros comandos que ejecutarías para diagnosticar el problema.
 :::
