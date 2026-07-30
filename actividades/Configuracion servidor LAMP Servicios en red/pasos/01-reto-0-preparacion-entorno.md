@@ -47,7 +47,6 @@ Arranca la VM, inicia sesión con usuario `analuisa` y contraseña `analuisa`.
 
 :::task{id="instalar-ssh" required="true"}
 Instala OpenSSH Server, habilítalo y verifica que está activo y habilitado al arranque.
-:::
 
 ```bash
 sudo apt update
@@ -60,10 +59,10 @@ sudo systemctl is-enabled ssh
 La salida de `sudo systemctl status ssh` debe mostrar el servicio **active (running)** y **enabled**:
 
 ![Estado del servicio SSH activo y habilitado](recursos/media/image4.png)
+:::
 
 :::task{id="probar-ssh" required="true"}
 Desde PowerShell en el anfitrión conéctate por SSH:
-:::
 
 ```powershell
 ssh analuisa@localhost -p 2222
@@ -72,6 +71,7 @@ ssh analuisa@localhost -p 2222
 Si la conexión es correcta, verás el prompt de tu servidor listo para recibir comandos:
 
 ![Conexión SSH exitosa desde PowerShell](recursos/media/image5.png)
+:::
 
 :::tip{}
 Trabajar por SSH desde el anfitrión te permite:

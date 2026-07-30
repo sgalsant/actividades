@@ -13,20 +13,20 @@ Instala phpMyAdmin y sigue el asistente:
 - Servidor web a configurar: selecciona `apache2`.
 - Configurar base de datos con dbconfig-common: `Yes`.
 - Contraseña de aplicación MySQL: introduce una contraseña y apúntala.
-:::
 
 ```bash
 sudo apt install -y phpmyadmin
 ```
+:::
 
 :::task{id="habilitar-mbstring" required="true"}
 Habilita la extensión `mbstring` de PHP y reinicia Apache.
-:::
 
 ```bash
 sudo phpenmod mbstring
 sudo systemctl restart apache2
 ```
+:::
 
 :::task{id="probar-phpmyadmin" required="true"}
 Accede a `http://localhost:8080/phpmyadmin` e inicia sesión con usuario `root` y la contraseña de root de MariaDB.

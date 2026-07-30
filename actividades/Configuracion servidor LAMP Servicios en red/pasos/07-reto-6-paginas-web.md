@@ -24,7 +24,6 @@ SFTP es un protocolo de red que permite transferir archivos de forma segura entr
 
 :::task{id="crear-html-anfitrion" required="true"}
 En tu equipo anfitrión crea una carpeta `web_lamp` y un archivo `index.html` con este contenido:
-:::
 
 ```html
 <!DOCTYPE html>
@@ -35,20 +34,24 @@ En tu equipo anfitrión crea una carpeta `web_lamp` y un archivo `index.html` co
 </body>
 </html>
 ```
+:::
+
+:::note{}
+Una página HTML estática **no requiere procesamiento en el servidor**: Apache la envía directamente al navegador tal cual está.
+:::
 
 :::task{id="transferir-sftp" required="true"}
 Desde PowerShell, conéctate por SFTP y sube el archivo.
-:::
 
 ```powershell
 cd Desktop\web_lamp
 sftp -P 2222 analuisa@localhost:
 put index.html
 ```
+:::
 
 :::task{id="mover-html" required="true"}
 En el servidor, mueve el archivo al DocumentRoot y ajusta los permisos.
-:::
 
 ```bash
 ls -lh /home/analuisa/index.html
@@ -56,6 +59,7 @@ sudo mv /home/analuisa/index.html /var/www/html/
 sudo chown www-data:www-data /var/www/html/index.html
 sudo chmod 644 /var/www/html/index.html
 ```
+:::
 
 :::note{}
 - `www-data`: usuario bajo el que se ejecuta Apache en Ubuntu.

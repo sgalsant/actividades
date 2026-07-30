@@ -17,13 +17,13 @@ Apache HTTP Server es el servidor web más utilizado del mundo. Recibe peticione
 
 :::task{id="instalar-apache" required="true"}
 Instala Apache y verifica que el servicio está activo y habilitado al arranque.
-:::
 
 ```bash
 sudo apt install -y apache2
 sudo systemctl status apache2
 sudo systemctl is-enabled apache2
 ```
+:::
 
 :::task{id="probar-apache" required="true"}
 Abre el navegador en el anfitrión y visita `http://localhost:8080`. Deberías ver la página por defecto de Apache.
@@ -34,14 +34,14 @@ Abre el navegador en el anfitrión y visita `http://localhost:8080`. Deberías v
 :::task{id="personalizar-index" required="true"}
 Edita `/var/www/html/index.html` para que aparezca tu nombre tras el texto `It works!`.
 
+```bash
+sudo nano /var/www/html/index.html
+```
+
 Recarga la página y comprueba que aparece tu nombre en el recuadro naranja:
 
 ![Página de Apache personalizada con el nombre del alumno](recursos/media/image10.png)
 :::
-
-```bash
-sudo nano /var/www/html/index.html
-```
 
 :::question{id="documentroot-apache" type="short-text" required="true"}
 ¿Cuál es el DocumentRoot por defecto de Apache en Ubuntu?

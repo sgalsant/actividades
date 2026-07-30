@@ -57,17 +57,61 @@ phpMyAdmin accesible.
 Base de datos creada con dos usuarios de distintos permisos.
 :::
 
-:::checkpoint{id="check-sql" required="true"}
-Script SQL ejecutado correctamente: la base de datos, el usuario administrador y el usuario operador se han creado sin errores y los permisos se han aplicado con `FLUSH PRIVILEGES`.
+:::checkpoint{id="check-sql" required="false"}
+Si generaste un script SQL aparte, comprueba que se ejecutó correctamente: la base de datos, el usuario administrador y el usuario operador se crearon sin errores y los permisos se aplicaron con `FLUSH PRIVILEGES`.
 :::
 
-:::checkpoint{id="check-php-datos" required="true"}
-Script PHP mostrando datos correctamente: la página `index.php` carga en el navegador y muestra la información de PHP; si has creado un script adicional que consulte la base de datos, comprueba que devuelve los registros esperados.
+:::checkpoint{id="check-php-datos" required="false"}
+Si creaste un script PHP adicional que consulte la base de datos, comprueba que devuelve los registros esperados. La página `index.php` de información de PHP ya se verifica en el reto correspondiente.
 :::
 
 :::checkpoint{id="check-capturas" required="true"}
 Todas las evidencias solicitadas capturadas.
 :::
+
+## Comandos de referencia rápida
+
+:::tip{}
+Conserva esta tabla para consultar los comandos más habituales del servidor LAMP.
+:::
+
+### Gestión de servicios
+
+```bash
+sudo systemctl start [servicio]    # Iniciar
+sudo systemctl stop [servicio]     # Detener
+sudo systemctl restart [servicio]  # Reiniciar
+sudo systemctl status [servicio]   # Ver estado
+sudo systemctl enable [servicio]   # Inicio automático
+```
+
+### Apache
+
+```bash
+sudo apache2ctl configtest  # Probar configuración
+sudo a2enmod [modulo]       # Habilitar módulo
+sudo a2dismod [modulo]      # Deshabilitar módulo
+sudo a2ensite [sitio]       # Habilitar sitio
+sudo a2dissite [sitio]      # Deshabilitar sitio
+```
+
+### MariaDB
+
+```bash
+sudo mysql -u root -p                    # Conectar como root
+mysql -u usuario -p base_datos           # Conectar como usuario
+mysqldump -u usuario -p bd > backup.sql  # Copia de seguridad
+mysql -u usuario -p bd < backup.sql      # Restaurar
+```
+
+### Logs importantes
+
+| Log | Ruta |
+|---|---|
+| Errores de Apache | `/var/log/apache2/error.log` |
+| Accesos de Apache | `/var/log/apache2/access.log` |
+| Errores de MariaDB/MySQL | `/var/log/mysql/error.log` |
+| Log general del sistema | `/var/log/syslog` |
 
 ## Recursos adicionales
 

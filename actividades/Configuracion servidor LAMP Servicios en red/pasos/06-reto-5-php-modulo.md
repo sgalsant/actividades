@@ -21,24 +21,23 @@ PHP (Hypertext Preprocessor) es un lenguaje de programación del lado del servid
 
 :::task{id="instalar-php" required="true"}
 Instala PHP y los módulos necesarios.
-:::
 
 ```bash
 sudo apt install -y php libapache2-mod-php php-mysql
 ```
+:::
 
 :::task{id="verificar-php" required="true"}
 Comprueba la versión de PHP y que el módulo está cargado.
-:::
 
 ```bash
 php -v
 apache2ctl -M | grep php
 ```
+:::
 
 :::task{id="priorizar-index-php" required="true"}
 Edita `/etc/apache2/mods-enabled/dir.conf` para que `index.php` aparezca primero en `DirectoryIndex`.
-:::
 
 ```bash
 sudo nano /etc/apache2/mods-enabled/dir.conf
@@ -49,10 +48,10 @@ Ejemplo de línea a dejar:
 ```
 DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
 ```
+:::
 
 :::task{id="reiniciar-apache-php" required="true"}
 Reinicia Apache y crea `/var/www/html/index.php`.
-:::
 
 ```bash
 sudo systemctl restart apache2
@@ -66,6 +65,7 @@ Contenido de ejemplo:
 echo "[tu_nombre]\n";
 phpinfo();
 ```
+:::
 
 :::task{id="probar-index-php" required="true"}
 Accede a `http://localhost:8080` y comprueba que se muestra tu nombre y la información de PHP.

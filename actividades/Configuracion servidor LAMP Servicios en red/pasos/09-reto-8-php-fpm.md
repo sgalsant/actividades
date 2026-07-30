@@ -39,7 +39,6 @@ Apache delega las peticiones PHP a PHP-FPM mediante FastCGI. Esto permite:
 
 :::task{id="instalar-php-fpm" required="true"}
 Instala PHP-FPM y anota la versión y el socket.
-:::
 
 ```bash
 sudo apt install -y php-fpm
@@ -50,30 +49,36 @@ ls /run/php/
 Anota el socket de PHP-FPM que aparece en `/run/php/`, por ejemplo `php8.3-fpm.sock`:
 
 ![Versión de PHP y socket de PHP-FPM en /run/php](recursos/media/image11.png)
+:::
 
 :::task{id="deshabilitar-mod-php" required="true"}
 Deshabilita `mod_php` y habilita los módulos necesarios para PHP-FPM. Sustituye `X.X` por tu versión de PHP.
-:::
 
 ```bash
 sudo a2dismod phpX.X
 sudo a2enmod proxy_fcgi setenvif
 sudo a2enconf phpX.X-fpm
 ```
+:::
 
 :::task{id="reiniciar-servicios-fpm" required="true"}
 Reinicia Apache y PHP-FPM, y verifica que PHP-FPM está corriendo.
-:::
 
 ```bash
 sudo systemctl restart apache2
+sudo systemctl restart phpX.X-fpm
 sudo systemctl status phpX.X-fpm
 ```
+:::
 
 :::task{id="verificar-fpm" required="true"}
 Accede de nuevo a `http://localhost:8080/index.php`, busca la línea `Server API` y comprueba que ahora indica `FPM/FastCGI`.
 
 ![phpinfo() mostrando Server API FPM/FastCGI](recursos/media/image12.png)
+:::
+
+:::task{id="verificar-paginas-anteriores" required="false"}
+Comprueba rápidamente que las páginas creadas antes de la migración siguen funcionando: vuelve a cargar `http://localhost:8080/index.php` y, si cambiaste el alias de phpMyAdmin en el reto anterior, también esa URL (por ejemplo, `http://localhost:8080/[tu-nombre]db`).
 :::
 
 :::evidence{id="captura-fpm" type="screenshot" required="true"}
