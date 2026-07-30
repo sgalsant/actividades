@@ -5,6 +5,19 @@ duracion_minutos: 15
 obligatorio: true
 ---
 
+![Portada y diagrama conceptual del stack LAMP](recursos/media/image1.jpg)
+
+## Licencia
+
+Esta actividad se distribuye bajo la licencia Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0 Internacional.
+
+![Licencia CC BY-NC-SA 4.0](recursos/media/image7.svg)
+
+:::tip{}
+**Flujo conceptual del stack LAMP:** el navegador del cliente envía una petición HTTP a Apache; si el contenido es estático, Apache lo sirve directamente, y si es dinámico, lo delega a PHP (`mod_php` o PHP-FPM). Cuando PHP necesita datos, consulta MariaDB/MySQL.
+:::
+
+
 ## Objetivos de la práctica
 
 - Configurar un servidor Ubuntu Server virtualizado con acceso remoto por SSH.
@@ -41,15 +54,3 @@ Completa esta tabla a medida que avances. La necesitarás durante toda la activi
 :::note{}
 Sustituye `[tu_nombre]` por tu nombre en hostname, usuarios y base de datos para personalizar la actividad.
 :::
-
-:::tip{}
-**Flujo conceptual del stack LAMP:** el navegador del cliente envía una petición HTTP a Apache; si el contenido es estático, Apache lo sirve directamente, y si es dinámico, lo delega a PHP (`mod_php` o PHP-FPM). Cuando PHP necesita datos, consulta MariaDB/MySQL.
-:::
-
-![Portada y diagrama conceptual del stack LAMP](recursos/media/image1.jpg)
-
-## Licencia
-
-Esta actividad se distribuye bajo la licencia Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0 Internacional.
-
-![Licencia CC BY-NC-SA 4.0](recursos/media/image7.svg)
