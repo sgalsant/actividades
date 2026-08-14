@@ -31,7 +31,11 @@ tags:
 
 Actividad AulaStep para configurar Ubuntu Server como gateway de una red interna Ubuntu mediante Netplan, reenvío IPv4 y NAT.
 
-## Ruta de la actividad
+## Prerrequisitos
+
+Necesitas las máquinas base de Ubuntu Desktop y Ubuntu Server en VirtualBox. Completa el reto 1 antes de continuar con el reto 2: el segundo router reutiliza el gateway y la salida a Internet ya configurados.
+
+## Reto 1: gateway con NAT
 
 - [[pasos/00-presentacion]]: objetivo, topología y evidencias.
 - [[pasos/01-clonacion-maquinas]]: creación de las máquinas virtuales.
@@ -41,5 +45,8 @@ Actividad AulaStep para configurar Ubuntu Server como gateway de una red interna
 - [[pasos/05-reenvio-ipv4]]: habilitación persistente del reenvío.
 - [[pasos/06-nat-iptables]]: traducción de direcciones y persistencia.
 - [[pasos/07-pruebas-entrega]]: comprobaciones y evidencias del reto 1.
-- [[pasos/08-subredes-enrutamiento]]: ampliación a tres subredes.
+
+## Reto 2: tres subredes y dos routers
+
+- [[pasos/08-subredes-enrutamiento]]: ampliación a tres subredes, configuración completa de los dos routers y evidencias de conectividad.
 - [[pasos/09-reflexion]]: reflexión y entrega.

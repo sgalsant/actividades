@@ -28,6 +28,10 @@ Si responde `8.8.8.8` pero no el nombre de dominio, NAT funciona y debes revisar
 Adjunta una captura con las tres comprobaciones realizadas desde el cliente.
 :::
 
-:::checkpoint{id="reinicio-reto-uno" required="true"}
-He reiniciado las máquinas y he comprobado que Ubuntu Desktop y Ubuntu Server conservan conectividad entre sí y acceso a Internet.
+:::task{id="verificar-reinicio-reto-uno" required="true"}
+Reinicia Ubuntu Desktop y Ubuntu Server. Después del reinicio, repite desde Desktop `ping 192.168.1.1`, `ping 8.8.8.8` y `ping www.google.es`; desde Server repite `ping 8.8.8.8` y `ping www.google.es`.
+:::
+
+:::evidence{id="captura-post-reinicio" type="screenshot" required="true"}
+Adjunta una captura posterior al reinicio que muestre una prueba de dirección IP externa y otra de resolución DNS.
 :::

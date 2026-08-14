@@ -8,10 +8,18 @@ obligatorio: true
 En Ubuntu Server, la interfaz NAT obtiene su dirección por DHCP y la interfaz de red interna usa `192.168.1.1/24`.
 
 :::task{id="netplan-servidor" required="true"}
-Identifica los nombres de las interfaces con `ip a`. Borra la configuración anterior y crea `/etc/netplan/network-config.yaml`. Ajusta los nombres si no son `enp0s3` y `enp0s8`:
+1. Identifica los nombres de las interfaces con `ip a`. Antes de sustituir una configuración, haz una copia de seguridad de Netplan. Después retira los YAML anteriores del directorio activo: Netplan combina todos los YAML de `/etc/netplan/`, por lo que un fichero antiguo con DHCP puede alterar esta topología. Esta práctica usa máquinas de laboratorio: no hagas esto en un servidor en producción.
 
 ```bash
-sudo rm /etc/netplan/*
+sudo ip a
+sudo mkdir -p /etc/netplan.backup
+sudo cp -a /etc/netplan/. /etc/netplan.backup/
+sudo rm -f /etc/netplan/*.yaml
+```
+
+2. Crea `/etc/netplan/network-config.yaml`. Ajusta los nombres si tus interfaces no son `enp0s3` y `enp0s8`; conserva únicamente la configuración que vayas a usar en esta práctica:
+
+```bash
 sudo nano /etc/netplan/network-config.yaml
 ```
 
@@ -26,11 +34,16 @@ network:
         - 192.168.1.1/24
 ```
 
-Aplica y verifica la configuración:
+3. Protege el archivo antes de aplicar la configuración. Netplan rechaza o avisa sobre ficheros accesibles por otros usuarios:
 
 ```bash
-sudo netplan apply
 sudo chmod 600 /etc/netplan/network-config.yaml
+sudo netplan apply
+```
+
+4. Comprueba que la interfaz NAT recibió una dirección por DHCP y que la interfaz interna tiene `192.168.1.1/24`:
+
+```bash
 sudo ip a
 ```
 :::

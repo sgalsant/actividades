@@ -7,14 +7,32 @@ obligatorio: true
 
 La red `192.168.1.0/24` usa direcciones privadas. NAT con `MASQUERADE` sustituye la dirección de origen del cliente por la de la interfaz externa del servidor.
 
-![Instalación de iptables-persistent](recursos/media/image6.png)
-
 :::task{id="configurar-nat" required="true"}
-Sustituye `enp0s3` si tu interfaz de salida tiene otro nombre y añade la regla NAT:
+1. Sustituye `enp0s3` si tu interfaz de salida tiene otro nombre y añade la regla NAT:
 
 ```bash
 sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE
+```
+
+2. Desde Ubuntu Desktop, confirma que el cliente ya puede acceder a Internet:
+
+```bash
+ping 8.8.8.8
+```
+:::
+
+![Instalación de iptables-persistent](recursos/media/image6.png)
+
+:::task{id="persistir-reglas-iptables" required="true"}
+1. Instala `iptables-persistent` para conservar las reglas después de reiniciar:
+
+```bash
 sudo apt install iptables-persistent
+```
+
+2. Guarda la configuración actual y consulta las reglas almacenadas:
+
+```bash
 sudo netfilter-persistent save
 sudo iptables-save
 ```

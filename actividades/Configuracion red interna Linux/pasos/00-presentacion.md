@@ -20,6 +20,6 @@ Configurarás dos máquinas virtuales: un Ubuntu Server con una interfaz NAT y o
 El reenvío IPv4 mueve paquetes entre interfaces. NAT traduce las direcciones privadas del cliente para que puedan salir por la interfaz pública del servidor. Necesitas ambas cosas para dar acceso a Internet.
 :::
 
-:::task{id="registro-topologia" required="true"}
-Anota los nombres reales de las interfaces que usarás en Ubuntu Server después de consultar `ip a`.
+:::checkpoint{id="roles-topologia" required="true"}
+Distingo los roles de la topología: la interfaz NAT del servidor sale a Internet, su interfaz de red interna conecta con Ubuntu Desktop y el servidor será el gateway del cliente.
 :::
