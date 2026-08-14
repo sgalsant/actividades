@@ -9,6 +9,10 @@ obligatorio: true
 ¿Qué función cumple Ubuntu Server en esta topología?
 :::
 
+:::question{id="definicion-iptables" type="long-text" required="true"}
+¿Qué es `iptables`?
+:::
+
 :::question{id="funcion-nat" type="long-text" required="true"}
 ¿Por qué es necesario NAT y cómo funciona la regla `MASQUERADE`?
 :::

@@ -7,6 +7,8 @@ obligatorio: true
 
 En la configuración de red de Ubuntu Desktop asigna estos valores a la conexión de red interna:
 
+![Configuración de red estática en Ubuntu Desktop](recursos/media/image5.png)
+
 | Parámetro | Valor |
 |---|---|
 | Dirección IP | `192.168.1.2/24` |
