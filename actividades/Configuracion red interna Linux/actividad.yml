@@ -1,0 +1,47 @@
+schema_version: "1.0"
+
+actividad:
+  id: configuracion-red-interna-linux
+  titulo: Configuración de una red interna Linux
+  subtitulo: Ubuntu Server como gateway con NAT y enrutamiento entre subredes
+  version: 1.0.0
+  descripcion: >
+    Configura una red interna en VirtualBox donde Ubuntu Server da salida a
+    Internet a equipos Ubuntu Desktop mediante Netplan, reenvío IPv4 y NAT.
+  autor: Santiago Galván Sánchez
+  modulo: Servicios en red
+  curso: 2º SMR
+  duracion_minutos: 260
+  tema: indigo
+  licencia:
+    nombre: CC BY-NC-SA 4.0
+    nombre_completo: Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional
+    url: https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es
+
+navegacion:
+  modo: asistente
+  permitir_anterior: true
+  permitir_saltar: true
+  mostrar_indice: true
+  mostrar_progreso: true
+  exigir_obligatorios_para_avanzar: false
+
+alumno:
+  campos:
+    - id: nombre
+      etiqueta: Nombre y apellidos
+      tipo: texto
+      obligatorio: true
+
+trabajo:
+  autoguardado: true
+  intervalo_autoguardado_segundos: 5
+  permitir_exportar: true
+  permitir_importar: true
+  extension: aulawork
+  patron_nombre: "{actividad}_{alumno}_{fecha}.aulawork"
+
+limites:
+  tamano_maximo_captura_mb: 8
+  tamano_maximo_adjunto_mb: 20
+  tamano_maximo_paquete_mb: 100

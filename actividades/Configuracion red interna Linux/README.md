@@ -1,0 +1,45 @@
+---
+id: configuracion-red-interna-linux
+tipo: overview
+dominio: programaciones-didacticas
+estado: activo
+prioridad_consulta: alta
+vigencia: no_aplica
+fuente_rol: patron
+vigencia_estado: no_aplica
+etapa: Grado Medio
+familia_profesional: Informática y Comunicaciones
+ciclo: SMR
+curso: "2"
+modulo_materia: "0227 Servicios en red"
+fuente_local:
+  - "RAW/configuracion red linux.docx"
+related:
+  - "[[Indice de actividades]]"
+  - "[[Actividad - Configuracion red interna Linux]]"
+  - "[[Fuente - Configuracion red interna Linux]]"
+  - "[[Patron - Red interna Linux con gateway y NAT]]"
+tags:
+  - actividad
+  - aula-step
+  - linux
+  - red-interna
+  - nat
+---
+
+# Configuración de una red interna Linux
+
+Actividad AulaStep para configurar Ubuntu Server como gateway de una red interna Ubuntu mediante Netplan, reenvío IPv4 y NAT.
+
+## Ruta de la actividad
+
+- [[pasos/00-presentacion]]: objetivo, topología y evidencias.
+- [[pasos/01-clonacion-maquinas]]: creación de las máquinas virtuales.
+- [[pasos/02-red-virtualbox]]: adaptadores NAT y redes internas.
+- [[pasos/03-red-servidor]]: Netplan e interfaces del gateway.
+- [[pasos/04-red-escritorio]]: configuración del cliente.
+- [[pasos/05-reenvio-ipv4]]: habilitación persistente del reenvío.
+- [[pasos/06-nat-iptables]]: traducción de direcciones y persistencia.
+- [[pasos/07-pruebas-entrega]]: comprobaciones y evidencias del reto 1.
+- [[pasos/08-subredes-enrutamiento]]: ampliación a tres subredes.
+- [[pasos/09-reflexion]]: reflexión y entrega.

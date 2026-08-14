@@ -1,0 +1,25 @@
+---
+id: presentacion-red-interna
+titulo: Presentación y escenario
+duracion_minutos: 10
+obligatorio: true
+---
+
+![Topología del reto 1](recursos/media/image1.png)
+
+Configurarás dos máquinas virtuales: un Ubuntu Server con una interfaz NAT y otra de red interna, y un Ubuntu Desktop conectado a esa misma red interna.
+
+## Objetivos
+
+- Configurar direcciones IP, gateway y DNS.
+- Usar Ubuntu Server como encaminador IPv4.
+- Aplicar NAT para que el cliente privado acceda a Internet.
+- Diagnosticar conectividad local, externa y resolución DNS.
+
+:::note{}
+El reenvío IPv4 mueve paquetes entre interfaces. NAT traduce las direcciones privadas del cliente para que puedan salir por la interfaz pública del servidor. Necesitas ambas cosas para dar acceso a Internet.
+:::
+
+:::task{id="registro-topologia" required="true"}
+Anota los nombres reales de las interfaces que usarás en Ubuntu Server después de consultar `ip a`.
+:::
