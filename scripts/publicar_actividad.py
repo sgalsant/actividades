@@ -169,6 +169,11 @@ def remote_has_pages_branch() -> bool:
     return result.returncode == 0
 
 
+def remove_tracked_files(directory: Path) -> None:
+    if run("git", "ls-files", capture=True, cwd=directory).stdout:
+        run("git", "rm", "-rf", ".", cwd=directory)
+
+
 @contextmanager
 def pages_worktree(allow_new: bool):
     exists = remote_has_pages_branch()
@@ -185,7 +190,7 @@ def pages_worktree(allow_new: bool):
     else:
         run("git", "worktree", "add", "--detach", str(path), "HEAD")
         run("git", "switch", "--orphan", PAGES_BRANCH, cwd=path)
-        run("git", "rm", "-rf", ".", cwd=path)
+        remove_tracked_files(path)
 
     try:
         yield path
@@ -212,14 +217,18 @@ def version_tuple(version: str) -> tuple[int, int, int]:
 
 
 def commit_paths(paths: tuple[Path, ...], message: str) -> bool:
-    relative_paths = tuple(str(path) for path in paths)
-    status = subprocess.run(
-        ["git", "status", "--porcelain", "--", *relative_paths], cwd=ROOT, text=True, capture_output=True
-    ).stdout
-    if not status:
+    changed_paths = tuple(
+        path
+        for path in paths
+        if subprocess.run(
+            ["git", "status", "--porcelain", "--", str(path)], cwd=ROOT, text=True, capture_output=True
+        ).stdout
+    )
+    if not changed_paths:
         return False
-    run("git", "add", "-A", "--", *relative_paths)
-    run("git", "commit", "--only", "-m", message, "--", *relative_paths)
+    for path in changed_paths:
+        run("git", "add", "-A", "--", str(path))
+    run("git", "commit", "--only", "-m", message, "--", *(str(path) for path in changed_paths))
     run("git", "push", "origin", "main")
     return True
 
@@ -288,7 +297,7 @@ def rebuild() -> None:
     cleanup_zone_identifiers(ACTIVITIES)
     catalog_entries()  # Validates all sources and duplicate IDs before rebuilding the site.
     with pages_worktree(True) as pages:
-        run("git", "rm", "-rf", ".", cwd=pages)
+        remove_tracked_files(pages)
         run(aulastep_command(), "publish", str(ACTIVITIES), "--output", str(pages), "--title", CATALOG_TITLE)
         commit_pages(pages, "catálogo completo", "")
 
