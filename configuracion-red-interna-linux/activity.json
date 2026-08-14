@@ -1,0 +1,513 @@
+{
+  "schemaVersion": "1.0",
+  "generator": {
+    "name": "AulaStep",
+    "version": "0.9.0"
+  },
+  "activity": {
+    "id": "configuracion-red-interna-linux",
+    "titulo": "Configuración de una red interna Linux",
+    "subtitulo": "Ubuntu Server como gateway con NAT y enrutamiento entre subredes",
+    "version": "1.0.0",
+    "descripcion": "Configura una red interna en VirtualBox donde Ubuntu Server da salida a Internet a equipos Ubuntu Desktop mediante Netplan, reenvío IPv4 y NAT.",
+    "autor": "Santiago Galván Sánchez",
+    "modulo": "Servicios en red",
+    "curso": "2º SMR",
+    "duracionMinutos": 260,
+    "tema": "indigo",
+    "licencia": {
+      "nombre": "CC BY-NC-SA 4.0",
+      "nombre_completo": "Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional",
+      "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es",
+      "condiciones": [
+        "se reconozca adecuadamente la autoría;",
+        "no se utilice con fines comerciales;",
+        "cualquier obra derivada se distribuya bajo esta misma licencia;",
+        "se indiquen claramente los cambios realizados sobre el material original."
+      ]
+    }
+  },
+  "navegacion": {
+    "modo": "asistente",
+    "permitir_anterior": true,
+    "permitir_saltar": true,
+    "mostrar_indice": true,
+    "mostrar_progreso": true,
+    "exigir_obligatorios_para_avanzar": false
+  },
+  "alumno": {
+    "campos": [
+      {
+        "id": "nombre",
+        "etiqueta": "Nombre y apellidos",
+        "tipo": "texto",
+        "obligatorio": true
+      }
+    ]
+  },
+  "trabajo": {
+    "autoguardado": true,
+    "intervalo_autoguardado_segundos": 5,
+    "permitir_exportar": true,
+    "permitir_importar": true,
+    "extension": "aulawork",
+    "patron_nombre": "{actividad}_{alumno}_{fecha}.aulawork"
+  },
+  "limites": {
+    "tamano_maximo_captura_mb": 8,
+    "tamano_maximo_adjunto_mb": 20,
+    "tamano_maximo_paquete_mb": 100
+  },
+  "steps": [
+    {
+      "id": "presentacion-red-interna",
+      "titulo": "Presentación y escenario",
+      "descripcion": "",
+      "duracionMinutos": 10,
+      "obligatorio": true,
+      "orden": 0,
+      "archivo": "pasos/00-presentacion.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p><img src=\"recursos/media/image1.png\" alt=\"Topología del reto 1\" /></p>\n<p>Configurarás dos máquinas virtuales: un Ubuntu Server con una interfaz NAT y otra de red interna, y un Ubuntu Desktop conectado a esa misma red interna.</p>\n<h2>Objetivos</h2>\n<ul>\n<li>Configurar direcciones IP, gateway y DNS.</li>\n<li>Usar Ubuntu Server como encaminador IPv4.</li>\n<li>Aplicar NAT para que el cliente privado acceda a Internet.</li>\n<li>Diagnosticar conectividad local, externa y resolución DNS.</li>\n</ul>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>El reenvío IPv4 mueve paquetes entre interfaces. NAT traduce las direcciones privadas del cliente para que puedan salir por la interfaz pública del servidor. Necesitas ambas cosas para dar acceso a Internet.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Anota los nombres reales de las interfaces que usarás en Ubuntu Server después de consultar <code>ip a</code>.</p>",
+          "id": "registro-topologia",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "clonacion-maquinas",
+      "titulo": "Crea las máquinas virtuales",
+      "descripcion": "",
+      "duracionMinutos": 20,
+      "obligatorio": true,
+      "orden": 1,
+      "archivo": "pasos/01-clonacion-maquinas.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Parte de las máquinas base de Ubuntu Desktop y Ubuntu Server en VirtualBox. Crea una clonación enlazada de cada una y genera nuevas direcciones MAC para todos sus adaptadores.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--tip\" role=\"note\"><span class=\"as-callout-label\">Consejo</span><div class=\"as-callout-body\"><p>Una clonación enlazada reutiliza el disco base y reduce el espacio ocupado. No uses la misma MAC en las dos máquinas: VirtualBox y la red no podrían distinguirlas correctamente.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Crea las dos máquinas y asígnales nombres que permitan diferenciarlas claramente, por ejemplo, <code>ubuntu-desktop-red</code> y <code>ubuntu-server-gateway</code>.</p>",
+          "id": "crear-maquinas",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura de VirtualBox donde se vean las dos máquinas creadas.</p>",
+          "id": "captura-maquinas",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "red-virtualbox",
+      "titulo": "Configura los adaptadores en VirtualBox",
+      "descripcion": "",
+      "duracionMinutos": 20,
+      "obligatorio": true,
+      "orden": 2,
+      "archivo": "pasos/02-red-virtualbox.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Configura los adaptadores antes de iniciar las máquinas:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Máquina</th>\n<th>Adaptador</th>\n<th>Modo</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Ubuntu Server</td>\n<td>1</td>\n<td>NAT</td>\n</tr>\n<tr>\n<td>Ubuntu Server</td>\n<td>2</td>\n<td>Red interna <code>red-interna</code></td>\n</tr>\n<tr>\n<td>Ubuntu Desktop</td>\n<td>1</td>\n<td>Red interna <code>red-interna</code></td>\n</tr>\n</tbody>\n</table>\n</div>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>El nombre de la red interna debe coincidir exactamente en ambos adaptadores. Si difiere, las máquinas quedarán aisladas aunque sus direcciones pertenezcan a la misma subred.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>He configurado NAT únicamente en el servidor y la misma red interna en servidor y cliente.</p>",
+          "id": "adaptadores-listos",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "red-servidor",
+      "titulo": "Configura el gateway con Netplan",
+      "descripcion": "",
+      "duracionMinutos": 35,
+      "obligatorio": true,
+      "orden": 3,
+      "archivo": "pasos/03-red-servidor.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>En Ubuntu Server, la interfaz NAT obtiene su dirección por DHCP y la interfaz de red interna usa <code>192.168.1.1/24</code>.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Identifica los nombres de las interfaces con <code>ip a</code>. Crea <code>/etc/netplan/network-config.yaml</code> y ajusta los nombres si no son <code>enp0s3</code> y <code>enp0s8</code>:</p>\n<pre><code class=\"language-yaml\">network:\n  version: 2\n  ethernets:\n    enp0s3:\n      dhcp4: true\n    enp0s8:\n      addresses:\n        - 192.168.1.1/24\n</code></pre>\n<p>Aplica y verifica la configuración:</p>\n<pre><code class=\"language-bash\">sudo netplan apply\nsudo ip a\n</code></pre>",
+          "id": "netplan-servidor",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Los nombres como <code>enp0s3</code> describen una interfaz Ethernet situada en un bus y ranura PCI. No los copies sin verificar: cambian según el orden de adaptadores de cada máquina virtual.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "red-escritorio",
+      "titulo": "Configura el cliente Ubuntu Desktop",
+      "descripcion": "",
+      "duracionMinutos": 20,
+      "obligatorio": true,
+      "orden": 4,
+      "archivo": "pasos/04-red-escritorio.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>En la configuración de red de Ubuntu Desktop asigna estos valores a la conexión de red interna:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Parámetro</th>\n<th>Valor</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Dirección IP</td>\n<td><code>192.168.1.2/24</code></td>\n</tr>\n<tr>\n<td>Gateway</td>\n<td><code>192.168.1.1</code></td>\n</tr>\n<tr>\n<td>DNS</td>\n<td><code>8.8.8.8</code></td>\n</tr>\n</tbody>\n</table>\n</div>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Aplica la configuración y comprueba que el cliente alcanza al servidor:</p>\n<pre><code class=\"language-bash\">ping 192.168.1.1\n</code></pre>",
+          "id": "configurar-cliente",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura del ping correcto al gateway.</p>",
+          "id": "captura-cliente-gateway",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "reenvio-ipv4",
+      "titulo": "Habilita el reenvío IPv4",
+      "descripcion": "",
+      "duracionMinutos": 20,
+      "obligatorio": true,
+      "orden": 5,
+      "archivo": "pasos/05-reenvio-ipv4.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>El servidor no reenvía paquetes entre interfaces por defecto. Activa el reenvío de forma persistente en <code>/etc/sysctl.conf</code>:</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Descomenta o añade la siguiente línea y carga la configuración:</p>\n<pre><code class=\"language-ini\">net.ipv4.ip_forward=1\n</code></pre>\n<pre><code class=\"language-bash\">sudo sysctl -p\nsysctl net.ipv4.ip_forward\n</code></pre>",
+          "id": "habilitar-ip-forward",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>Explica qué ocurriría con los paquetes del cliente si <code>net.ipv4.ip_forward</code> estuviera a <code>0</code>.</p>",
+          "id": "funcion-ip-forward",
+          "required": true,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "nat-iptables",
+      "titulo": "Configura NAT con iptables",
+      "descripcion": "",
+      "duracionMinutos": 30,
+      "obligatorio": true,
+      "orden": 6,
+      "archivo": "pasos/06-nat-iptables.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>La red <code>192.168.1.0/24</code> usa direcciones privadas. NAT con <code>MASQUERADE</code> sustituye la dirección de origen del cliente por la de la interfaz externa del servidor.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Sustituye <code>enp0s3</code> si tu interfaz de salida tiene otro nombre y añade la regla NAT:</p>\n<pre><code class=\"language-bash\">sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE\nsudo apt install iptables-persistent\nsudo netfilter-persistent save\nsudo iptables-save\n</code></pre>",
+          "id": "configurar-nat",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>Activar <code>ip_forward</code> sin una regla NAT no basta: el cliente reenviará paquetes, pero las redes externas no sabrán cómo devolver tráfico a su dirección privada.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "pruebas-reto-uno",
+      "titulo": "Comprueba la conectividad del reto 1",
+      "descripcion": "",
+      "duracionMinutos": 25,
+      "obligatorio": true,
+      "orden": 7,
+      "archivo": "pasos/07-pruebas-entrega.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Ejecuta las pruebas desde Ubuntu Desktop y distingue los fallos de red de los de DNS:</p>\n<pre><code class=\"language-bash\">ping 192.168.1.1\nping 8.8.8.8\nping www.google.es\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Si responde <code>8.8.8.8</code> pero no el nombre de dominio, NAT funciona y debes revisar DNS. Si no responde ninguna dirección externa, revisa gateway, reenvío IPv4 y la regla <code>MASQUERADE</code>.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura con las tres comprobaciones realizadas desde el cliente.</p>",
+          "id": "captura-conectividad",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>He reiniciado las máquinas y he comprobado que el cliente conserva conectividad local y acceso a Internet.</p>",
+          "id": "reinicio-reto-uno",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "subredes-enrutamiento",
+      "titulo": "Amplía la red con un segundo router",
+      "descripcion": "",
+      "duracionMinutos": 55,
+      "obligatorio": true,
+      "orden": 8,
+      "archivo": "pasos/08-subredes-enrutamiento.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>En el reto 2 añadirás una segunda red <code>192.168.2.0/24</code>, un segundo Ubuntu Server y una tercera red <code>192.168.3.0/24</code>.</p>\n<p><img src=\"recursos/media/image7.png\" alt=\"Topología del reto 2\" /></p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Equipo</th>\n<th>Interfaces relevantes</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Servidor 1</td>\n<td><code>192.168.1.1/24</code>, <code>192.168.2.1/24</code> y ruta a <code>192.168.3.0/24</code> vía <code>192.168.2.2</code></td>\n</tr>\n<tr>\n<td>Servidor 2</td>\n<td><code>192.168.2.2/24</code>, <code>192.168.3.1/24</code> y ruta por defecto vía <code>192.168.2.1</code></td>\n</tr>\n<tr>\n<td>Desktop 2</td>\n<td><code>192.168.3.2/24</code>, gateway <code>192.168.3.1</code>, DNS <code>8.8.8.8</code></td>\n</tr>\n</tbody>\n</table>\n</div>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Añade en el primer servidor una interfaz para <code>192.168.2.1/24</code> y la ruta hacia <code>192.168.3.0/24</code> a través de <code>192.168.2.2</code>. En el segundo servidor habilita <code>ip_forward</code>, configura ambas interfaces y su ruta por defecto.</p>",
+          "id": "configurar-segundo-router",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Desde Desktop 2 prueba conectividad con el segundo servidor, el primer servidor y <code>8.8.8.8</code>. Reinicia las máquinas y repite la verificación.</p>",
+          "id": "probar-tres-subredes",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "reflexion-entrega",
+      "titulo": "Reflexión y entrega",
+      "descripcion": "",
+      "duracionMinutos": 15,
+      "obligatorio": true,
+      "orden": 9,
+      "archivo": "pasos/09-reflexion.md",
+      "segments": [
+        {
+          "type": "question",
+          "html": "<p>¿Qué función cumple Ubuntu Server en esta topología?</p>",
+          "id": "funcion-gateway",
+          "required": true,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Por qué es necesario NAT y cómo funciona la regla <code>MASQUERADE</code>?</p>",
+          "id": "funcion-nat",
+          "required": true,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "reflection",
+          "html": "<p>Indica los problemas que encontraste, cómo los diagnosticastes y qué comprobarías primero en una topología similar.</p>",
+          "id": "reflexion-final",
+          "required": true,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "file",
+          "html": "<p>Adjunta tus configuraciones de Netplan o un documento con las capturas de las evidencias.</p>",
+          "id": "adjunto-configuracion",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": ".yaml,.txt,.pdf",
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<p>Exporta tu trabajo como archivo <code>.aulawork</code> antes de entregarlo.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    }
+  ]
+}
