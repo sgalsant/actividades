@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Actividades · Santiago Galván</title>
+<style>
+  :root {
+    --bg: #f2f6f8; --surface: #ffffff; --surface-2: #e6eef2;
+    --text: #16323c; --muted: #46626e; --primary: #1f4e5f;
+    --accent: #0e7c86; --border: #c3d4db; --radius: 10px;
+    --font-mono: ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.6 -apple-system, "Segoe UI", system-ui, Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 52rem; margin: 0 auto; padding: 3rem 1.2rem 4rem; }
+  .brand {
+    font-family: var(--font-mono); font-size: .78rem; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 1.2rem;
+  }
+  .brand::before { content: "▸ "; }
+  h1 { font-size: clamp(1.7rem, 1.4rem + 1.4vw, 2.3rem); letter-spacing: -.02em; margin: 0 0 .3rem; }
+  .lead { color: var(--muted); margin: 0 0 2.2rem; }
+  .card {
+    display: block; text-decoration: none; color: inherit;
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 4px solid var(--accent); border-radius: var(--radius);
+    padding: 1.1rem 1.3rem; margin: 0 0 1rem;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .card:hover { border-color: var(--accent); box-shadow: 0 1px 2px rgba(22,50,60,.08), 0 4px 14px rgba(22,50,60,.07); }
+  .card h2 { margin: 0 0 .15rem; font-size: 1.2rem; letter-spacing: -.01em; }
+  .card .sub { color: var(--muted); margin: 0 0 .55rem; }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: .4rem 1rem;
+    font-family: var(--font-mono); font-size: .74rem; letter-spacing: .04em; color: var(--muted);
+  }
+  .meta span::before { content: "· "; color: var(--accent); }
+  .filtros { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: 0 0 1.1rem; }
+  .filtros input[type="search"], .filtros select {
+    font: inherit; font-size: .92rem; color: var(--text);
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: .5rem .8rem;
+  }
+  .filtros input[type="search"] { flex: 1; min-width: 14rem; }
+  .filtros input[type="search"]:focus-visible, .filtros select:focus-visible {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(14, 124, 134, .18);
+  }
+  .contador { font-family: var(--font-mono); font-size: .76rem; color: var(--muted); white-space: nowrap; }
+  .sin-resultados {
+    background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius);
+    padding: 1.6rem 1.2rem; text-align: center; color: var(--muted);
+  }
+  .card[data-oculta] { display: none; }
+  .badge { display: inline-block; vertical-align: middle; margin-left: .5rem;
+           font-family: var(--font-mono); font-size: .62rem; font-weight: 700;
+           letter-spacing: .09em; text-transform: uppercase;
+           border-radius: 99px; padding: .12rem .55rem; }
+  .badge-nueva { background: var(--accent); color: #fff; }
+  .badge-actualizada { color: var(--accent); border: 1.5px solid var(--accent); }
+  footer {
+    margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: .72rem; color: var(--muted); text-align: center;
+  }
+  footer a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="brand">AulaStep</p>
+  <h1>Actividades · Santiago Galván</h1>
+  <p class="lead">Elige una actividad para empezar o continuar tu trabajo.</p>
+
+  <div class="filtros" id="filtros" hidden>
+    <input type="search" id="buscador" placeholder="Buscar por título, módulo, autor…"
+           aria-label="Buscar actividades">
+    <select id="filtro-modulo" aria-label="Filtrar por módulo">
+      <option value="">Todos los módulos</option>
+      <option value="Servicios en red">Servicios en red</option>
+    </select>
+    <span class="contador" id="contador" role="status" aria-live="polite"></span>
+  </div>
+
+  
+  <a class="card" href="configuracion-red-interna-linux/" data-buscar="configuracion de una red interna linux ubuntu server como gateway con netplan, reenvio ipv4 y nat el alumnado crea una red interna en virtualbox entre ubuntu desktop y ubuntu server, configura las interfaces con direcciones estaticas y usa el servidor como gateway para dar acceso a internet al equipo de escritorio. servicios en red 2º smr santiago galvan" data-modulo="Servicios en red">
+    <h2>Configuración de una red interna Linux<span class="badge badge-nueva">Nueva</span></h2>
+    <p class="sub">Ubuntu Server como gateway con Netplan, reenvío IPv4 y NAT</p>
+    <div class="meta">
+      <span>Servicios en red</span>
+      <span>2º SMR</span>
+      <span>9 pasos</span>
+      <span>180 min</span>
+      <span>v1.0.0</span>
+      <span>actualizada 14/08/2026</span>
+      <span>CC BY-NC-SA 4.0</span>
+    </div>
+  </a>
+  
+  <a class="card" href="configuracion-servidor-lamp-servicios-en-red/" data-buscar="configuracion de servidor lamp instalacion y configuracion de linux, apache, mariadb y php en ubuntu server el alumnado prepara una maquina virtual ubuntu server, instala y configura un stack lamp completo, despliega paginas web, gestiona mariadb y compara las formas de integracion de php con apache. servicios en red 2º smr santiago galvan sanchez" data-modulo="Servicios en red">
+    <h2>Configuración de servidor LAMP<span class="badge badge-actualizada">Actualizada</span></h2>
+    <p class="sub">Instalación y configuración de Linux, Apache, MariaDB y PHP en Ubuntu Server</p>
+    <div class="meta">
+      <span>Servicios en red</span>
+      <span>2º SMR</span>
+      <span>14 pasos</span>
+      <span>290 min</span>
+      <span>v1.0.2</span>
+      <span>actualizada 30/07/2026</span>
+      <span>CC BY-NC-SA 4.0</span>
+    </div>
+  </a>
+  
+  <a class="card" href="kea-dhcp-servicios-en-red/" data-buscar="kea dhcp en servicios en red configuracion, ampliacion y verificacion de un servidor dhcp el alumnado instala y configura kea dhcp en ubuntu server, valida la asignacion dinamica en una primera red, amplia el servicio a una segunda red y crea una reserva fija por mac. servicios en red 2º smr llm wiki template" data-modulo="Servicios en red">
+    <h2>Kea DHCP en Servicios en red</h2>
+    <p class="sub">Configuracion, ampliacion y verificacion de un servidor DHCP</p>
+    <div class="meta">
+      <span>Servicios en red</span>
+      <span>2º SMR</span>
+      <span>7 pasos</span>
+      <span>120 min</span>
+      <span>v1.0.0</span>
+      <span>actualizada 04/07/2026</span>
+      <span>CC BY-NC-SA 4.0</span>
+    </div>
+  </a>
+  
+
+  <p class="sin-resultados" id="sin-resultados" hidden>
+    Ninguna actividad coincide con la búsqueda. Prueba con otras palabras o
+    quita el filtro de módulo.
+  </p>
+
+  <footer>
+    Generado con AulaStep v0.9.0
+    
+      · Contenidos con la licencia indicada en cada actividad
+    
+  </footer>
+</main>
+<script>
+(function () {
+  "use strict";
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
+  var filtros = document.getElementById("filtros");
+  var buscador = document.getElementById("buscador");
+  var selectModulo = document.getElementById("filtro-modulo");
+  var contador = document.getElementById("contador");
+  var vacio = document.getElementById("sin-resultados");
+  if (!cards.length || !filtros) return;
+  filtros.hidden = false; // sin JS estos controles nunca aparecen
+
+  // Estado en la URL (?q=…&modulo=…): enlaces profundos a vistas filtradas.
+  var params = new URLSearchParams(location.search);
+  if (params.get("q")) buscador.value = params.get("q");
+  if (params.get("modulo")) selectModulo.value = params.get("modulo");
+
+  function reflejarURL() {
+    var p = new URLSearchParams();
+    if (buscador.value.trim()) p.set("q", buscador.value.trim());
+    if (selectModulo.value) p.set("modulo", selectModulo.value);
+    var qs = p.toString();
+    history.replaceState(null, "", qs ? "?" + qs : location.pathname);
+  }
+
+  function normalizar(texto) {
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  }
+  function aplicar() {
+    var consulta = normalizar(buscador.value.trim());
+    var modulo = selectModulo.value;
+    var visibles = 0;
+    cards.forEach(function (card) {
+      var coincide =
+        (!consulta || card.dataset.buscar.indexOf(consulta) !== -1) &&
+        (!modulo || card.dataset.modulo === modulo);
+      if (coincide) { card.removeAttribute("data-oculta"); visibles += 1; }
+      else { card.setAttribute("data-oculta", ""); }
+    });
+    contador.textContent = visibles + " de " + cards.length + " actividades";
+    vacio.hidden = visibles !== 0;
+    reflejarURL();
+  }
+  buscador.addEventListener("input", aplicar);
+  selectModulo.addEventListener("change", aplicar);
+  aplicar();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1387 @@
+{
+  "schemaVersion": "1.0",
+  "generator": {
+    "name": "AulaStep",
+    "version": "0.9.0"
+  },
+  "activity": {
+    "id": "configuracion-servidor-lamp-servicios-en-red",
+    "titulo": "Configuración de servidor LAMP",
+    "subtitulo": "Instalación y configuración de Linux, Apache, MariaDB y PHP en Ubuntu Server",
+    "version": "1.0.2",
+    "descripcion": "El alumnado prepara una máquina virtual Ubuntu Server, instala y configura un stack LAMP completo, despliega páginas web, gestiona MariaDB y compara las formas de integración de PHP con Apache.",
+    "autor": "Santiago Galván Sánchez",
+    "modulo": "Servicios en red",
+    "curso": "2º SMR",
+    "duracionMinutos": 290,
+    "tema": "oceano",
+    "licencia": {
+      "nombre": "CC BY-NC-SA 4.0",
+      "nombre_completo": "Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional",
+      "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es",
+      "condiciones": [
+        "se reconozca adecuadamente la autoría;",
+        "no se utilice con fines comerciales;",
+        "cualquier obra derivada se distribuya bajo esta misma licencia;",
+        "se indiquen claramente los cambios realizados sobre el material original."
+      ]
+    }
+  },
+  "navegacion": {
+    "modo": "asistente",
+    "permitir_anterior": true,
+    "permitir_saltar": true,
+    "mostrar_indice": true,
+    "mostrar_progreso": true,
+    "exigir_obligatorios_para_avanzar": false
+  },
+  "alumno": {
+    "campos": [
+      {
+        "id": "nombre",
+        "etiqueta": "Nombre y apellidos",
+        "tipo": "texto",
+        "obligatorio": true
+      }
+    ]
+  },
+  "trabajo": {
+    "autoguardado": true,
+    "intervalo_autoguardado_segundos": 5,
+    "permitir_exportar": true,
+    "permitir_importar": true,
+    "extension": "aulawork",
+    "patron_nombre": "{actividad}_{alumno}_{fecha}.aulawork"
+  },
+  "limites": {
+    "tamano_maximo_captura_mb": 8,
+    "tamano_maximo_adjunto_mb": 20,
+    "tamano_maximo_paquete_mb": 100
+  },
+  "steps": [
+    {
+      "id": "presentacion-actividad",
+      "titulo": "Presentación, objetivos y escenario",
+      "descripcion": "",
+      "duracionMinutos": 15,
+      "obligatorio": true,
+      "orden": 0,
+      "archivo": "pasos/00-presentacion.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p><img src=\"recursos/media/image1.jpg\" alt=\"Portada y diagrama conceptual del stack LAMP\" /></p>\n<h2>Licencia</h2>\n<p>Esta actividad se distribuye bajo la licencia Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0 Internacional.</p>\n<p><img src=\"recursos/media/image7.svg\" alt=\"Licencia CC BY-NC-SA 4.0\" /></p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--tip\" role=\"note\"><span class=\"as-callout-label\">Consejo</span><div class=\"as-callout-body\"><p><strong>Flujo conceptual del stack LAMP:</strong> el navegador del cliente envía una petición HTTP a Apache; si el contenido es estático, Apache lo sirve directamente, y si es dinámico, lo delega a PHP (<code>mod_php</code> o PHP-FPM). Cuando PHP necesita datos, consulta MariaDB/MySQL.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<h2>Objetivos de la práctica</h2>\n<ul>\n<li>Configurar un servidor Ubuntu Server virtualizado con acceso remoto por SSH.</li>\n<li>Instalar y poner en marcha un stack LAMP (Linux, Apache, MariaDB, PHP).</li>\n<li>Desplegar páginas web estáticas y dinámicas.</li>\n<li>Gestionar usuarios y permisos de bases de datos.</li>\n<li>Aplicar buenas prácticas básicas de seguridad en servidores.</li>\n</ul>\n<h2>Escenario</h2>\n<p>Trabajarás con una máquina virtual Ubuntu Server 24.04 LTS importada en VirtualBox. Desde tu equipo anfitrión accederás por SSH y navegador gracias al reenvío de puertos.</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Servicio</th>\n<th>IP anfitrión</th>\n<th>Puerto anfitrión</th>\n<th>Puerto invitado</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>SSH</td>\n<td>127.0.0.1</td>\n<td>2222</td>\n<td>22</td>\n</tr>\n<tr>\n<td>HTTP</td>\n<td>127.0.0.1</td>\n<td>8080</td>\n<td>80</td>\n</tr>\n<tr>\n<td>HTTPS</td>\n<td>127.0.0.1</td>\n<td>8443</td>\n<td>443</td>\n</tr>\n</tbody>\n</table>\n</div><h2>Tabla de registro de configuraciones</h2>\n<p>Completa esta tabla a medida que avances. La necesitarás durante toda la actividad.</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Concepto</th>\n<th>Usuario/Valor</th>\n<th>Contraseña</th>\n<th>Notas</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Hostname del servidor</td>\n<td><code>server_[tu_nombre]</code></td>\n<td>-</td>\n<td>-</td>\n</tr>\n<tr>\n<td>Usuario Ubuntu</td>\n<td><code>analuisa</code></td>\n<td><code>analuisa</code></td>\n<td>Usuario por defecto de la OVA</td>\n</tr>\n<tr>\n<td>Usuario root MySQL</td>\n<td><code>root</code></td>\n<td>-</td>\n<td>NO usar en producción</td>\n</tr>\n<tr>\n<td>Base de datos</td>\n<td>-</td>\n<td>-</td>\n<td>Nombre de tu BD</td>\n</tr>\n<tr>\n<td>Usuario Admin BD</td>\n<td>-</td>\n<td>-</td>\n<td>Permisos completos sobre tu BD</td>\n</tr>\n<tr>\n<td>Usuario CRUD BD</td>\n<td>-</td>\n<td>-</td>\n<td>Solo SELECT, INSERT, UPDATE, DELETE</td>\n</tr>\n<tr>\n<td>Puerto SSH anfitrión</td>\n<td>-</td>\n<td>-</td>\n<td>Por defecto: 2222</td>\n</tr>\n<tr>\n<td>Puerto HTTP anfitrión</td>\n<td>-</td>\n<td>-</td>\n<td>Por defecto: 8080</td>\n</tr>\n</tbody>\n</table>\n</div>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Sustituye <code>[tu_nombre]</code> por tu nombre en hostname, usuarios y base de datos para personalizar la actividad.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "reto-0-preparacion-entorno",
+      "titulo": "Reto 0 - Preparación del entorno virtual",
+      "descripcion": "",
+      "duracionMinutos": 30,
+      "obligatorio": true,
+      "orden": 1,
+      "archivo": "pasos/01-reto-0-preparacion-entorno.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<h2>Port forwarding</h2>\n<p>Cuando una VM usa NAT, el anfitrión puede acceder a ella mediante reenvío de puertos. Es como indicarle a un recepcionista que las llamadas a una extensión concreta deben pasar a una oficina interior.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p><strong>Ejemplo práctico:</strong> cuando escribes <code>http://localhost:8080</code> en el navegador del anfitrión, VirtualBox redirige la petición al puerto 80 del servidor virtual. El servidor Apache responde y VirtualBox devuelve la página a tu navegador.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Importa la OVA <code>ubuntu server-24.ova</code> en VirtualBox y renombra la VM a <code>LAMP_[tu_nombre]</code>.</p>",
+          "id": "importar-vm",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Configura estas reglas de reenvío de puertos en el Adaptador 1 (NAT).</p>\n<p>En la configuración de red de la VM, con el Adaptador 1 en NAT, abre las opciones avanzadas y pulsa <strong>Reenvío de puertos</strong>:</p>\n<p><img src=\"recursos/media/image2.png\" alt=\"Configuración de red NAT y botón Reenvío de puertos\" /></p>\n<p>Añade las siguientes reglas:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Nombre</th>\n<th>Protocolo</th>\n<th>IP anfitrión</th>\n<th>Puerto anfitrión</th>\n<th>Puerto invitado</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>SSH</td>\n<td>TCP</td>\n<td>127.0.0.1</td>\n<td>2222</td>\n<td>22</td>\n</tr>\n<tr>\n<td>HTTP</td>\n<td>TCP</td>\n<td>127.0.0.1</td>\n<td>8080</td>\n<td>80</td>\n</tr>\n<tr>\n<td>HTTPS</td>\n<td>TCP</td>\n<td>127.0.0.1</td>\n<td>8443</td>\n<td>443</td>\n</tr>\n</tbody>\n</table>\n</div><p><img src=\"recursos/media/image3.png\" alt=\"Reglas de reenvío de puertos configuradas\" /></p>",
+          "id": "configurar-puertos",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Arranca la VM, inicia sesión con usuario <code>analuisa</code> y contraseña <code>analuisa</code>.</p>",
+          "id": "arrancar-vm",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<h2>Instalación de OpenSSH Server</h2>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p><strong>SSH</strong> (Secure Shell) es un protocolo que permite acceder de forma segura a la terminal de un servidor remoto. Te permitirá trabajar cómodamente desde tu sistema operativo anfitrión y transferir archivos.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Instala OpenSSH Server, habilítalo y verifica que está activo y habilitado al arranque.</p>\n<pre><code class=\"language-bash\">sudo apt update\nsudo apt install -y openssh-server\nsudo systemctl enable --now ssh\nsudo systemctl status ssh\nsudo systemctl is-enabled ssh\n</code></pre>\n<p>La salida de <code>sudo systemctl status ssh</code> debe mostrar el servicio <strong>active (running)</strong> y <strong>enabled</strong>:</p>\n<p><img src=\"recursos/media/image4.png\" alt=\"Estado del servicio SSH activo y habilitado\" /></p>",
+          "id": "instalar-ssh",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Desde PowerShell en el anfitrión conéctate por SSH:</p>\n<pre><code class=\"language-powershell\">ssh analuisa@localhost -p 2222\n</code></pre>\n<p>Si la conexión es correcta, verás el prompt de tu servidor listo para recibir comandos:</p>\n<p><img src=\"recursos/media/image5.png\" alt=\"Conexión SSH exitosa desde PowerShell\" /></p>",
+          "id": "probar-ssh",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--tip\" role=\"note\"><span class=\"as-callout-label\">Consejo</span><div class=\"as-callout-body\"><p>Trabajar por SSH desde el anfitrión te permite:</p>\n<ul>\n<li>Copiar y pegar comandos fácilmente.</li>\n<li>Mantener varias ventanas abiertas.</li>\n<li>Trabajar cómodamente desde tu escritorio habitual.</li>\n<li>Transferir archivos con SFTP/SCP.</li>\n</ul></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>Indica dos ventajas de trabajar por SSH frente a la consola de VirtualBox.</p>",
+          "id": "ventaja-ssh",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "reto-1-personalizacion-servidor",
+      "titulo": "Reto 1 - Personalización del servidor",
+      "descripcion": "",
+      "duracionMinutos": 15,
+      "obligatorio": true,
+      "orden": 2,
+      "archivo": "pasos/02-reto-1-personalizacion-servidor.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>El hostname identifica a tu servidor en la red. Personalizarlo facilita distinguir tu máquina del resto del aula.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Cambia el hostname y actualiza <code>/etc/hosts</code>.</p>\n<pre><code class=\"language-bash\">sudo hostnamectl set-hostname server_[tu_nombre]\nsudo nano /etc/hosts\n</code></pre>\n<p>Busca la línea que contiene el hostname antiguo tras <code>127.0.1.1</code> y cámbiala por:</p>\n<pre><code>127.0.1.1 server_[tu_nombre]\n</code></pre>\n<p><img src=\"recursos/media/image8.png\" alt=\"Edición del archivo /etc/hosts con el nuevo hostname\" /></p>",
+          "id": "cambiar-hostname",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Reinicia el servidor y vuelve a conectar por SSH para verificar el nuevo prompt.</p>\n<pre><code class=\"language-bash\">sudo reboot\n</code></pre>\n<pre><code class=\"language-powershell\">ssh analuisa@localhost -p 2222\n</code></pre>",
+          "id": "reiniciar-hostname",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura del resultado de <code>hostnamectl</code> mostrando tu hostname personalizado.</p>",
+          "id": "captura-hostname",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "reto-2-firewall",
+      "titulo": "Reto 2 - Configuración del firewall (UFW)",
+      "descripcion": "",
+      "duracionMinutos": 15,
+      "obligatorio": true,
+      "orden": 3,
+      "archivo": "pasos/03-reto-2-firewall.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Un firewall es un sistema que controla el tráfico de red entrante y saliente según reglas de seguridad. UFW (Uncomplicated Firewall) permite gestionar el firewall de Ubuntu de forma sencilla.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p><strong>Principio de mínimo privilegio:</strong> por defecto cerraremos todos los puertos y solo abriremos los necesarios (SSH, HTTP y HTTPS). Esto reduce la superficie de ataque del servidor.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>Permite SSH <strong>antes</strong> de activar UFW. Si no, perderás el acceso remoto.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Permite el tráfico SSH.</p>\n<pre><code class=\"language-bash\">sudo ufw allow 22/tcp\n</code></pre>",
+          "id": "permitir-ssh",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Permite el tráfico web.</p>\n<pre><code class=\"language-bash\">sudo ufw allow 80/tcp\nsudo ufw allow 443/tcp\n</code></pre>",
+          "id": "permitir-web",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Activa el firewall y verifica las reglas.</p>\n<pre><code class=\"language-bash\">sudo ufw enable\nsudo ufw status verbose\n</code></pre>",
+          "id": "activar-ufw",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>Explica con tus palabras qué significa aplicar el principio de mínimo privilegio en un firewall.</p>",
+          "id": "principio-minimo-privilegio",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura de <code>sudo ufw status verbose</code> mostrando las reglas configuradas.</p>",
+          "id": "captura-ufw",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "reto-3-apache",
+      "titulo": "Reto 3 - Instalación de Apache Web Server",
+      "descripcion": "",
+      "duracionMinutos": 20,
+      "obligatorio": true,
+      "orden": 4,
+      "archivo": "pasos/04-reto-3-apache.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Apache HTTP Server es el servidor web más utilizado del mundo. Recibe peticiones HTTP de los navegadores y responde con páginas web, imágenes y otros recursos.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p><strong>Estructura básica de Apache en Ubuntu:</strong></p>\n<ul>\n<li><strong>DocumentRoot:</strong> directorio donde se almacenan los archivos web (<code>/var/www/html</code> por defecto).</li>\n<li><strong>Configuración:</strong> archivos en <code>/etc/apache2/</code>.</li>\n<li><strong>Logs:</strong> registros de acceso y errores en <code>/var/log/apache2/</code>.</li>\n</ul></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Instala Apache y verifica que el servicio está activo y habilitado al arranque.</p>\n<pre><code class=\"language-bash\">sudo apt install -y apache2\nsudo systemctl status apache2\nsudo systemctl is-enabled apache2\n</code></pre>",
+          "id": "instalar-apache",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Abre el navegador en el anfitrión y visita <code>http://localhost:8080</code>. Deberías ver la página por defecto de Apache.</p>\n<p><img src=\"recursos/media/image9.png\" alt=\"Página por defecto de Apache2 Ubuntu Default Page\" /></p>",
+          "id": "probar-apache",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Edita <code>/var/www/html/index.html</code> para que aparezca tu nombre tras el texto <code>It works!</code>.</p>\n<pre><code class=\"language-bash\">sudo nano /var/www/html/index.html\n</code></pre>\n<p>Recarga la página y comprueba que aparece tu nombre en el recuadro naranja:</p>\n<p><img src=\"recursos/media/image10.png\" alt=\"Página de Apache personalizada con el nombre del alumno\" /></p>",
+          "id": "personalizar-index",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Cuál es el DocumentRoot por defecto de Apache en Ubuntu?</p>",
+          "id": "documentroot-apache",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura del navegador mostrando la página de Apache personalizada con tu nombre.</p>",
+          "id": "captura-apache",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "reto-4-mariadb",
+      "titulo": "Reto 4 - Instalación de MariaDB",
+      "descripcion": "",
+      "duracionMinutos": 25,
+      "obligatorio": true,
+      "orden": 5,
+      "archivo": "pasos/05-reto-4-mariadb.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>MariaDB es un sistema de gestión de bases de datos relacional, fork de MySQL. Permite almacenar y consultar datos de forma estructurada mediante SQL.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Instala MariaDB Server.</p>\n<pre><code class=\"language-bash\">sudo apt install -y mariadb-server\n</code></pre>",
+          "id": "instalar-mariadb",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Ejecuta <code>mysql_secure_installation</code> y responde al asistente:</p>\n<ul>\n<li>Enter current password for root: en una instalación nueva, pulsa <code>Enter</code> (la contraseña está en blanco); la establecerás en el siguiente paso.</li>\n<li>Switch to unix_socket authentication? <code>N</code>.</li>\n<li>Change the root password? <code>Y</code>: introduce una contraseña segura y apúntala.</li>\n<li>Remove anonymous users? <code>Y</code>.</li>\n<li>Disallow root login remotely? <code>Y</code>.</li>\n<li>Remove test database? <code>Y</code>.</li>\n<li>Reload privilege tables now? <code>Y</code>.</li>\n</ul>\n<pre><code class=\"language-bash\">sudo mysql_secure_installation\n</code></pre>",
+          "id": "segurizar-mariadb",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Conéctate como root, consulta la versión y sal.</p>\n<pre><code class=\"language-bash\">sudo mysql -u root -p\nSELECT VERSION();\nEXIT;\n</code></pre>",
+          "id": "probar-mariadb",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Verifica que MariaDB se inicia automáticamente.</p>\n<pre><code class=\"language-bash\">sudo systemctl is-enabled mariadb\n</code></pre>",
+          "id": "habilitar-mariadb",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura de la pantalla final de <code>mysql_secure_installation</code> con el mensaje <code>All done!</code>.</p>",
+          "id": "captura-mariadb",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "reto-5-php-modulo",
+      "titulo": "Reto 5 - Instalación de PHP como módulo de Apache",
+      "descripcion": "",
+      "duracionMinutos": 25,
+      "obligatorio": true,
+      "orden": 6,
+      "archivo": "pasos/06-reto-5-php-modulo.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>PHP (Hypertext Preprocessor) es un lenguaje de programación del lado del servidor diseñado para desarrollo web. Permite crear páginas dinámicas que interactúan con bases de datos. En este paso lo instalamos como módulo de Apache (<code>mod_php</code>).</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p><strong>Integración con Apache: <code>mod_php</code></strong></p>\n<p><code>mod_php</code> integra PHP directamente en el proceso de Apache, de modo que cada proceso de Apache puede ejecutar código PHP.</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Ventajas</th>\n<th>Desventajas</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Configuración simple y rápida.</td>\n<td>Mayor consumo de memoria (cada proceso Apache carga PHP).</td>\n</tr>\n<tr>\n<td>Menor latencia al no haber comunicación entre procesos.</td>\n<td>Menos eficiente con contenido estático.</td>\n</tr>\n<tr>\n<td>Ideal para sitios pequeños y medianos.</td>\n<td>Todos los procesos corren con los mismos permisos.</td>\n</tr>\n</tbody>\n</table>\n</div></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Instala PHP y los módulos necesarios.</p>\n<pre><code class=\"language-bash\">sudo apt install -y php libapache2-mod-php php-mysql\n</code></pre>",
+          "id": "instalar-php",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Comprueba la versión de PHP y que el módulo está cargado.</p>\n<pre><code class=\"language-bash\">php -v\napache2ctl -M | grep php\n</code></pre>",
+          "id": "verificar-php",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Edita <code>/etc/apache2/mods-enabled/dir.conf</code> para que <code>index.php</code> aparezca primero en <code>DirectoryIndex</code>.</p>\n<pre><code class=\"language-bash\">sudo nano /etc/apache2/mods-enabled/dir.conf\n</code></pre>\n<p>Ejemplo de línea a dejar:</p>\n<pre><code>DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm\n</code></pre>",
+          "id": "priorizar-index-php",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Reinicia Apache y crea <code>/var/www/html/index.php</code>.</p>\n<pre><code class=\"language-bash\">sudo systemctl restart apache2\nsudo nano /var/www/html/index.php\n</code></pre>\n<p>Contenido de ejemplo:</p>\n<pre><code class=\"language-php\">&lt;?php\necho &quot;[tu_nombre]\\n&quot;;\nphpinfo();\n</code></pre>",
+          "id": "reiniciar-apache-php",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Accede a <code>http://localhost:8080</code> y comprueba que se muestra tu nombre y la información de PHP.</p>",
+          "id": "probar-index-php",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>En producción, nunca dejes accesible <code>phpinfo()</code> públicamente porque revela información sensible del servidor.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura del navegador mostrando la página <code>index.php</code> con tu nombre y la información de PHP.</p>",
+          "id": "captura-php",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "reto-6-paginas-web",
+      "titulo": "Reto 6 - Creación y transferencia de páginas web",
+      "descripcion": "",
+      "duracionMinutos": 25,
+      "obligatorio": true,
+      "orden": 7,
+      "archivo": "pasos/07-reto-6-paginas-web.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Aprenderás a crear una página HTML en el anfitrión y transferirla al servidor mediante <strong>SFTP</strong> (SSH File Transfer Protocol), que funciona sobre SSH.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>SFTP es un protocolo de red que permite transferir archivos de forma segura entre dos ordenadores a través de una red, incluso si esta es insegura. En nuestro caso, al no disponer de <code>scp</code> en los equipos Windows de clase, usamos <code>sftp</code>.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--tip\" role=\"note\"><span class=\"as-callout-label\">Consejo</span><div class=\"as-callout-body\"><p><strong>Flujo de trabajo:</strong></p>\n<ol>\n<li>Crear el archivo en el anfitrión (Notepad, VS Code, etc.).</li>\n<li>Guardarlo en una carpeta conocida.</li>\n<li>Copiarlo al servidor con SFTP.</li>\n<li>Moverlo al DocumentRoot de Apache.</li>\n<li>Ajustar los permisos.</li>\n<li>Probarlo en el navegador.</li>\n</ol></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>En tu equipo anfitrión crea una carpeta <code>web_lamp</code> y un archivo <code>index.html</code> con este contenido:</p>\n<pre><code class=\"language-html\">&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;es&quot;&gt;\n&lt;body&gt;\n   &lt;h1&gt;¡Bienvenido a mi Servidor LAMP!&lt;/h1&gt;\n   &lt;h2&gt;Alumno/a: [TU NOMBRE COMPLETO]&lt;/h2&gt;\n&lt;/body&gt;\n&lt;/html&gt;\n</code></pre>",
+          "id": "crear-html-anfitrion",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Una página HTML estática <strong>no requiere procesamiento en el servidor</strong>: Apache la envía directamente al navegador tal cual está.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Desde PowerShell, conéctate por SFTP y sube el archivo.</p>\n<pre><code class=\"language-powershell\">cd Desktop\\web_lamp\nsftp -P 2222 analuisa@localhost:\nput index.html\n</code></pre>",
+          "id": "transferir-sftp",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>En el servidor, mueve el archivo al DocumentRoot y ajusta los permisos.</p>\n<pre><code class=\"language-bash\">ls -lh /home/analuisa/index.html\nsudo mv /home/analuisa/index.html /var/www/html/\nsudo chown www-data:www-data /var/www/html/index.html\nsudo chmod 644 /var/www/html/index.html\n</code></pre>",
+          "id": "mover-html",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><ul>\n<li><code>www-data</code>: usuario bajo el que se ejecuta Apache en Ubuntu.</li>\n<li><code>644</code>: lectura y escritura para el propietario, y solo lectura para el resto.</li>\n</ul></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Abre <code>http://localhost:8080/index.html</code> y comprueba que se muestra tu página personalizada.</p>",
+          "id": "probar-html",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Bajo qué usuario de sistema se ejecuta Apache en Ubuntu?</p>",
+          "id": "usuario-apache",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura del navegador mostrando tu página HTML personalizada.</p>",
+          "id": "captura-html",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "reto-7-phpmyadmin",
+      "titulo": "Reto 7 - Instalación de phpMyAdmin",
+      "descripcion": "",
+      "duracionMinutos": 20,
+      "obligatorio": true,
+      "orden": 8,
+      "archivo": "pasos/08-reto-7-phpmyadmin.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>phpMyAdmin es una herramienta web escrita en PHP para administrar MariaDB/MySQL mediante una interfaz gráfica.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Instala phpMyAdmin y sigue el asistente:</p>\n<ul>\n<li>Servidor web a configurar: selecciona <code>apache2</code>.</li>\n<li>Configurar base de datos con dbconfig-common: <code>Yes</code>.</li>\n<li>Contraseña de aplicación MySQL: introduce una contraseña y apúntala.</li>\n</ul>\n<pre><code class=\"language-bash\">sudo apt install -y phpmyadmin\n</code></pre>",
+          "id": "instalar-phpmyadmin",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Habilita la extensión <code>mbstring</code> de PHP y reinicia Apache.</p>\n<pre><code class=\"language-bash\">sudo phpenmod mbstring\nsudo systemctl restart apache2\n</code></pre>",
+          "id": "habilitar-mbstring",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Accede a <code>http://localhost:8080/phpmyadmin</code> e inicia sesión con usuario <code>root</code> y la contraseña de root de MariaDB.</p>",
+          "id": "probar-phpmyadmin",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p><strong>Buenas prácticas con phpMyAdmin en producción:</strong></p>\n<ul>\n<li>Cambia la URL por defecto (por ejemplo, <code>/gestordb</code>).</li>\n<li>Configura autenticación adicional con <code>.htaccess</code>.</li>\n<li>Restringe el acceso por IP.</li>\n<li>Usa siempre HTTPS.</li>\n</ul></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Opcional: cambia el alias de phpMyAdmin editando <code>/etc/apache2/conf-available/phpmyadmin.conf</code>. Por ejemplo, sustituye <code>Alias /phpmyadmin /usr/share/phpmyadmin</code> por <code>Alias /[tu-nombre]db /usr/share/phpmyadmin</code> y reinicia Apache.</p>",
+          "id": "opcional-alias",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura del panel principal de phpMyAdmin tras iniciar sesión correctamente.</p>",
+          "id": "captura-phpmyadmin",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "reto-8-php-fpm",
+      "titulo": "Reto 8 - PHP-FPM (FastCGI Process Manager)",
+      "descripcion": "",
+      "duracionMinutos": 25,
+      "obligatorio": true,
+      "orden": 9,
+      "archivo": "pasos/09-reto-8-php-fpm.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>PHP-FPM ejecuta PHP como un proceso separado que se comunica con Apache mediante FastCGI. Frente a <code>mod_php</code>, consume menos memoria y escala mejor.</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Característica</th>\n<th>mod_php</th>\n<th>PHP-FPM</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Integración</td>\n<td>Módulo dentro de Apache</td>\n<td>Proceso independiente</td>\n</tr>\n<tr>\n<td>Consumo de memoria</td>\n<td>Mayor (PHP en cada proceso Apache)</td>\n<td>Menor (procesos separados)</td>\n</tr>\n<tr>\n<td>Rendimiento con contenido estático</td>\n<td>Menos eficiente</td>\n<td>Más eficiente</td>\n</tr>\n<tr>\n<td>Configuración</td>\n<td>Más simple</td>\n<td>Más compleja</td>\n</tr>\n<tr>\n<td>Escalabilidad</td>\n<td>Limitada</td>\n<td>Mejor escalabilidad</td>\n</tr>\n<tr>\n<td>Permisos</td>\n<td>Todos los procesos con los mismos permisos</td>\n<td>Puede usar diferentes usuarios por pool</td>\n</tr>\n<tr>\n<td>Uso ideal</td>\n<td>Sitios pequeños/medios</td>\n<td>Alto tráfico, multisitio</td>\n</tr>\n</tbody>\n</table>\n</div>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p><strong>¿Cuándo usar cada uno?</strong></p>\n<ul>\n<li><strong><code>mod_php</code>:</strong> proyectos pequeños o de desarrollo, cuando la simplicidad es prioritaria, bajo volumen de visitas o un solo sitio web en el servidor.</li>\n<li><strong><code>PHP-FPM</code>:</strong> servidores con múltiples sitios web, alto tráfico, necesidad de optimizar recursos, requisitos de seguridad avanzada (aislamiento entre sitios) o uso con otros servidores web como Nginx.</li>\n</ul></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--tip\" role=\"note\"><span class=\"as-callout-label\">Consejo</span><div class=\"as-callout-body\"><p><strong>Arquitectura PHP-FPM:</strong></p>\n<p><code>Cliente → Apache → PHP-FPM (proceso separado) → MariaDB</code></p>\n<p>Apache delega las peticiones PHP a PHP-FPM mediante FastCGI. Esto permite:</p>\n<ul>\n<li>Apache gestiona el contenido estático de forma eficiente.</li>\n<li>PHP-FPM procesa solo las peticiones PHP.</li>\n<li>Mejor aislamiento y seguridad.</li>\n<li>Posibilidad de reiniciar PHP sin afectar a Apache.</li>\n</ul></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Instala PHP-FPM y anota la versión y el socket.</p>\n<pre><code class=\"language-bash\">sudo apt install -y php-fpm\nphp -v\nls /run/php/\n</code></pre>\n<p>Anota el socket de PHP-FPM que aparece en <code>/run/php/</code>, por ejemplo <code>php8.3-fpm.sock</code>:</p>\n<p><img src=\"recursos/media/image11.png\" alt=\"Versión de PHP y socket de PHP-FPM en /run/php\" /></p>",
+          "id": "instalar-php-fpm",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Deshabilita <code>mod_php</code> y habilita los módulos necesarios para PHP-FPM. Sustituye <code>X.X</code> por tu versión de PHP.</p>\n<pre><code class=\"language-bash\">sudo a2dismod phpX.X\nsudo a2enmod proxy_fcgi setenvif\nsudo a2enconf phpX.X-fpm\n</code></pre>",
+          "id": "deshabilitar-mod-php",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Reinicia Apache y PHP-FPM, y verifica que PHP-FPM está corriendo.</p>\n<pre><code class=\"language-bash\">sudo systemctl restart apache2\nsudo systemctl restart phpX.X-fpm\nsudo systemctl status phpX.X-fpm\n</code></pre>",
+          "id": "reiniciar-servicios-fpm",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Accede de nuevo a <code>http://localhost:8080/index.php</code>, busca la línea <code>Server API</code> y comprueba que ahora indica <code>FPM/FastCGI</code>.</p>\n<p><img src=\"recursos/media/image12.png\" alt=\"phpinfo() mostrando Server API FPM/FastCGI\" /></p>",
+          "id": "verificar-fpm",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Comprueba rápidamente que las páginas creadas antes de la migración siguen funcionando: vuelve a cargar <code>http://localhost:8080/index.php</code> y, si cambiaste el alias de phpMyAdmin en el reto anterior, también esa URL (por ejemplo, <code>http://localhost:8080/[tu-nombre]db</code>).</p>",
+          "id": "verificar-paginas-anteriores",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura de <code>phpinfo()</code> mostrando <code>Server API: FPM/FastCGI</code>.</p>",
+          "id": "captura-fpm",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "reto-9-gestion-bd",
+      "titulo": "Reto 9 - Gestión básica de bases de datos",
+      "descripcion": "",
+      "duracionMinutos": 35,
+      "obligatorio": true,
+      "orden": 10,
+      "archivo": "pasos/10-reto-9-gestion-bd.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Aplicarás el principio de mínimo privilegio creando un usuario administrador con control total sobre tu base de datos y un usuario operador con permisos CRUD.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>En seguridad informática, cada usuario debe tener únicamente los permisos necesarios para realizar su trabajo. A esto se le llama <strong>principio de mínimo privilegio</strong>.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>Elige un sufijo único para tu base de datos (por ejemplo, tu <code>apellido_nombre</code>) y úsalo de forma consistente en los tres identificadores:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Elemento</th>\n<th>Ejemplo</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Base de datos</td>\n<td><code>bd_apellido_nombre</code></td>\n</tr>\n<tr>\n<td>Usuario administrador</td>\n<td><code>admin_bd_apellido_nombre</code></td>\n</tr>\n<tr>\n<td>Usuario operador</td>\n<td><code>operador_bd_apellido_nombre</code></td>\n</tr>\n</tbody>\n</table>\n</div><p>En los comandos siguientes, sustituye <code>apellido_nombre</code> por el sufijo que hayas elegido.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Conéctate a MariaDB como root y crea tu base de datos.</p>\n<pre><code class=\"language-bash\">sudo mysql -u root -p\n</code></pre>\n<pre><code class=\"language-sql\">-- Sustituye 'apellido_nombre' por tu sufijo.\nCREATE DATABASE bd_apellido_nombre CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\n</code></pre>",
+          "id": "crear-bd",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><ul>\n<li><code>CHARACTER SET utf8mb4</code>: soporte completo de UTF-8, incluidos emojis.</li>\n<li><code>COLLATE utf8mb4_unicode_ci</code>: reglas de comparación insensibles a mayúsculas/minúsculas.</li>\n</ul></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Crea el usuario administrador y otórgale todos los permisos sobre tu base de datos.</p>\n<pre><code class=\"language-sql\">-- Sustituye 'apellido_nombre' por tu sufijo.\nCREATE USER 'admin_bd_apellido_nombre'@'localhost' IDENTIFIED BY 'PassAdmin123!';\nGRANT ALL PRIVILEGES ON bd_apellido_nombre.* TO 'admin_bd_apellido_nombre'@'localhost';\n</code></pre>",
+          "id": "crear-admin-bd",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><ul>\n<li><code>ALL PRIVILEGES</code>: todos los permisos (<code>CREATE</code>, <code>DROP</code>, <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, etc.).</li>\n<li><code>bd_apellido_nombre.*</code>: sobre todas las tablas de esa base de datos.</li>\n<li><code>'admin_bd_apellido_nombre'@'localhost'</code>: solo desde localhost, nunca desde la red.</li>\n</ul></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Crea el usuario operador con permisos limitados.</p>\n<pre><code class=\"language-sql\">-- Sustituye 'apellido_nombre' por tu sufijo.\nCREATE USER 'operador_bd_apellido_nombre'@'localhost' IDENTIFIED BY 'PassOper456!';\nGRANT SELECT, INSERT, UPDATE, DELETE ON bd_apellido_nombre.* TO 'operador_bd_apellido_nombre'@'localhost';\n</code></pre>",
+          "id": "crear-operador-bd",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>El usuario operador <strong>no</strong> tiene permisos para <code>CREATE</code>, <code>DROP</code>, <code>ALTER</code> ni <code>GRANT</code>: no puede modificar la estructura de la base de datos ni gestionar permisos de otros usuarios.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Aplica los cambios, verifica los usuarios creados y sal.</p>\n<pre><code class=\"language-sql\">-- Sustituye 'apellido_nombre' por tu sufijo.\nFLUSH PRIVILEGES;\nSELECT user, host FROM mysql.user WHERE user LIKE '%bd_apellido_nombre%';\nEXIT;\n</code></pre>",
+          "id": "aplicar-permisos",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>En phpMyAdmin, conéctate como <code>admin_bd_apellido_nombre</code> (sustituye <code>apellido_nombre</code> por tu sufijo) y crea una tabla <code>clientes</code> con columnas <code>id</code> (INT, AUTO_INCREMENT, Primary) y <code>nombre</code> (VARCHAR(100)).</p>",
+          "id": "probar-admin-phpmyadmin",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Cierra la sesión del administrador, conéctate como <code>operador_bd_apellido_nombre</code> (sustituye <code>apellido_nombre</code> por tu sufijo) e inserta dos registros en la tabla <code>clientes</code>.</p>",
+          "id": "probar-operador-phpmyadmin",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura del resultado de la consulta mostrando los dos usuarios creados.</p>",
+          "id": "captura-usuarios-bd",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura de phpMyAdmin mostrando la tabla <code>clientes</code> con los dos registros insertados por el operador.</p>",
+          "id": "captura-tabla-clientes",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "troubleshooting-comun",
+      "titulo": "Troubleshooting - Problemas comunes",
+      "descripcion": "",
+      "duracionMinutos": 15,
+      "obligatorio": true,
+      "orden": 11,
+      "archivo": "pasos/11-troubleshooting.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<h2>Apache no arranca</h2>\n<pre><code class=\"language-bash\">sudo apache2ctl configtest\nsudo tail -n 50 /var/log/apache2/error.log\nsudo netstat -tlnp | grep :80\n</code></pre>\n<h2>No puedo conectar por SSH</h2>\n<pre><code class=\"language-bash\">sudo systemctl status ssh\nsudo ufw status\n</code></pre>\n<p>Verifica también el reenvío de puertos en VirtualBox.</p>\n<h2>Error de permisos al acceder a páginas web</h2>\n<pre><code class=\"language-bash\">sudo chown -R www-data:www-data /var/www/html\nsudo chmod -R 755 /var/www/html\nsudo chmod 644 /var/www/html/*.html /var/www/html/*.php\n</code></pre>\n<h2>Las páginas PHP no funcionan</h2>\n<p>Con <code>mod_php</code>:</p>\n<pre><code class=\"language-bash\">apache2ctl -M | grep php\n</code></pre>\n<p>Con PHP-FPM:</p>\n<pre><code class=\"language-bash\">sudo systemctl status phpX.X-fpm\napache2ctl configtest\n</code></pre>\n<h2>phpMyAdmin muestra página en blanco</h2>\n<pre><code class=\"language-bash\">sudo tail -n 50 /var/log/apache2/error.log\nphp -m | grep mbstring\nsudo systemctl restart apache2\n</code></pre>\n<h2>Error &quot;Access denied&quot; en MariaDB</h2>\n<pre><code class=\"language-bash\">sudo mysql -u root -p -e &quot;SELECT user, host FROM mysql.user;&quot;\nsudo mysql -u root -p -e &quot;SHOW GRANTS FOR 'tu_usuario'@'localhost';&quot;\n</code></pre>\n<p>Recuerda ejecutar <code>FLUSH PRIVILEGES;</code> tras cambiar permisos.</p>\n<h2>Error &quot;Permission denied&quot; al transferir archivos</h2>\n<p>Verifica primero que SSH funciona:</p>\n<pre><code class=\"language-powershell\">ssh analuisa@localhost -p 2222\n</code></pre>\n<p>Si usas <code>scp</code>, el puerto se indica con <code>-P</code> mayúscula:</p>\n<pre><code class=\"language-powershell\">scp -P 2222 archivo.txt analuisa@localhost:/home/analuisa/\n</code></pre>\n<p>Comprueba también los permisos del directorio destino en el servidor:</p>\n<pre><code class=\"language-bash\">ls -ld /home/analuisa\n</code></pre>\n<h2>No aparece nada en el navegador</h2>\n<pre><code class=\"language-bash\">sudo systemctl status apache2\nsudo ufw status\ncurl localhost\n</code></pre>\n<p>Verifica también el reenvío de puertos en VirtualBox.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>Si Apache no sirve una página, indica los dos primeros comandos que ejecutarías para diagnosticar el problema.</p>",
+          "id": "primer-diagnostico",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "verificacion-entrega",
+      "titulo": "Verificación final y entrega",
+      "descripcion": "",
+      "duracionMinutos": 15,
+      "obligatorio": true,
+      "orden": 12,
+      "archivo": "pasos/12-verificacion-entrega.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<h2>Checklist de cumplimiento</h2>\n<p>Revisa que has completado cada punto antes de entregar.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>OVA importada y renombrada correctamente.</p>",
+          "id": "check-ova",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Reenvío de puertos configurado en VirtualBox.</p>",
+          "id": "check-puertos",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>OpenSSH Server instalado y funcionando desde el anfitrión.</p>",
+          "id": "check-ssh",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Hostname personalizado y reflejado en <code>/etc/hosts</code>.</p>",
+          "id": "check-hostname",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Tabla de credenciales completada.</p>",
+          "id": "check-tabla",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Firewall UFW configurado y activo.</p>",
+          "id": "check-ufw",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Apache sirviendo páginas web.</p>",
+          "id": "check-apache",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>MariaDB instalada y asegurada.</p>",
+          "id": "check-mariadb",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>PHP funcionando con mod_php y después con PHP-FPM.</p>",
+          "id": "check-php",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Página HTML estática y página PHP desplegadas.</p>",
+          "id": "check-paginas",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>phpMyAdmin accesible.</p>",
+          "id": "check-phpmyadmin",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Base de datos creada con dos usuarios de distintos permisos.</p>",
+          "id": "check-bd",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Si generaste un script SQL aparte, comprueba que se ejecutó correctamente: la base de datos, el usuario administrador y el usuario operador se crearon sin errores y los permisos se aplicaron con <code>FLUSH PRIVILEGES</code>.</p>",
+          "id": "check-sql",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Si creaste un script PHP adicional que consulte la base de datos, comprueba que devuelve los registros esperados. La página <code>index.php</code> de información de PHP ya se verifica en el reto correspondiente.</p>",
+          "id": "check-php-datos",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Todas las evidencias solicitadas capturadas.</p>",
+          "id": "check-capturas",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<h2>Comandos de referencia rápida</h2>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--tip\" role=\"note\"><span class=\"as-callout-label\">Consejo</span><div class=\"as-callout-body\"><p>Conserva esta tabla para consultar los comandos más habituales del servidor LAMP.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<h3>Gestión de servicios</h3>\n<pre><code class=\"language-bash\">sudo systemctl start [servicio]    # Iniciar\nsudo systemctl stop [servicio]     # Detener\nsudo systemctl restart [servicio]  # Reiniciar\nsudo systemctl status [servicio]   # Ver estado\nsudo systemctl enable [servicio]   # Inicio automático\n</code></pre>\n<h3>Apache</h3>\n<pre><code class=\"language-bash\">sudo apache2ctl configtest  # Probar configuración\nsudo a2enmod [modulo]       # Habilitar módulo\nsudo a2dismod [modulo]      # Deshabilitar módulo\nsudo a2ensite [sitio]       # Habilitar sitio\nsudo a2dissite [sitio]      # Deshabilitar sitio\n</code></pre>\n<h3>MariaDB</h3>\n<pre><code class=\"language-bash\">sudo mysql -u root -p                    # Conectar como root\nmysql -u usuario -p base_datos           # Conectar como usuario\nmysqldump -u usuario -p bd &gt; backup.sql  # Copia de seguridad\nmysql -u usuario -p bd &lt; backup.sql      # Restaurar\n</code></pre>\n<h3>Logs importantes</h3>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Log</th>\n<th>Ruta</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Errores de Apache</td>\n<td><code>/var/log/apache2/error.log</code></td>\n</tr>\n<tr>\n<td>Accesos de Apache</td>\n<td><code>/var/log/apache2/access.log</code></td>\n</tr>\n<tr>\n<td>Errores de MariaDB/MySQL</td>\n<td><code>/var/log/mysql/error.log</code></td>\n</tr>\n<tr>\n<td>Log general del sistema</td>\n<td><code>/var/log/syslog</code></td>\n</tr>\n</tbody>\n</table>\n</div><h2>Recursos adicionales</h2>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Recurso</th>\n<th>Ruta</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Documento original</td>\n<td><code>RAW/1 actividad_lamp.docx</code></td>\n</tr>\n<tr>\n<td>Ficha de actividad</td>\n<td>[[Actividad - Configuracion servidor LAMP Servicios en red]]</td>\n</tr>\n<tr>\n<td>Patrón reusable</td>\n<td>[[Patron - Practica LAMP Servicios en red]]</td>\n</tr>\n</tbody>\n</table>\n</div>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Opcional pero recomendado: haz un snapshot de la máquina virtual para poder retomar el estado actual en futuras actividades.</p>",
+          "id": "snapshot",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "reflexion-final",
+      "titulo": "Reflexión y entrega final",
+      "descripcion": "",
+      "duracionMinutos": 10,
+      "obligatorio": true,
+      "orden": 13,
+      "archivo": "pasos/13-reflexion.md",
+      "segments": [
+        {
+          "type": "reflection",
+          "html": "<p>¿Qué parte te ha resultado más compleja: la preparación del entorno virtual, la configuración del firewall, la instalación de PHP-FPM o la gestión de permisos de MariaDB? ¿Qué revisarías antes si tuvieras que repetir la práctica desde cero?</p>",
+          "id": "reflexion-final",
+          "required": true,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Exporta tu trabajo en formato <code>.aulawork</code> antes de cerrar la actividad.</p>",
+          "id": "exportar-aulawork",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<p>Recuerda incluir todas las evidencias solicitadas y comprobar que el nombre del archivo exportado sigue el patrón de la actividad.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p><strong>Conceptos clave trabajados:</strong> virtualización y redes (NAT, port forwarding), acceso remoto seguro (SSH), transferencia segura de archivos (SFTP), gestión de servicios en Linux, servidor web Apache, base de datos relacional MariaDB, integración de PHP (<code>mod_php</code> y PHP-FPM), principios de seguridad (firewall, permisos) y gestión de usuarios y privilegios en bases de datos.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<p><img src=\"recursos/media/image13.jpg\" alt=\"Ilustración de cierre: aula completando la instalación LAMP\" /></p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    }
+  ]
+}

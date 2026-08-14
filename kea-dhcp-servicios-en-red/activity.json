@@ -1,0 +1,513 @@
+{
+  "schemaVersion": "1.0",
+  "generator": {
+    "name": "AulaStep",
+    "version": "0.9.0"
+  },
+  "activity": {
+    "id": "kea-dhcp-servicios-en-red",
+    "titulo": "Kea DHCP en Servicios en red",
+    "subtitulo": "Configuracion, ampliacion y verificacion de un servidor DHCP",
+    "version": "1.0.0",
+    "descripcion": "El alumnado instala y configura Kea DHCP en Ubuntu Server, valida la asignacion dinamica en una primera red, amplia el servicio a una segunda red y crea una reserva fija por MAC.",
+    "autor": "LLM Wiki Template",
+    "modulo": "Servicios en red",
+    "curso": "2º SMR",
+    "duracionMinutos": 120,
+    "tema": "oceano",
+    "licencia": {
+      "nombre": "CC BY-NC-SA 4.0",
+      "nombre_completo": "Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional",
+      "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es",
+      "condiciones": [
+        "se reconozca adecuadamente la autoría;",
+        "no se utilice con fines comerciales;",
+        "cualquier obra derivada se distribuya bajo esta misma licencia;",
+        "se indiquen claramente los cambios realizados sobre el material original."
+      ]
+    }
+  },
+  "navegacion": {
+    "modo": "asistente",
+    "permitir_anterior": true,
+    "permitir_saltar": true,
+    "mostrar_indice": true,
+    "mostrar_progreso": true,
+    "exigir_obligatorios_para_avanzar": false
+  },
+  "alumno": {
+    "campos": [
+      {
+        "id": "nombre",
+        "etiqueta": "Nombre y apellidos",
+        "tipo": "texto",
+        "obligatorio": true
+      }
+    ]
+  },
+  "trabajo": {
+    "autoguardado": true,
+    "intervalo_autoguardado_segundos": 5,
+    "permitir_exportar": true,
+    "permitir_importar": true,
+    "extension": "aulawork",
+    "patron_nombre": "{actividad}_{alumno}_{fecha}.aulawork"
+  },
+  "limites": {
+    "tamano_maximo_captura_mb": 8,
+    "tamano_maximo_adjunto_mb": 20,
+    "tamano_maximo_paquete_mb": 100
+  },
+  "steps": [
+    {
+      "id": "presentacion-actividad",
+      "titulo": "Presentación, objetivos y topología",
+      "descripcion": "",
+      "duracionMinutos": 15,
+      "obligatorio": true,
+      "orden": 0,
+      "archivo": "pasos/00-presentacion.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<h2>Objetivos de la práctica</h2>\n<ul>\n<li>Configurar un servidor DHCP con Kea en Ubuntu Server 2.</li>\n<li>Repartir direcciones IP dinámicas en la red interna 3 (<code>192.168.3.0/24</code>).</li>\n<li>Ampliar la configuración para dar servicio también en la red interna 2 (<code>192.168.2.0/24</code>).</li>\n<li>Crear una reserva de IP fija para Ubuntu Server 1 en la red interna 2.</li>\n</ul>\n<h2>Escenario de la topología</h2>\n<p>Según la topología ya desplegada en VirtualBox:</p>\n<ul>\n<li>Ubuntu Server 1:\n<ul>\n<li><code>eth0</code>: DHCP (internet)</li>\n<li><code>eth1</code>: <code>192.168.1.1</code> (red interna 1)</li>\n<li><code>eth2</code>: <code>192.168.2.1</code> (red interna 2)</li>\n</ul>\n</li>\n<li>Ubuntu Server 2 (servidor DHCP):\n<ul>\n<li><code>eth0</code>: <code>192.168.2.2</code> (red interna 2)</li>\n<li><code>eth1</code>: <code>192.168.3.1</code> (red interna 3)</li>\n</ul>\n</li>\n<li>Ubuntu Desktop 1: <code>192.168.1.2</code> (red interna 1, cliente de Server 1)</li>\n<li>Ubuntu Desktop 2: <code>192.168.3.2</code> (red interna 3, cliente de Server 2 vía DHCP)</li>\n</ul>\n<p><img src=\"recursos/media/image1.png\" alt=\"Topología del escenario\" /></p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Antes de seguir, identifica qué interfaz de red conecta cada máquina con la red interna que vas a usar.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "instalacion-kea",
+      "titulo": "Instalación de Kea DHCP",
+      "descripcion": "",
+      "duracionMinutos": 15,
+      "obligatorio": true,
+      "orden": 1,
+      "archivo": "pasos/01-instalacion.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Instala Kea en <strong>Ubuntu Server 2</strong> y comprueba que el paquete queda disponible para la práctica.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Instala <code>kea-dhcp4-server</code> y verifica que el servicio queda registrado en el sistema.</p>",
+          "id": "instalar-kea",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<pre><code class=\"language-bash\">sudo apt update\nsudo apt install kea-dhcp4-server -y\nsystemctl status kea-dhcp4-server\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Si el servicio no arranca todavía, no pasa nada: en este paso solo queremos dejarlo instalado y listo para configurar.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura donde se vea el paquete instalado o el estado inicial del servicio.</p>",
+          "id": "captura-instalacion",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "subred-3",
+      "titulo": "Primera subred DHCP para la red interna 3",
+      "descripcion": "",
+      "duracionMinutos": 20,
+      "obligatorio": true,
+      "orden": 2,
+      "archivo": "pasos/02-subred-3.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Configura Kea para repartir direcciones en la red interna <strong>192.168.3.0/24</strong>.</p>\n<h3>Configuración base de Kea</h3>\n<pre><code class=\"language-json\">{\n  &quot;Dhcp4&quot;: {\n    &quot;interfaces-config&quot;: {\n      &quot;interfaces&quot;: [ &quot;enp0s8&quot; ]\n    },\n    &quot;lease-database&quot;: {\n      &quot;type&quot;: &quot;memfile&quot;,\n      &quot;persist&quot;: true,\n      &quot;name&quot;: &quot;/var/lib/kea/kea-leases4.csv&quot;\n    },\n    &quot;subnet4&quot;: [\n      {\n        &quot;subnet&quot;: &quot;192.168.3.0/24&quot;,\n        &quot;pools&quot;: [\n          { &quot;pool&quot;: &quot;192.168.3.100 - 192.168.3.200&quot; }\n        ],\n        &quot;option-data&quot;: [\n          { &quot;name&quot;: &quot;routers&quot;, &quot;data&quot;: &quot;192.168.3.1&quot; },\n          { &quot;name&quot;: &quot;domain-name-servers&quot;, &quot;data&quot;: &quot;8.8.8.8&quot; }\n        ]\n      }\n    ]\n  }\n}\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Edita <code>/etc/kea/kea-dhcp4.conf</code>, define la interfaz correcta y crea un pool para <code>192.168.3.100 - 192.168.3.200</code>.</p>",
+          "id": "configurar-subred-3",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<pre><code class=\"language-bash\">cd /etc/kea\nsudo mv kea-dhcp4.conf kea-dhcp4.conf.old\nsudo nano kea-dhcp4.conf\nsudo systemctl restart kea-dhcp4-server\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>La interfaz de red puede no llamarse igual en todos los equipos. Verifica el nombre real antes de guardar la configuración.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Qué rango de direcciones debe entregar Kea en esta primera parte?</p>",
+          "id": "rango-subred-3",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura de la configuración de Kea o del fragmento relevante del archivo <code>kea-dhcp4.conf</code>.</p>",
+          "id": "captura-config-subred3",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "verificacion-servicio",
+      "titulo": "Verificación del servicio y del cliente",
+      "descripcion": "",
+      "duracionMinutos": 15,
+      "obligatorio": true,
+      "orden": 3,
+      "archivo": "pasos/03-verificacion.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Comprueba que el servidor DHCP funciona y que el cliente recibe una dirección correcta.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Revisa el estado del servicio y los logs si aparece algún fallo.</p>",
+          "id": "verificar-servicio",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<pre><code class=\"language-bash\">sudo systemctl status kea-dhcp4-server\ntail /var/log/syslog -n 20\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>El cliente de la red interna 3 obtiene una IP del rango esperado.</p>",
+          "id": "cliente-recibe-ip",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>¿En qué puerto escucha el servicio DHCP?</p>",
+          "id": "puerto-dhcp",
+          "required": true,
+          "questionType": "single-choice",
+          "options": [
+            {
+              "id": "puerto-dhcp-op1",
+              "html": "<p>TCP 67</p>"
+            },
+            {
+              "id": "puerto-dhcp-op2",
+              "html": "<p>UDP 67</p>"
+            },
+            {
+              "id": "puerto-dhcp-op3",
+              "html": "<p>UDP 68</p>"
+            }
+          ],
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura del cliente con la IP asignada por Kea.</p>",
+          "id": "captura-cliente-subred3",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "subred-2-y-reserva",
+      "titulo": "Segunda subred y reserva por MAC",
+      "descripcion": "",
+      "duracionMinutos": 30,
+      "obligatorio": true,
+      "orden": 4,
+      "archivo": "pasos/04-subred-2-y-reserva.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Amplía el servicio para cubrir la red interna <strong>192.168.2.0/24</strong> y añade una reserva fija para Ubuntu Server 1.</p>\n<h3>Configuración ampliada de Kea</h3>\n<pre><code class=\"language-json\">{\n  &quot;Dhcp4&quot;: {\n    &quot;interfaces-config&quot;: {\n      &quot;interfaces&quot;: [ &quot;enp0s8&quot;, &quot;enp0s3&quot; ]\n    },\n    &quot;lease-database&quot;: {\n      &quot;type&quot;: &quot;memfile&quot;,\n      &quot;persist&quot;: true,\n      &quot;name&quot;: &quot;/var/lib/kea/kea-leases4.csv&quot;\n    },\n    &quot;subnet4&quot;: [\n      {\n        &quot;subnet&quot;: &quot;192.168.3.0/24&quot;,\n        &quot;pools&quot;: [\n          { &quot;pool&quot;: &quot;192.168.3.100 - 192.168.3.200&quot; }\n        ],\n        &quot;option-data&quot;: [\n          { &quot;name&quot;: &quot;routers&quot;, &quot;data&quot;: &quot;192.168.3.1&quot; },\n          { &quot;name&quot;: &quot;domain-name-servers&quot;, &quot;data&quot;: &quot;8.8.8.8&quot; }\n        ]\n      },\n      {\n        &quot;subnet&quot;: &quot;192.168.2.0/24&quot;,\n        &quot;pools&quot;: [\n          { &quot;pool&quot;: &quot;192.168.2.100 - 192.168.2.150&quot; }\n        ],\n        &quot;reservations&quot;: [\n          {\n            &quot;hw-address&quot;: &quot;08:00:27:de:ad:be&quot;,\n            &quot;ip-address&quot;: &quot;192.168.2.1&quot;\n          }\n        ]\n      }\n    ]\n  }\n}\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Actualiza <code>kea-dhcp4.conf</code> para incluir la nueva subred y una reserva por <code>hw-address</code>.</p>",
+          "id": "ampliar-configuracion",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<pre><code class=\"language-bash\">sudo nano /etc/kea/kea-dhcp4.conf\nsudo systemctl restart kea-dhcp4-server\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>No copies la MAC de ejemplo: usa la MAC real de la interfaz que conecta Ubuntu Server 1 con la red interna 2.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Cambia la interfaz de Ubuntu Server 1 que conecta con la red interna 2 para que obtenga configuración por DHCP.</p>",
+          "id": "cambiar-server1-a-dhcp",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura de la reserva configurada y del archivo final de Kea.</p>",
+          "id": "captura-reserva",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Qué dirección debe quedar reservada para Ubuntu Server 1?</p>",
+          "id": "ip-reservada",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "pruebas-finales",
+      "titulo": "Pruebas finales del escenario",
+      "descripcion": "",
+      "duracionMinutos": 20,
+      "obligatorio": true,
+      "orden": 5,
+      "archivo": "pasos/05-pruebas-finales.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Ahora toca demostrar que todo funciona junto.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Reinicia Kea y comprueba que no quedan errores pendientes.</p>",
+          "id": "reiniciar-servicio",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<pre><code class=\"language-bash\">sudo systemctl restart kea-dhcp4-server\nsudo systemctl status kea-dhcp4-server\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Las dos redes internas quedan atendidas por Kea según la configuración prevista.</p>",
+          "id": "subredes-operativas",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Verifica que Ubuntu Server 1 recibe la reserva esperada en la red interna 2.</p>",
+          "id": "comprobar-server1",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Verifica que Ubuntu Desktop 2 sigue recibiendo una IP de la red interna 3.</p>",
+          "id": "comprobar-desktop2",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura de las pruebas finales con los dos clientes funcionando.</p>",
+          "id": "captura-pruebas-finales",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "reflexion-final",
+      "titulo": "Reflexión y entrega final",
+      "descripcion": "",
+      "duracionMinutos": 10,
+      "obligatorio": true,
+      "orden": 6,
+      "archivo": "pasos/06-reflexion.md",
+      "segments": [
+        {
+          "type": "reflection",
+          "html": "<p>¿Qué parte te resultó más delicada: la configuración inicial, la ampliación a la segunda red o la reserva por MAC? ¿Qué revisarías antes si tuvieras que repetir la práctica desde cero?</p>",
+          "id": "reflexion-final",
+          "required": true,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Exporta tu trabajo en formato <code>.aulawork</code> antes de cerrar la actividad.</p>",
+          "id": "exportar-aulawork",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<p>Recuerda incluir las evidencias solicitadas y comprobar que el nombre del archivo exportado sigue el patrón de la actividad.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    }
+  ]
+}
