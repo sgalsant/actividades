@@ -43,6 +43,17 @@ Este comando valida y recompila todas las actividades, crea `gh-pages` si no
 existe y la publica. Las publicaciones habituales no recompilan las actividades
 sin cambios.
 
+## Eliminar una actividad
+
+Usá el valor de `actividad.id`, no el nombre de la carpeta:
+
+```bash
+./scripts/publicar_actividad.py eliminar configuracion-red-interna-linux
+```
+
+El script elimina la fuente de `main`, su sitio en `gh-pages`, actualiza el
+catálogo y sube ambos cambios. No permite borrar la última actividad publicada.
+
 ## Requisito
 
 El script usa automáticamente `.venv/bin/python` y su instalación de AulaStep.

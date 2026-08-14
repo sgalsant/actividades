@@ -302,19 +302,45 @@ def rebuild() -> None:
         commit_pages(pages, "catálogo completo", "")
 
 
+def delete(activity_id: str) -> None:
+    require_main_branch()
+    commit_publisher_setup()
+    matches = [directory for directory in activity_dirs() if project(directory).config.actividad.id == activity_id]
+    if not matches:
+        raise PublishError(f"No existe una actividad versionada con el ID '{activity_id}'.")
+
+    target = matches[0]
+    config = project(target).config.actividad
+    if config.publicada and len(catalog_entries()) <= 1:
+        raise PublishError("No se puede eliminar la última actividad publicada.")
+
+    shutil.rmtree(target)
+    if not commit_paths((target.relative_to(ROOT),), f"elimina actividad {activity_id}"):
+        raise PublishError("No se pudo preparar el borrado de la actividad.")
+
+    with pages_worktree(False) as pages:
+        shutil.rmtree(pages / activity_id, ignore_errors=True)
+        write_catalog(pages)
+        commit_pages(pages, f"elimina {activity_id}", "")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Publica actividades AulaStep desde este repositorio.")
     commands = parser.add_subparsers(dest="command", required=True)
     publish_parser = commands.add_parser("publicar", help="Confirma y publica una actividad.")
     publish_parser.add_argument("carpeta", help="Carpeta que contiene actividad.yml.")
     commands.add_parser("reconstruir", help="Reconstruye todo el sitio y crea gh-pages si no existe.")
+    delete_parser = commands.add_parser("eliminar", help="Elimina una actividad publicada.")
+    delete_parser.add_argument("id", help="ID de la actividad que se eliminará.")
     args = parser.parse_args()
 
     try:
         if args.command == "publicar":
             publish(args.carpeta)
-        else:
+        elif args.command == "reconstruir":
             rebuild()
+        else:
+            delete(args.id)
     except (PublishError, subprocess.CalledProcessError) as error:
         print(f"Error: {error}", file=sys.stderr)
         raise SystemExit(1) from error
