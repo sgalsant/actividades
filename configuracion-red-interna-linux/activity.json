@@ -111,7 +111,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>Parte de las máquinas base de Ubuntu Desktop y Ubuntu Server en VirtualBox. Crea una clonación enlazada de cada una y genera nuevas direcciones MAC para todos sus adaptadores.</p>",
+          "html": "<p>Parte de las máquinas base de Ubuntu Desktop y Ubuntu Server en VirtualBox. Crea una clonación enlazada de cada una y genera nuevas direcciones MAC para todos sus adaptadores.</p>\n<p><img src=\"recursos/media/image2.png\" alt=\"Asistente de clonación enlazada de VirtualBox\" /></p>\n<p><img src=\"recursos/media/image3.png\" alt=\"Selección de nombre para la máquina clonada\" /></p>\n<p><img src=\"recursos/media/image4.png\" alt=\"Confirmación de la clonación en VirtualBox\" /></p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -130,8 +130,18 @@
           "label": null
         },
         {
+          "type": "html",
+          "html": "<p>Antes de clonar, configura las preferencias de VirtualBox para que las máquinas se guarden en <code>D:\\2smr</code>. Comprueba que esa carpeta aparece como ubicación de destino durante el asistente de clonación.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
           "type": "task",
-          "html": "<p>Crea las dos máquinas y asígnales nombres que permitan diferenciarlas claramente, por ejemplo, <code>ubuntu-desktop-red</code> y <code>ubuntu-server-gateway</code>.</p>",
+          "html": "<p>Crea primero el clon enlazado de Ubuntu Desktop y después el de Ubuntu Server. Asígnales nombres que permitan diferenciarlas claramente, por ejemplo, <code>ubuntu-desktop-red</code> y <code>ubuntu-server-gateway</code>.</p>",
           "id": "crear-maquinas",
           "required": true,
           "questionType": null,
@@ -162,7 +172,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>Configura los adaptadores antes de iniciar las máquinas:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Máquina</th>\n<th>Adaptador</th>\n<th>Modo</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Ubuntu Server</td>\n<td>1</td>\n<td>NAT</td>\n</tr>\n<tr>\n<td>Ubuntu Server</td>\n<td>2</td>\n<td>Red interna <code>red-interna</code></td>\n</tr>\n<tr>\n<td>Ubuntu Desktop</td>\n<td>1</td>\n<td>Red interna <code>red-interna</code></td>\n</tr>\n</tbody>\n</table>\n</div>",
+          "html": "<p>Configura los adaptadores antes de iniciar las máquinas:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Máquina</th>\n<th>Adaptador</th>\n<th>Modo</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Ubuntu Server</td>\n<td>1</td>\n<td>NAT</td>\n</tr>\n<tr>\n<td>Ubuntu Server</td>\n<td>2</td>\n<td>Red interna <code>red-interna</code></td>\n</tr>\n<tr>\n<td>Ubuntu Desktop</td>\n<td>1</td>\n<td>Red interna <code>red-interna</code></td>\n</tr>\n</tbody>\n</table>\n</div><p>En VirtualBox, selecciona cada máquina, abre <strong>Configuración → Red</strong>, selecciona el adaptador indicado y aplica el modo correspondiente antes de pasar al siguiente.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -213,7 +223,7 @@
         },
         {
           "type": "task",
-          "html": "<p>Identifica los nombres de las interfaces con <code>ip a</code>. Crea <code>/etc/netplan/network-config.yaml</code> y ajusta los nombres si no son <code>enp0s3</code> y <code>enp0s8</code>:</p>\n<pre><code class=\"language-yaml\">network:\n  version: 2\n  ethernets:\n    enp0s3:\n      dhcp4: true\n    enp0s8:\n      addresses:\n        - 192.168.1.1/24\n</code></pre>\n<p>Aplica y verifica la configuración:</p>\n<pre><code class=\"language-bash\">sudo netplan apply\nsudo ip a\n</code></pre>",
+          "html": "<p>Identifica los nombres de las interfaces con <code>ip a</code>. Borra la configuración anterior y crea <code>/etc/netplan/network-config.yaml</code>. Ajusta los nombres si no son <code>enp0s3</code> y <code>enp0s8</code>:</p>\n<pre><code class=\"language-bash\">sudo rm /etc/netplan/*\nsudo nano /etc/netplan/network-config.yaml\n</code></pre>\n<pre><code class=\"language-yaml\">network:\n  version: 2\n  ethernets:\n    enp0s3:\n      dhcp4: true\n    enp0s8:\n      addresses:\n        - 192.168.1.1/24\n</code></pre>\n<p>Aplica y verifica la configuración:</p>\n<pre><code class=\"language-bash\">sudo netplan apply\nsudo chmod 600 /etc/netplan/network-config.yaml\nsudo ip a\n</code></pre>",
           "id": "netplan-servidor",
           "required": true,
           "questionType": null,
@@ -223,7 +233,7 @@
         },
         {
           "type": "html",
-          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Los nombres como <code>enp0s3</code> describen una interfaz Ethernet situada en un bus y ranura PCI. No los copies sin verificar: cambian según el orden de adaptadores de cada máquina virtual.</p></div></aside>",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Los nombres como <code>enp0s3</code> describen una interfaz Ethernet situada en un bus y ranura PCI: <code>en</code> significa Ethernet; las interfaces inalámbricas empiezan por <code>wl</code>; <code>p0</code> identifica el bus PCI 0 y <code>s3</code> la ranura 3. No los copies sin verificar: cambian según el orden de adaptadores de cada máquina virtual.</p></div></aside>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -244,7 +254,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>En la configuración de red de Ubuntu Desktop asigna estos valores a la conexión de red interna:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Parámetro</th>\n<th>Valor</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Dirección IP</td>\n<td><code>192.168.1.2/24</code></td>\n</tr>\n<tr>\n<td>Gateway</td>\n<td><code>192.168.1.1</code></td>\n</tr>\n<tr>\n<td>DNS</td>\n<td><code>8.8.8.8</code></td>\n</tr>\n</tbody>\n</table>\n</div>",
+          "html": "<p>En la configuración de red de Ubuntu Desktop asigna estos valores a la conexión de red interna:</p>\n<p><img src=\"recursos/media/image5.png\" alt=\"Configuración de red estática en Ubuntu Desktop\" /></p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Parámetro</th>\n<th>Valor</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Dirección IP</td>\n<td><code>192.168.1.2/24</code></td>\n</tr>\n<tr>\n<td>Gateway</td>\n<td><code>192.168.1.1</code></td>\n</tr>\n<tr>\n<td>DNS</td>\n<td><code>8.8.8.8</code></td>\n</tr>\n</tbody>\n</table>\n</div>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -285,7 +295,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>El servidor no reenvía paquetes entre interfaces por defecto. Activa el reenvío de forma persistente en <code>/etc/sysctl.conf</code>:</p>",
+          "html": "<p>El servidor no reenvía paquetes entre interfaces por defecto. Activa el reenvío de forma persistente en <code>/etc/sysctl.conf</code>. El valor <code>1</code> lo activa, <code>0</code> lo desactiva y cualquier valor distinto de cero lo mantiene activo:</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -295,7 +305,7 @@
         },
         {
           "type": "task",
-          "html": "<p>Descomenta o añade la siguiente línea y carga la configuración:</p>\n<pre><code class=\"language-ini\">net.ipv4.ip_forward=1\n</code></pre>\n<pre><code class=\"language-bash\">sudo sysctl -p\nsysctl net.ipv4.ip_forward\n</code></pre>",
+          "html": "<p>Abre el archivo, descomenta o añade la siguiente línea y carga la configuración:</p>\n<pre><code class=\"language-bash\">sudo nano /etc/sysctl.conf\n</code></pre>\n<pre><code class=\"language-ini\">net.ipv4.ip_forward=1\n</code></pre>\n<pre><code class=\"language-bash\">sudo sysctl -p\nsysctl net.ipv4.ip_forward\n</code></pre>",
           "id": "habilitar-ip-forward",
           "required": true,
           "questionType": null,
@@ -305,7 +315,7 @@
         },
         {
           "type": "question",
-          "html": "<p>Explica qué ocurriría con los paquetes del cliente si <code>net.ipv4.ip_forward</code> estuviera a <code>0</code>.</p>",
+          "html": "<p>Explica por qué necesitas habilitar el reenvío IPv4 en esta topología y qué ocurriría con los paquetes del cliente si <code>net.ipv4.ip_forward</code> estuviera a <code>0</code>.</p>",
           "id": "funcion-ip-forward",
           "required": true,
           "questionType": "long-text",
@@ -326,7 +336,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>La red <code>192.168.1.0/24</code> usa direcciones privadas. NAT con <code>MASQUERADE</code> sustituye la dirección de origen del cliente por la de la interfaz externa del servidor.</p>",
+          "html": "<p>La red <code>192.168.1.0/24</code> usa direcciones privadas. NAT con <code>MASQUERADE</code> sustituye la dirección de origen del cliente por la de la interfaz externa del servidor.</p>\n<p><img src=\"recursos/media/image6.png\" alt=\"Instalación de iptables-persistent\" /></p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -339,6 +349,16 @@
           "html": "<p>Sustituye <code>enp0s3</code> si tu interfaz de salida tiene otro nombre y añade la regla NAT:</p>\n<pre><code class=\"language-bash\">sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE\nsudo apt install iptables-persistent\nsudo netfilter-persistent save\nsudo iptables-save\n</code></pre>",
           "id": "configurar-nat",
           "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<p>Las reglas persistentes se guardan en <code>/etc/iptables/rules.v4</code>. Si las modificas después de instalar <code>iptables-persistent</code>, vuelve a ejecutar <code>sudo netfilter-persistent save</code> para no perderlas al reiniciar.</p>\n<p>Para borrar las reglas actuales antes de volver a probar una configuración, usa:</p>\n<pre><code class=\"language-bash\">sudo iptables -F\nsudo iptables -t nat -F\n</code></pre>",
+          "id": "",
+          "required": false,
           "questionType": null,
           "options": null,
           "accept": null,
@@ -367,7 +387,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>Ejecuta las pruebas desde Ubuntu Desktop y distingue los fallos de red de los de DNS:</p>\n<pre><code class=\"language-bash\">ping 192.168.1.1\nping 8.8.8.8\nping www.google.es\n</code></pre>",
+          "html": "<p>Ejecuta las pruebas desde Ubuntu Desktop y distingue los fallos de red de los de DNS:</p>\n<pre><code class=\"language-bash\">ping 192.168.1.1\nping 8.8.8.8\nping www.google.es\n</code></pre>\n<p>Después, desde Ubuntu Server confirma también el acceso a Internet:</p>\n<pre><code class=\"language-bash\">ping 8.8.8.8\nping www.google.es\n</code></pre>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -397,7 +417,7 @@
         },
         {
           "type": "checkpoint",
-          "html": "<p>He reiniciado las máquinas y he comprobado que el cliente conserva conectividad local y acceso a Internet.</p>",
+          "html": "<p>He reiniciado las máquinas y he comprobado que Ubuntu Desktop y Ubuntu Server conservan conectividad entre sí y acceso a Internet.</p>",
           "id": "reinicio-reto-uno",
           "required": true,
           "questionType": null,
@@ -418,7 +438,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>En el reto 2 añadirás una segunda red <code>192.168.2.0/24</code>, un segundo Ubuntu Server y una tercera red <code>192.168.3.0/24</code>.</p>\n<p><img src=\"recursos/media/image7.png\" alt=\"Topología del reto 2\" /></p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Equipo</th>\n<th>Interfaces relevantes</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Servidor 1</td>\n<td><code>192.168.1.1/24</code>, <code>192.168.2.1/24</code> y ruta a <code>192.168.3.0/24</code> vía <code>192.168.2.2</code></td>\n</tr>\n<tr>\n<td>Servidor 2</td>\n<td><code>192.168.2.2/24</code>, <code>192.168.3.1/24</code> y ruta por defecto vía <code>192.168.2.1</code></td>\n</tr>\n<tr>\n<td>Desktop 2</td>\n<td><code>192.168.3.2/24</code>, gateway <code>192.168.3.1</code>, DNS <code>8.8.8.8</code></td>\n</tr>\n</tbody>\n</table>\n</div>",
+          "html": "<p>En el reto 2 añadirás una segunda red <code>192.168.2.0/24</code>, un segundo Ubuntu Server y una tercera red <code>192.168.3.0/24</code>.</p>\n<p><img src=\"recursos/media/image7.png\" alt=\"Topología del reto 2\" /></p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Equipo</th>\n<th>Interfaces relevantes</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Servidor 1</td>\n<td><code>192.168.1.1/24</code>, <code>192.168.2.1/24</code> y ruta a <code>192.168.3.0/24</code> vía <code>192.168.2.2</code></td>\n</tr>\n<tr>\n<td>Servidor 2</td>\n<td><code>192.168.2.2/24</code>, <code>192.168.3.1/24</code> y ruta por defecto vía <code>192.168.2.1</code></td>\n</tr>\n<tr>\n<td>Desktop 2</td>\n<td><code>192.168.3.2/24</code>, gateway <code>192.168.3.1</code>, DNS <code>8.8.8.8</code></td>\n</tr>\n</tbody>\n</table>\n</div><p>En VirtualBox añade al primer servidor un tercer adaptador en modo <strong>Red interna</strong> con nombre <code>red-interna-2</code>. Crea el segundo Ubuntu Server con dos adaptadores, ambos en modo <strong>Red interna</strong>: <code>red-interna-2</code> y <code>red-interna-3</code>.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -428,7 +448,7 @@
         },
         {
           "type": "task",
-          "html": "<p>Añade en el primer servidor una interfaz para <code>192.168.2.1/24</code> y la ruta hacia <code>192.168.3.0/24</code> a través de <code>192.168.2.2</code>. En el segundo servidor habilita <code>ip_forward</code>, configura ambas interfaces y su ruta por defecto.</p>",
+          "html": "<p>Comprueba primero los nombres reales con <code>ip a</code>. En el primer servidor añade <code>enp0s9</code> para <code>192.168.2.1/24</code> y la ruta hacia <code>192.168.3.0/24</code> a través de <code>192.168.2.2</code>:</p>\n<pre><code class=\"language-yaml\">enp0s9:\n  addresses:\n    - 192.168.2.1/24\n  routes:\n    - to: 192.168.3.0/24\n      via: 192.168.2.2\n</code></pre>\n<p>En el segundo servidor habilita <code>ip_forward</code> y configura <code>enp0s3</code> y <code>enp0s8</code>:</p>\n<pre><code class=\"language-yaml\">enp0s3:\n  addresses:\n    - 192.168.2.2/24\n  nameservers:\n    addresses: [8.8.8.8]\n  routes:\n    - to: default\n      via: 192.168.2.1\nenp0s8:\n  addresses:\n    - 192.168.3.1/24\n</code></pre>",
           "id": "configurar-segundo-router",
           "required": true,
           "questionType": null,
@@ -461,6 +481,16 @@
           "type": "question",
           "html": "<p>¿Qué función cumple Ubuntu Server en esta topología?</p>",
           "id": "funcion-gateway",
+          "required": true,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Qué es <code>iptables</code>?</p>",
+          "id": "definicion-iptables",
           "required": true,
           "questionType": "long-text",
           "options": null,
