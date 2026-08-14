@@ -8,12 +8,12 @@
     "id": "configuracion-red-interna-linux",
     "titulo": "Configuración de una red interna Linux",
     "subtitulo": "Ubuntu Server como gateway con NAT y enrutamiento entre subredes",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "descripcion": "Configura una red interna en VirtualBox donde Ubuntu Server da salida a Internet a equipos Ubuntu Desktop mediante Netplan, reenvío IPv4 y NAT.",
     "autor": "Santiago Galván Sánchez",
     "modulo": "Servicios en red",
     "curso": "2º SMR",
-    "duracionMinutos": 260,
+    "duracionMinutos": 270,
     "tema": "indigo",
     "licencia": {
       "nombre": "CC BY-NC-SA 4.0",
@@ -30,10 +30,10 @@
   "navegacion": {
     "modo": "asistente",
     "permitir_anterior": true,
-    "permitir_saltar": true,
+    "permitir_saltar": false,
     "mostrar_indice": true,
     "mostrar_progreso": true,
-    "exigir_obligatorios_para_avanzar": false
+    "exigir_obligatorios_para_avanzar": true
   },
   "alumno": {
     "campos": [
@@ -89,9 +89,9 @@
           "label": null
         },
         {
-          "type": "task",
-          "html": "<p>Anota los nombres reales de las interfaces que usarás en Ubuntu Server después de consultar <code>ip a</code>.</p>",
-          "id": "registro-topologia",
+          "type": "checkpoint",
+          "html": "<p>Distingo los roles de la topología: la interfaz NAT del servidor sale a Internet, su interfaz de red interna conecta con Ubuntu Desktop y el servidor será el gateway del cliente.</p>",
+          "id": "roles-topologia",
           "required": true,
           "questionType": null,
           "options": null,
@@ -223,7 +223,7 @@
         },
         {
           "type": "task",
-          "html": "<p>Identifica los nombres de las interfaces con <code>ip a</code>. Borra la configuración anterior y crea <code>/etc/netplan/network-config.yaml</code>. Ajusta los nombres si no son <code>enp0s3</code> y <code>enp0s8</code>:</p>\n<pre><code class=\"language-bash\">sudo rm /etc/netplan/*\nsudo nano /etc/netplan/network-config.yaml\n</code></pre>\n<pre><code class=\"language-yaml\">network:\n  version: 2\n  ethernets:\n    enp0s3:\n      dhcp4: true\n    enp0s8:\n      addresses:\n        - 192.168.1.1/24\n</code></pre>\n<p>Aplica y verifica la configuración:</p>\n<pre><code class=\"language-bash\">sudo netplan apply\nsudo chmod 600 /etc/netplan/network-config.yaml\nsudo ip a\n</code></pre>",
+          "html": "<ol>\n<li>Identifica los nombres de las interfaces con <code>ip a</code>. Antes de sustituir una configuración, haz una copia de seguridad de Netplan. Después retira los YAML anteriores del directorio activo: Netplan combina todos los YAML de <code>/etc/netplan/</code>, por lo que un fichero antiguo con DHCP puede alterar esta topología. Esta práctica usa máquinas de laboratorio: no hagas esto en un servidor en producción.</li>\n</ol>\n<pre><code class=\"language-bash\">sudo ip a\nsudo mkdir -p /etc/netplan.backup\nsudo cp -a /etc/netplan/. /etc/netplan.backup/\nsudo rm -f /etc/netplan/*.yaml\n</code></pre>\n<ol start=\"2\">\n<li>Crea <code>/etc/netplan/network-config.yaml</code>. Ajusta los nombres si tus interfaces no son <code>enp0s3</code> y <code>enp0s8</code>; conserva únicamente la configuración que vayas a usar en esta práctica:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo nano /etc/netplan/network-config.yaml\n</code></pre>\n<pre><code class=\"language-yaml\">network:\n  version: 2\n  ethernets:\n    enp0s3:\n      dhcp4: true\n    enp0s8:\n      addresses:\n        - 192.168.1.1/24\n</code></pre>\n<ol start=\"3\">\n<li>Protege el archivo antes de aplicar la configuración. Netplan rechaza o avisa sobre ficheros accesibles por otros usuarios:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo chmod 600 /etc/netplan/network-config.yaml\nsudo netplan apply\n</code></pre>\n<ol start=\"4\">\n<li>Comprueba que la interfaz NAT recibió una dirección por DHCP y que la interfaz interna tiene <code>192.168.1.1/24</code>:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo ip a\n</code></pre>",
           "id": "netplan-servidor",
           "required": true,
           "questionType": null,
@@ -295,7 +295,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>El servidor no reenvía paquetes entre interfaces por defecto. Activa el reenvío de forma persistente en <code>/etc/sysctl.conf</code>. El valor <code>1</code> lo activa, <code>0</code> lo desactiva y cualquier valor distinto de cero lo mantiene activo:</p>",
+          "html": "<p>El servidor no reenvía paquetes entre interfaces por defecto. Activa el reenvío de forma persistente en <code>/etc/sysctl.conf</code>.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -305,7 +305,7 @@
         },
         {
           "type": "task",
-          "html": "<p>Abre el archivo, descomenta o añade la siguiente línea y carga la configuración:</p>\n<pre><code class=\"language-bash\">sudo nano /etc/sysctl.conf\n</code></pre>\n<pre><code class=\"language-ini\">net.ipv4.ip_forward=1\n</code></pre>\n<pre><code class=\"language-bash\">sudo sysctl -p\nsysctl net.ipv4.ip_forward\n</code></pre>",
+          "html": "<ol>\n<li>Abre el archivo de configuración de <code>sysctl</code>:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo nano /etc/sysctl.conf\n</code></pre>\n<ol start=\"2\">\n<li>Busca la línea siguiente. Si empieza por <code>#</code>, elimina ese carácter; si no existe, añádela. El valor <code>1</code> activa el reenvío, <code>0</code> lo desactiva y cualquier valor distinto de cero lo mantiene activo:</li>\n</ol>\n<pre><code class=\"language-ini\">net.ipv4.ip_forward=1\n</code></pre>\n<ol start=\"3\">\n<li>Guarda el archivo y carga la configuración sin reiniciar:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo sysctl -p\n</code></pre>\n<ol start=\"4\">\n<li>Comprueba el valor activo. Debe mostrar <code>net.ipv4.ip_forward = 1</code>:</li>\n</ol>\n<pre><code class=\"language-bash\">sysctl net.ipv4.ip_forward\n</code></pre>",
           "id": "habilitar-ip-forward",
           "required": true,
           "questionType": null,
@@ -336,7 +336,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>La red <code>192.168.1.0/24</code> usa direcciones privadas. NAT con <code>MASQUERADE</code> sustituye la dirección de origen del cliente por la de la interfaz externa del servidor.</p>\n<p><img src=\"recursos/media/image6.png\" alt=\"Instalación de iptables-persistent\" /></p>",
+          "html": "<p>La red <code>192.168.1.0/24</code> usa direcciones privadas. NAT con <code>MASQUERADE</code> sustituye la dirección de origen del cliente por la de la interfaz externa del servidor.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -346,8 +346,28 @@
         },
         {
           "type": "task",
-          "html": "<p>Sustituye <code>enp0s3</code> si tu interfaz de salida tiene otro nombre y añade la regla NAT:</p>\n<pre><code class=\"language-bash\">sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE\nsudo apt install iptables-persistent\nsudo netfilter-persistent save\nsudo iptables-save\n</code></pre>",
+          "html": "<ol>\n<li>Sustituye <code>enp0s3</code> si tu interfaz de salida tiene otro nombre y añade la regla NAT:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo iptables -t nat -A POSTROUTING -o enp0s3 -j MASQUERADE\n</code></pre>\n<ol start=\"2\">\n<li>Desde Ubuntu Desktop, confirma que el cliente ya puede acceder a Internet:</li>\n</ol>\n<pre><code class=\"language-bash\">ping 8.8.8.8\n</code></pre>",
           "id": "configurar-nat",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<p><img src=\"recursos/media/image6.png\" alt=\"Instalación de iptables-persistent\" /></p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<ol>\n<li>Instala <code>iptables-persistent</code> para conservar las reglas después de reiniciar:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo apt install iptables-persistent\n</code></pre>\n<ol start=\"2\">\n<li>Guarda la configuración actual y consulta las reglas almacenadas:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo netfilter-persistent save\nsudo iptables-save\n</code></pre>",
+          "id": "persistir-reglas-iptables",
           "required": true,
           "questionType": null,
           "options": null,
@@ -416,14 +436,24 @@
           "label": "screenshot"
         },
         {
-          "type": "checkpoint",
-          "html": "<p>He reiniciado las máquinas y he comprobado que Ubuntu Desktop y Ubuntu Server conservan conectividad entre sí y acceso a Internet.</p>",
-          "id": "reinicio-reto-uno",
+          "type": "task",
+          "html": "<p>Reinicia Ubuntu Desktop y Ubuntu Server. Después del reinicio, repite desde Desktop <code>ping 192.168.1.1</code>, <code>ping 8.8.8.8</code> y <code>ping www.google.es</code>; desde Server repite <code>ping 8.8.8.8</code> y <code>ping www.google.es</code>.</p>",
+          "id": "verificar-reinicio-reto-uno",
           "required": true,
           "questionType": null,
           "options": null,
           "accept": null,
           "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura posterior al reinicio que muestre una prueba de dirección IP externa y otra de resolución DNS.</p>",
+          "id": "captura-post-reinicio",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
         }
       ]
     },
@@ -431,14 +461,34 @@
       "id": "subredes-enrutamiento",
       "titulo": "Amplía la red con un segundo router",
       "descripcion": "",
-      "duracionMinutos": 55,
+      "duracionMinutos": 75,
       "obligatorio": true,
       "orden": 8,
       "archivo": "pasos/08-subredes-enrutamiento.md",
       "segments": [
         {
           "type": "html",
-          "html": "<p>En el reto 2 añadirás una segunda red <code>192.168.2.0/24</code>, un segundo Ubuntu Server y una tercera red <code>192.168.3.0/24</code>.</p>\n<p><img src=\"recursos/media/image7.png\" alt=\"Topología del reto 2\" /></p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Equipo</th>\n<th>Interfaces relevantes</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Servidor 1</td>\n<td><code>192.168.1.1/24</code>, <code>192.168.2.1/24</code> y ruta a <code>192.168.3.0/24</code> vía <code>192.168.2.2</code></td>\n</tr>\n<tr>\n<td>Servidor 2</td>\n<td><code>192.168.2.2/24</code>, <code>192.168.3.1/24</code> y ruta por defecto vía <code>192.168.2.1</code></td>\n</tr>\n<tr>\n<td>Desktop 2</td>\n<td><code>192.168.3.2/24</code>, gateway <code>192.168.3.1</code>, DNS <code>8.8.8.8</code></td>\n</tr>\n</tbody>\n</table>\n</div><p>En VirtualBox añade al primer servidor un tercer adaptador en modo <strong>Red interna</strong> con nombre <code>red-interna-2</code>. Crea el segundo Ubuntu Server con dos adaptadores, ambos en modo <strong>Red interna</strong>: <code>red-interna-2</code> y <code>red-interna-3</code>.</p>",
+          "html": "<p>En el reto 2 añadirás una segunda red <code>192.168.2.0/24</code>, un segundo Ubuntu Server y una tercera red <code>192.168.3.0/24</code>.</p>\n<p><img src=\"recursos/media/image7.png\" alt=\"Topología del reto 2\" /></p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Equipo</th>\n<th>Interfaz</th>\n<th>Conexión y dirección</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Servidor 1</td>\n<td><code>enp0s3</code></td>\n<td>Adaptador NAT de VirtualBox; salida a Internet por DHCP.</td>\n</tr>\n<tr>\n<td>Servidor 1</td>\n<td><code>enp0s8</code></td>\n<td>Red interna <code>red-interna</code>; conecta con Desktop 1 mediante <code>192.168.1.1/24</code>.</td>\n</tr>\n<tr>\n<td>Servidor 1</td>\n<td><code>enp0s9</code></td>\n<td>Nueva red interna <code>red-interna-2</code>; conecta directamente con Servidor 2 mediante <code>192.168.2.1/24</code>.</td>\n</tr>\n<tr>\n<td>Servidor 2</td>\n<td><code>enp0s3</code></td>\n<td>Red interna <code>red-interna-2</code>; conecta con <code>enp0s9</code> de Servidor 1 mediante <code>192.168.2.2/24</code>.</td>\n</tr>\n<tr>\n<td>Servidor 2</td>\n<td><code>enp0s8</code></td>\n<td>Red interna <code>red-interna-3</code>; conecta con Desktop 2 mediante <code>192.168.3.1/24</code>.</td>\n</tr>\n<tr>\n<td>Desktop 2</td>\n<td>Adaptador interno</td>\n<td>Red interna <code>red-interna-3</code>; usa <code>192.168.3.2/24</code>, gateway <code>192.168.3.1</code> y DNS <code>8.8.8.8</code>.</td>\n</tr>\n</tbody>\n</table>\n</div>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Servidor 1 conoce directamente las redes <code>192.168.1.0/24</code> y <code>192.168.2.0/24</code>, pero no conoce <code>192.168.3.0/24</code>; por eso su ruta apunta a <code>192.168.2.2</code>, que es la interfaz de Servidor 2 conectada a <code>red-interna-2</code>. Servidor 2 usa <code>192.168.2.1</code> como ruta por defecto porque ese es Servidor 1, el equipo que ya tiene salida a Internet.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<p>En VirtualBox añade al primer servidor un tercer adaptador en modo <strong>Red interna</strong> con nombre <code>red-interna-2</code>. Crea el segundo Ubuntu Server con dos adaptadores, ambos en modo <strong>Red interna</strong>: <code>red-interna-2</code> y <code>red-interna-3</code>.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -448,8 +498,18 @@
         },
         {
           "type": "task",
-          "html": "<p>Comprueba primero los nombres reales con <code>ip a</code>. En el primer servidor añade <code>enp0s9</code> para <code>192.168.2.1/24</code> y la ruta hacia <code>192.168.3.0/24</code> a través de <code>192.168.2.2</code>:</p>\n<pre><code class=\"language-yaml\">enp0s9:\n  addresses:\n    - 192.168.2.1/24\n  routes:\n    - to: 192.168.3.0/24\n      via: 192.168.2.2\n</code></pre>\n<p>En el segundo servidor habilita <code>ip_forward</code> y configura <code>enp0s3</code> y <code>enp0s8</code>:</p>\n<pre><code class=\"language-yaml\">enp0s3:\n  addresses:\n    - 192.168.2.2/24\n  nameservers:\n    addresses: [8.8.8.8]\n  routes:\n    - to: default\n      via: 192.168.2.1\nenp0s8:\n  addresses:\n    - 192.168.3.1/24\n</code></pre>",
-          "id": "configurar-segundo-router",
+          "html": "<ol>\n<li>\n<p>En VirtualBox, añade al primer servidor un tercer adaptador en modo <strong>Red interna</strong> con nombre <code>red-interna-2</code>. Será normalmente <code>enp0s9</code>, pero compruébalo con <code>ip a</code>: esta interfaz conecta Servidor 1 con Servidor 2.</p>\n</li>\n<li>\n<p>Abre <code>/etc/netplan/network-config.yaml</code>. Conserva las interfaces existentes (<code>enp0s3</code> para NAT y <code>enp0s8</code> para <code>192.168.1.1/24</code>) y añade, bajo <code>network.ethernets</code>, la nueva interfaz y su ruta:</p>\n</li>\n</ol>\n<pre><code class=\"language-yaml\">    enp0s9:\n      addresses:\n        - 192.168.2.1/24\n      routes:\n        - to: 192.168.3.0/24\n          via: 192.168.2.2\n</code></pre>\n<ol start=\"3\">\n<li>Ajusta el nombre de interfaz si es distinto, protege el fichero y aplica los cambios:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo chmod 600 /etc/netplan/network-config.yaml\nsudo netplan apply\nip a\nip route\n</code></pre>",
+          "id": "ampliar-servidor-uno",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Servidor 1 muestra una interfaz con <code>192.168.2.1/24</code> y una ruta a <code>192.168.3.0/24</code> vía <code>192.168.2.2</code>.</p>",
+          "id": "servidor-uno-ampliado",
           "required": true,
           "questionType": null,
           "options": null,
@@ -458,13 +518,63 @@
         },
         {
           "type": "task",
-          "html": "<p>Desde Desktop 2 prueba conectividad con el segundo servidor, el primer servidor y <code>8.8.8.8</code>. Reinicia las máquinas y repite la verificación.</p>",
+          "html": "<ol>\n<li>\n<p>En VirtualBox, crea el segundo servidor con dos adaptadores en modo <strong>Red interna</strong>: <code>red-interna-2</code> conecta con Servidor 1 y <code>red-interna-3</code> conecta con Desktop 2. Comprueba con <code>ip a</code> que los nombres reales corresponden a esos enlaces; el ejemplo usa <code>enp0s3</code> y <code>enp0s8</code>.</p>\n</li>\n<li>\n<p>Habilita el reenvío IPv4 como hiciste en el reto 1: añade <code>net.ipv4.ip_forward=1</code> en <code>/etc/sysctl.conf</code>, ejecuta <code>sudo sysctl -p</code> y comprueba el valor con <code>sysctl net.ipv4.ip_forward</code>.</p>\n</li>\n<li>\n<p>En una máquina base puede existir un YAML previo. Haz una copia de seguridad y retíralo de <code>/etc/netplan/</code> para evitar que Netplan lo fusione con esta configuración. Después crea <code>/etc/netplan/network-config.yaml</code>, ajustando los nombres de interfaz si es necesario:</p>\n</li>\n</ol>\n<pre><code class=\"language-bash\">sudo mkdir -p /etc/netplan.backup\nsudo cp -a /etc/netplan/. /etc/netplan.backup/\nsudo rm -f /etc/netplan/*.yaml\nsudo nano /etc/netplan/network-config.yaml\n</code></pre>\n<pre><code class=\"language-yaml\">network:\n  version: 2\n  ethernets:\n    enp0s3:\n      addresses:\n        - 192.168.2.2/24\n      nameservers:\n        addresses: [8.8.8.8]\n      routes:\n        - to: default\n          via: 192.168.2.1\n    enp0s8:\n      addresses:\n        - 192.168.3.1/24\n</code></pre>\n<ol start=\"4\">\n<li>Protege, aplica y revisa la configuración:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo chmod 600 /etc/netplan/network-config.yaml\nsudo netplan apply\nip a\nip route\n</code></pre>",
+          "id": "configurar-servidor-dos",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Servidor 2 muestra <code>192.168.2.2/24</code> y <code>192.168.3.1/24</code>; su ruta por defecto apunta a <code>192.168.2.1</code>.</p>",
+          "id": "servidor-dos-configurado",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<ol>\n<li>\n<p>Crea Desktop 2 en VirtualBox con un adaptador en modo <strong>Red interna</strong> llamado <code>red-interna-3</code>.</p>\n</li>\n<li>\n<p>Desde la configuración de red de Ubuntu Desktop, asigna <code>192.168.3.2/24</code>, gateway <code>192.168.3.1</code> y DNS <code>8.8.8.8</code>.</p>\n</li>\n<li>\n<p>Comprueba con <code>ip a</code> que Desktop 2 tiene la dirección configurada antes de iniciar las pruebas de conectividad.</p>\n</li>\n</ol>",
+          "id": "configurar-desktop-dos",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Desde Desktop 2 prueba el enlace directo con Servidor 2, el salto a Servidor 1, la salida a Internet y DNS:</p>\n<pre><code class=\"language-bash\">ping 192.168.3.1\nping 192.168.2.1\nping 8.8.8.8\nping www.google.es\n</code></pre>\n<p>Reinicia Desktop 2, Servidor 2 y Servidor 1; después repite las cuatro pruebas.</p>",
           "id": "probar-tres-subredes",
           "required": true,
           "questionType": null,
           "options": null,
           "accept": null,
           "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura de Desktop 2 donde se vean los pings a <code>192.168.3.1</code>, <code>192.168.2.1</code>, <code>8.8.8.8</code> y <code>www.google.es</code>.</p>",
+          "id": "captura-tres-subredes",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una segunda captura posterior al reinicio que muestre conectividad IP externa y resolución DNS.</p>",
+          "id": "captura-tres-subredes-reinicio",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
         }
       ]
     },
@@ -519,12 +629,12 @@
         },
         {
           "type": "file",
-          "html": "<p>Adjunta tus configuraciones de Netplan o un documento con las capturas de las evidencias.</p>",
-          "id": "adjunto-configuracion",
+          "html": "<p>Adjunta un único PDF con la configuración completa de red de los dos servidores. Debe incluir, para Servidor 1 y Servidor 2, los nombres de interfaz, direcciones IP y prefijos, gateway o rutas estáticas y DNS cuando corresponda. Copia también el contenido completo de los ficheros Netplan de ambos servidores (<code>/etc/netplan/*.yaml</code>).</p>",
+          "id": "pdf-configuracion-red",
           "required": true,
           "questionType": null,
           "options": null,
-          "accept": ".yaml,.txt,.pdf",
+          "accept": ".pdf",
           "label": null
         },
         {
