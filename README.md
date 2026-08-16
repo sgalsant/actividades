@@ -14,8 +14,14 @@ GitHub Pages debe configurarse para desplegar desde la rama `gh-pages`, carpeta
 2. Para una actualización, incrementa `actividad.version` y conserva
    `actividad.id`: el ID define la URL pública.
 3. Publica la actividad:
+    ```bash
+    ./scripts/publicar_actividad.py publicar "/ruta/a/la/actividad"
+    ```
+
+   Si `AULASTEP_ACTIVITIES_REPOSITORY` apunta a este repositorio, desde la
+   carpeta de la actividad también puedes usar:
    ```bash
-   ./scripts/publicar_actividad.py publicar "/ruta/a/la/actividad"
+   aulastep publish .
    ```
 
 El script valida la actividad, la copia en `actividades/` sin `dist/`, compila
