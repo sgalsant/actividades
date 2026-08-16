@@ -7,7 +7,9 @@ obligatorio: true
 
 ![Topología del reto 1](recursos/media/image1.png)
 
-Configurarás dos máquinas virtuales: un Ubuntu Server con una interfaz NAT y otra de red interna, y un Ubuntu Desktop conectado a esa misma red interna.
+Empezamosxxx con una configuración básica donde tendremos la intranet de la empresa conectada a Internet a través de un router.
+
+Configurarás dos máquinas virtuales: un Ubuntu Server con una interfaz NAT y otra de red interna que funcionará como un router y un Ubuntu Desktop que será una máquina de trabajo conectado la intranet de la empresa.
 
 ## Objetivos
 
