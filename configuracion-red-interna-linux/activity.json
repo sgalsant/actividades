@@ -8,7 +8,7 @@
     "id": "configuracion-red-interna-linux",
     "titulo": "Configuración de una red interna Linux",
     "subtitulo": "Ubuntu Server como gateway con NAT y enrutamiento entre subredes",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "descripcion": "Configura una red interna en VirtualBox donde Ubuntu Server da salida a Internet a equipos Ubuntu Desktop mediante Netplan, reenvío IPv4 y NAT.",
     "autor": "Santiago Galván Sánchez",
     "modulo": "Servicios en red",
@@ -70,7 +70,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p><img src=\"recursos/media/image1.png\" alt=\"Topología del reto 1\" /></p>\n<p>Configurarás dos máquinas virtuales: un Ubuntu Server con una interfaz NAT y otra de red interna, y un Ubuntu Desktop conectado a esa misma red interna.</p>\n<h2>Objetivos</h2>\n<ul>\n<li>Configurar direcciones IP, gateway y DNS.</li>\n<li>Usar Ubuntu Server como encaminador IPv4.</li>\n<li>Aplicar NAT para que el cliente privado acceda a Internet.</li>\n<li>Diagnosticar conectividad local, externa y resolución DNS.</li>\n</ul>",
+          "html": "<p><img src=\"recursos/media/image1.png\" alt=\"Topología del reto 1\" /></p>\n<p>Empezamosxxx con una configuración básica donde tendremos la intranet de la empresa conectada a Internet a través de un router.</p>\n<p>Configurarás dos máquinas virtuales: un Ubuntu Server con una interfaz NAT y otra de red interna que funcionará como un router y un Ubuntu Desktop que será una máquina de trabajo conectado la intranet de la empresa.</p>\n<h2>Objetivos</h2>\n<ul>\n<li>Configurar direcciones IP, gateway y DNS.</li>\n<li>Usar Ubuntu Server como encaminador IPv4.</li>\n<li>Aplicar NAT para que el cliente privado acceda a Internet.</li>\n<li>Diagnosticar conectividad local, externa y resolución DNS.</li>\n</ul>",
           "id": "",
           "required": false,
           "questionType": null,
