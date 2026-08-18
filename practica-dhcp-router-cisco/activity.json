@@ -1,0 +1,375 @@
+{
+  "schemaVersion": "1.0",
+  "generator": {
+    "name": "AulaStep",
+    "version": "0.9.0"
+  },
+  "activity": {
+    "id": "practica-dhcp-router-cisco",
+    "titulo": "Practica DHCP en router Cisco",
+    "subtitulo": "Configuracion, exclusiones y verificacion de dos redes DHCP",
+    "version": "1.0.0",
+    "descripcion": "El alumnado configura un router Cisco como servidor DHCP en Packet Tracer, crea pools para dos LAN, excluye direcciones reservadas y verifica las concesiones desde el router y los clientes.",
+    "autor": "LLM Wiki Template",
+    "modulo": "Servicios en red",
+    "curso": "2º SMR",
+    "duracionMinutos": 100,
+    "tema": "oceano",
+    "licencia": {
+      "nombre": "CC BY-NC-SA 4.0",
+      "nombre_completo": "Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional",
+      "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es",
+      "condiciones": [
+        "se reconozca adecuadamente la autoría;",
+        "no se utilice con fines comerciales;",
+        "cualquier obra derivada se distribuya bajo esta misma licencia;",
+        "se indiquen claramente los cambios realizados sobre el material original."
+      ]
+    }
+  },
+  "navegacion": {
+    "modo": "asistente",
+    "permitir_anterior": true,
+    "permitir_saltar": true,
+    "mostrar_indice": true,
+    "mostrar_progreso": true,
+    "exigir_obligatorios_para_avanzar": false
+  },
+  "alumno": {
+    "campos": [
+      {
+        "id": "nombre",
+        "etiqueta": "Nombre y apellidos",
+        "tipo": "texto",
+        "obligatorio": true
+      },
+      {
+        "id": "grupo",
+        "etiqueta": "Grupo",
+        "tipo": "texto",
+        "obligatorio": true
+      }
+    ]
+  },
+  "trabajo": {
+    "autoguardado": true,
+    "intervalo_autoguardado_segundos": 5,
+    "permitir_exportar": true,
+    "permitir_importar": true,
+    "extension": "aulawork",
+    "patron_nombre": "{actividad}_{alumno}_{fecha}.aulawork"
+  },
+  "limites": {
+    "tamano_maximo_captura_mb": 8,
+    "tamano_maximo_adjunto_mb": 20,
+    "tamano_maximo_paquete_mb": 100
+  },
+  "steps": [
+    {
+      "id": "preparacion",
+      "titulo": "Preparar la práctica y la topología",
+      "descripcion": "",
+      "duracionMinutos": 10,
+      "obligatorio": true,
+      "orden": 0,
+      "archivo": "pasos/00-preparacion.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<h2>Objetivo</h2>\n<p>Configurarás un router Cisco como servidor DHCP para dos LAN en Packet Tracer. La primera red será <code>172.16.0.0/16</code> y la segunda <code>192.168.1.0/24</code>.</p>\n<h2>Antes de empezar</h2>\n<ul>\n<li>Crea un router, un switch y tres PCs para la primera LAN.</li>\n<li>Conecta el router por <code>G0/0/0</code> al switch de la primera LAN.</li>\n<li>Añade una nota visible con tu nombre, grupo y código de clase.</li>\n<li>Cambia el nombre del router a <code>R_APELLIDO_NOMBRE</code>.</li>\n</ul>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Monta la topología inicial e identifica el router con tu nombre.</p>",
+          "id": "identificar-topologia",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura de la topología inicial donde se vea el nombre del router y tu identificación.</p>",
+          "id": "captura-topologia",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "interfaz-primera-lan",
+      "titulo": "Configurar la puerta de enlace de la primera LAN",
+      "descripcion": "",
+      "duracionMinutos": 15,
+      "obligatorio": true,
+      "orden": 1,
+      "archivo": "pasos/01-interfaz-primera-lan.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>La interfaz del router debe pertenecer a la LAN antes de entregar direcciones DHCP.</p>\n<pre><code class=\"language-text\">enable\nconfigure terminal\nhostname R_APELLIDO_NOMBRE\ninterface g0/0/0\n ip address 172.16.0.1 255.255.0.0\n no shutdown\nexit\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Configura <code>G0/0/0</code> con <code>172.16.0.1/16</code> y actívala.</p>",
+          "id": "configurar-g000",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<p>Comprueba el resultado:</p>\n<pre><code class=\"language-text\">show ip interface brief\n</code></pre>\n<p><code>G0/0/0</code> debe mostrar <code>172.16.0.1</code> y estado <code>up/up</code>.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura de la salida de <code>show ip interface brief</code>.</p>",
+          "id": "estado-g000",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "primer-pool",
+      "titulo": "Crear el primer pool DHCP",
+      "descripcion": "",
+      "duracionMinutos": 20,
+      "obligatorio": true,
+      "orden": 2,
+      "archivo": "pasos/02-primer-pool.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Configura el pool que entregará direcciones a la red <code>172.16.0.0/16</code>.</p>\n<pre><code class=\"language-text\">ip dhcp pool DHCP_APELLIDO\n network 172.16.0.0 255.255.0.0\n default-router 172.16.0.1\nexit\n</code></pre>\n<p>En cada PC selecciona <strong>Desktop &gt; IP Configuration &gt; DHCP</strong>. No asignes direcciones manuales.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Crea el pool <code>DHCP_APELLIDO</code> y configura PC1, PC2 y PC3 para que obtengan la IP automáticamente.</p>",
+          "id": "crear-pool-primero",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<p>En PC1 ejecuta:</p>\n<pre><code class=\"language-text\">ipconfig /all\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Qué puerta de enlace recibió PC1?</p>",
+          "id": "gateway-primera-lan",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura de <code>ipconfig /all</code> de PC1 donde se vea su dirección y puerta de enlace.</p>",
+          "id": "ipconfig-pc1",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "exclusiones",
+      "titulo": "Reservar direcciones y comprobar concesiones",
+      "descripcion": "",
+      "duracionMinutos": 15,
+      "obligatorio": true,
+      "orden": 3,
+      "archivo": "pasos/03-exclusiones.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>DHCP no debe asignar direcciones reservadas para infraestructura u otros usos estáticos. Declara ambas exclusiones por separado:</p>\n<pre><code class=\"language-text\">ip dhcp excluded-address 172.16.0.1 172.16.0.10\nip dhcp excluded-address 172.16.0.13 172.16.0.20\n</code></pre>\n<p>Después, en los PCs renueva la configuración:</p>\n<pre><code class=\"language-text\">ipconfig /renew\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Excluye los rangos <code>.1-.10</code> y <code>.13-.20</code>, renueva las direcciones de los clientes y comprueba que ninguno usa esos intervalos.</p>",
+          "id": "excluir-rangos",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<p>En el router consulta las concesiones:</p>\n<pre><code class=\"language-text\">show ip dhcp binding\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura de <code>show ip dhcp binding</code> donde se vean las MAC y direcciones entregadas.</p>",
+          "id": "concesiones-primera-lan",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "segunda-lan",
+      "titulo": "Añadir una segunda LAN con DHCP",
+      "descripcion": "",
+      "duracionMinutos": 25,
+      "obligatorio": true,
+      "orden": 4,
+      "archivo": "pasos/04-segunda-lan.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Conecta nuevos PCs al segundo puerto del router y repite el procedimiento para <code>192.168.1.0/24</code>.</p>\n<p>Datos de la segunda LAN:</p>\n<ul>\n<li>Interfaz: <code>G0/0/1</code>.</li>\n<li>Dirección del router: <code>192.168.1.1/24</code>.</li>\n<li>Pool: <code>DHCP2_APELLIDO</code>.</li>\n<li>Direcciones excluidas: <code>.1-.20</code> y <code>.200-.254</code>.</li>\n</ul>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Configura y activa <code>G0/0/1</code>, crea el segundo pool, declara las exclusiones y configura los nuevos PCs para DHCP.</p>",
+          "id": "configurar-segunda-lan",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>Indica un rango válido que sí pueda recibir un cliente de la segunda LAN.</p>",
+          "id": "rango-segunda-lan",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Captura de un cliente de la segunda LAN con una dirección recibida por DHCP.</p>",
+          "id": "segunda-lan-funcional",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "entrega",
+      "titulo": "Verificar y preparar la entrega",
+      "descripcion": "",
+      "duracionMinutos": 15,
+      "obligatorio": true,
+      "orden": 5,
+      "archivo": "pasos/05-entrega.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Revisa que la práctica contiene las dos LAN y que las evidencias proceden de tu propia topología.</p>\n<h2>Checklist</h2>\n<ul>\n<li>El router está identificado y las dos interfaces están activas.</li>\n<li>Los dos pools DHCP tienen la red y puerta de enlace correctas.</li>\n<li>Los rangos reservados no se entregan a los clientes.</li>\n<li><code>show ip dhcp binding</code> muestra las concesiones.</li>\n<li>PC1 tiene una IP, máscara y puerta de enlace válidas.</li>\n<li>El archivo se guarda como <code>APELLIDOS_Nombre_Grupo_DHCP.pkt</code>.</li>\n</ul>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>Según <code>show ip dhcp binding</code>, ¿qué MAC tiene PC1?</p>",
+          "id": "mac-pc1",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>Según <code>show ip dhcp binding</code>, ¿qué IP recibió PC1?</p>",
+          "id": "ip-pc1",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta el archivo <code>.pkt</code> y las capturas solicitadas por tu docente.</p>",
+          "id": "entrega-final",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "file"
+        }
+      ]
+    }
+  ]
+}
