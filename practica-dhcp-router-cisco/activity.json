@@ -8,7 +8,7 @@
     "id": "practica-dhcp-router-cisco",
     "titulo": "Practica DHCP en router Cisco",
     "subtitulo": "Configuracion, exclusiones y verificacion de dos redes DHCP",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "descripcion": "El alumnado configura un router Cisco como servidor DHCP en Packet Tracer, crea pools para dos LAN, excluye direcciones reservadas y verifica las concesiones desde el router y los clientes.",
     "autor": "LLM Wiki Template",
     "modulo": "Servicios en red",
