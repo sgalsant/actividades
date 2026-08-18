@@ -9,6 +9,8 @@ obligatorio: true
 
 Configurarás un router Cisco como servidor DHCP para dos LAN en Packet Tracer. La primera red será `172.16.0.0/16` y la segunda `192.168.1.0/24`.
 
+![Topología inicial: router, switch y tres clientes DHCP](../recursos/media/topologia-primera-lan.svg)
+
 ## Antes de empezar
 
 - Crea un router, un switch y tres PCs para la primera LAN.

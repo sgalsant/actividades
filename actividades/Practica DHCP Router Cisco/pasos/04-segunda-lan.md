@@ -7,6 +7,8 @@ obligatorio: true
 
 Conecta nuevos PCs al segundo puerto del router y repite el procedimiento para `192.168.1.0/24`.
 
+![Topología final con dos LAN DHCP](../recursos/media/topologia-dos-lan.svg)
+
 Datos de la segunda LAN:
 
 - Interfaz: `G0/0/1`.
