@@ -8,7 +8,7 @@
     "id": "practica-dhcp-router-cisco",
     "titulo": "Practica DHCP en router Cisco",
     "subtitulo": "Configuracion, exclusiones y verificacion de dos redes DHCP",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "descripcion": "El alumnado configura un router Cisco como servidor DHCP en Packet Tracer, crea pools para dos LAN, excluye direcciones reservadas y verifica las concesiones desde el router y los clientes.",
     "autor": "LLM Wiki Template",
     "modulo": "Servicios en red",
@@ -76,7 +76,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<h2>Objetivo</h2>\n<p>Configurarás un router Cisco como servidor DHCP para dos LAN en Packet Tracer. La primera red será <code>172.16.0.0/16</code> y la segunda <code>192.168.1.0/24</code>.</p>\n<h2>Antes de empezar</h2>\n<ul>\n<li>Crea un router, un switch y tres PCs para la primera LAN.</li>\n<li>Conecta el router por <code>G0/0/0</code> al switch de la primera LAN.</li>\n<li>Añade una nota visible con tu nombre, grupo y código de clase.</li>\n<li>Cambia el nombre del router a <code>R_APELLIDO_NOMBRE</code>.</li>\n</ul>",
+          "html": "<h2>Objetivo</h2>\n<p>Configurarás un router Cisco como servidor DHCP para dos LAN en Packet Tracer. La primera red será <code>172.16.0.0/16</code> y la segunda <code>192.168.1.0/24</code>.</p>\n<p><img src=\"recursos/media/topologia-primera-lan.svg\" alt=\"Topología inicial: router, switch y tres clientes DHCP\" /></p>\n<h2>Antes de empezar</h2>\n<ul>\n<li>Crea un router, un switch y tres PCs para la primera LAN.</li>\n<li>Conecta el router por <code>G0/0/0</code> al switch de la primera LAN.</li>\n<li>Añade una nota visible con tu nombre, grupo y código de clase.</li>\n<li>Cambia el nombre del router a <code>R_APELLIDO_NOMBRE</code>.</li>\n</ul>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -280,7 +280,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>Conecta nuevos PCs al segundo puerto del router y repite el procedimiento para <code>192.168.1.0/24</code>.</p>\n<p>Datos de la segunda LAN:</p>\n<ul>\n<li>Interfaz: <code>G0/0/1</code>.</li>\n<li>Dirección del router: <code>192.168.1.1/24</code>.</li>\n<li>Pool: <code>DHCP2_APELLIDO</code>.</li>\n<li>Direcciones excluidas: <code>.1-.20</code> y <code>.200-.254</code>.</li>\n</ul>",
+          "html": "<p>Conecta nuevos PCs al segundo puerto del router y repite el procedimiento para <code>192.168.1.0/24</code>.</p>\n<p><img src=\"recursos/media/topologia-dos-lan.svg\" alt=\"Topología final con dos LAN DHCP\" /></p>\n<p>Datos de la segunda LAN:</p>\n<ul>\n<li>Interfaz: <code>G0/0/1</code>.</li>\n<li>Dirección del router: <code>192.168.1.1/24</code>.</li>\n<li>Pool: <code>DHCP2_APELLIDO</code>.</li>\n<li>Direcciones excluidas: <code>.1-.20</code> y <code>.200-.254</code>.</li>\n</ul>",
           "id": "",
           "required": false,
           "questionType": null,

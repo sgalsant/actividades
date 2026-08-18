@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">Topología inicial DHCP con router Cisco</title>
+  <desc id="desc">Router Cisco, switch y tres equipos clientes en la red 172.16.0.0/16.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#102b43"/><stop offset="1" stop-color="#1b4965"/></linearGradient>
+    <linearGradient id="router" y2="1"><stop stop-color="#c8f2f6"/><stop offset="1" stop-color="#82d9e3"/></linearGradient>
+    <linearGradient id="switch" y2="1"><stop stop-color="#e4f7d9"/><stop offset="1" stop-color="#bfe5aa"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#071a2a" flood-opacity=".28"/></filter>
+    <style>
+      .h1{fill:#f8fbff;font:700 34px Arial,sans-serif}.kicker{fill:#6ce0ea;font:700 14px Arial,sans-serif;letter-spacing:2px}.sub{fill:#c8d8e6;font:19px Arial,sans-serif}.network{fill:#edfaff;stroke:#74d2df;stroke-width:2}.device{stroke:#1d3851;stroke-width:3;filter:url(#shadow)}.label{fill:#173047;font:700 20px Arial,sans-serif;text-anchor:middle}.detail{fill:#527083;font:16px Arial,sans-serif;text-anchor:middle}.caption{fill:#ffffff;font:700 20px Arial,sans-serif;text-anchor:middle}.caption-detail{fill:#c8d8e6;font:16px Arial,sans-serif;text-anchor:middle}.net{fill:#126d7a;font:700 22px Arial,sans-serif;text-anchor:middle}.link{fill:none;stroke:#26b4c5;stroke-width:7;stroke-linecap:round}.linklabel{fill:#ffffff;font:700 15px Arial,sans-serif;text-anchor:middle;paint-order:stroke;stroke:#173047;stroke-width:5}.badge{fill:#d8f7fa}.badgetxt{fill:#126d7a;font:700 13px Arial,sans-serif;text-anchor:middle}
+    </style>
+  </defs>
+  <rect width="1200" height="620" rx="28" fill="url(#bg)"/>
+  <text class="kicker" x="70" y="57">ESCENARIO 01 · PACKET TRACER</text>
+  <text class="h1" x="70" y="101">Primera LAN: DHCP en funcionamiento</text>
+  <text class="sub" x="70" y="132">El router entrega dirección, máscara y puerta de enlace a los clientes.</text>
+  <rect class="network" x="430" y="173" width="700" height="365" rx="28"/>
+  <text class="net" x="780" y="214">LAN 1 · 172.16.0.0/16</text>
+  <rect class="badge" x="610" y="228" width="220" height="29" rx="14"/><text class="badgetxt" x="720" y="248">Pool: DHCP_APELLIDO</text>
+  <path class="link" d="M330 344H500M650 344H760V283H845M650 344H760V394H845M650 344H760V505H845"/>
+  <text class="linklabel" x="415" y="322">G0/0/0 · 172.16.0.1</text>
+  <rect class="device" x="70" y="264" width="260" height="160" rx="20" fill="url(#router)"/>
+  <text class="label" x="200" y="288">ROUTER · CAPA 3</text>
+  <circle cx="200" cy="350" r="45" fill="none" stroke="#173047" stroke-width="6"/>
+  <path d="M160 350h80M184 326l-24 24 24 24M216 326l24 24-24 24M200 310v80M176 334l24-24 24 24M176 366l24 24 24-24" fill="none" stroke="#173047" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text class="caption" x="200" y="454">R_APELLIDO_NOMBRE</text><text class="caption-detail" x="200" y="481">Servidor DHCP · gateway</text><text class="caption-detail" x="200" y="505">Enruta entre redes</text>
+  <rect class="device" x="500" y="294" width="150" height="100" rx="16" fill="url(#switch)"/>
+  <text class="label" x="575" y="317">SWITCH · CAPA 2</text>
+  <rect x="525" y="329" width="100" height="39" rx="6" fill="#173047"/>
+  <g fill="#9de2a3"><rect x="536" y="338" width="10" height="8" rx="2"/><rect x="551" y="338" width="10" height="8" rx="2"/><rect x="566" y="338" width="10" height="8" rx="2"/><rect x="581" y="338" width="10" height="8" rx="2"/><rect x="596" y="338" width="10" height="8" rx="2"/><rect x="536" y="352" width="10" height="8" rx="2"/><rect x="551" y="352" width="10" height="8" rx="2"/><rect x="566" y="352" width="10" height="8" rx="2"/><rect x="581" y="352" width="10" height="8" rx="2"/><rect x="596" y="352" width="10" height="8" rx="2"/></g>
+  <text class="label" x="575" y="431">S1 · SWITCH</text><text class="detail" x="575" y="456">Conmuta los equipos de la LAN</text>
+  <g><rect class="device" x="845" y="220" width="210" height="118" rx="16" fill="#fff"/><rect x="902" y="232" width="96" height="38" rx="5" fill="none" stroke="#173047" stroke-width="5"/><path d="M930 282h40M950 270v12" stroke="#173047" stroke-width="5"/><text class="label" x="950" y="307">PC1</text><text class="detail" x="950" y="328">IP automática</text></g>
+  <g><rect class="device" x="845" y="348" width="210" height="118" rx="16" fill="#fff"/><rect x="902" y="360" width="96" height="38" rx="5" fill="none" stroke="#173047" stroke-width="5"/><path d="M930 410h40M950 398v12" stroke="#173047" stroke-width="5"/><text class="label" x="950" y="435">PC2</text><text class="detail" x="950" y="456">IP automática</text></g>
+  <g><rect class="device" x="845" y="476" width="210" height="118" rx="16" fill="#fff"/><rect x="902" y="488" width="96" height="38" rx="5" fill="none" stroke="#173047" stroke-width="5"/><path d="M930 538h40M950 526v12" stroke="#173047" stroke-width="5"/><text class="label" x="950" y="563">PC3</text><text class="detail" x="950" y="584">IP automática</text></g>
+</svg>
