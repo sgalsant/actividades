@@ -4,10 +4,11 @@ actividad:
   id: configuracion-red-interna-linux
   titulo: Configuración de una red interna Linux
   subtitulo: Ubuntu Server como gateway con NAT y enrutamiento entre subredes
-  version: 1.1.2
+  version: 1.2.3
   descripcion: >
     Configura una red interna en VirtualBox donde Ubuntu Server da salida a
-    Internet a equipos Ubuntu Desktop mediante Netplan, reenvío IPv4 y NAT.
+    Internet a equipos Ubuntu Desktop mediante Netplan, acceso SSH desde Windows,
+    reenvío IPv4 y NAT.
   autor: Santiago Galván Sánchez
   modulo: Servicios en red
   curso: 2º SMR

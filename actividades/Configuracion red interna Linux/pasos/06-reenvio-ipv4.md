@@ -5,7 +5,9 @@ duracion_minutos: 20
 obligatorio: true
 ---
 
-El servidor no reenvía paquetes entre interfaces por defecto. Activa el reenvío de forma persistente en `/etc/sysctl.conf`.
+El reenvío IPv4 permite que un equipo reciba un paquete por una interfaz de red y lo envíe por otra según su tabla de rutas. En esta topología, el Ubuntu Server recibe por su interfaz interna los paquetes del cliente Ubuntu Desktop y debe reenviarlos por su interfaz NAT para que puedan salir hacia Internet.
+
+El servidor no reenvía paquetes entre interfaces por defecto: actúa como destino final de los paquetes que recibe. Activar `net.ipv4.ip_forward` lo convierte en un encaminador. Este ajuste no modifica direcciones IP; la traducción de direcciones necesaria para salir a Internet se configurará mediante NAT en el paso siguiente. Activa el reenvío de forma persistente en `/etc/sysctl.conf`.
 
 :::task{id="habilitar-ip-forward" required="true"}
 1. Abre el archivo de configuración de `sysctl`:
