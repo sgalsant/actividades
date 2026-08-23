@@ -8,8 +8,8 @@
     "id": "configuracion-red-interna-linux",
     "titulo": "Configuración de una red interna Linux",
     "subtitulo": "Ubuntu Server como gateway con NAT y enrutamiento entre subredes",
-    "version": "1.1.2",
-    "descripcion": "Configura una red interna en VirtualBox donde Ubuntu Server da salida a Internet a equipos Ubuntu Desktop mediante Netplan, reenvío IPv4 y NAT.",
+    "version": "1.2.3",
+    "descripcion": "Configura una red interna en VirtualBox donde Ubuntu Server da salida a Internet a equipos Ubuntu Desktop mediante Netplan, acceso SSH desde Windows, reenvío IPv4 y NAT.",
     "autor": "Santiago Galván Sánchez",
     "modulo": "Servicios en red",
     "curso": "2º SMR",
@@ -70,7 +70,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p><img src=\"recursos/media/image1.png\" alt=\"Topología del reto 1\" /></p>\n<p>Empezamosxxx con una configuración básica donde tendremos la intranet de la empresa conectada a Internet a través de un router.</p>\n<p>Configurarás dos máquinas virtuales: un Ubuntu Server con una interfaz NAT y otra de red interna que funcionará como un router y un Ubuntu Desktop que será una máquina de trabajo conectado la intranet de la empresa.</p>\n<h2>Objetivos</h2>\n<ul>\n<li>Configurar direcciones IP, gateway y DNS.</li>\n<li>Usar Ubuntu Server como encaminador IPv4.</li>\n<li>Aplicar NAT para que el cliente privado acceda a Internet.</li>\n<li>Diagnosticar conectividad local, externa y resolución DNS.</li>\n</ul>",
+          "html": "<p><img src=\"recursos/media/image1.png\" alt=\"Topología del reto 1\" /></p>\n<p>Empezamos con una configuración básica donde simulamos una intranet de una empresa conectada a Internet a través de un router Ubuntu Server.</p>\n<p>En esta actividad configurarás dos máquinas virtuales: un Ubuntu Server que funcionará como un router y un Ubuntu Desktop que será una máquina de trabajo conectada a la intranet de la empresa.</p>\n<p>Es importante habituarse al trabajo con máquinas virtuales y configuración de multiples redes ya que será nuestro escenario habitual de trabajo.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -80,7 +80,17 @@
         },
         {
           "type": "html",
-          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>El reenvío IPv4 mueve paquetes entre interfaces. NAT traduce las direcciones privadas del cliente para que puedan salir por la interfaz pública del servidor. Necesitas ambas cosas para dar acceso a Internet.</p></div></aside>",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>Recuerda realizar copias de las máquinas virtuales al final de la jornada porque podría ocurrir que la máquina se corrompa y no pueda iniciarse o incluso pueda desaparecer del equipo ya que tu ordenador es usado por otros alumnos y alumnas.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<h2>Objetivos</h2>\n<ul>\n<li>Configurar direcciones IP, gateway y DNS.</li>\n<li>Usar Ubuntu Server como encaminador IPv4.</li>\n<li>Aplicar NAT para que el cliente privado acceda a Internet.</li>\n<li>Diagnosticar conectividad local, externa y resolución DNS.</li>\n</ul>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -193,13 +203,74 @@
       ]
     },
     {
+      "id": "reenvio-puertos-ssh",
+      "titulo": "Configura el acceso SSH desde Windows",
+      "descripcion": "",
+      "duracionMinutos": 20,
+      "obligatorio": true,
+      "orden": 3,
+      "archivo": "pasos/03-reenvio-puertos-ssh.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>El adaptador NAT del servidor permite que la máquina virtual salga a Internet, pero el sistema operativo anfitrión Windows no puede iniciar conexiones hacia ella directamente.</p>\n<p>Configura una regla de reenvío de puertos en la máquina virtual del servidor para que VirtualBox dirija las conexiones SSH desde Windows al servidor Linux. De esta forma, podrás acceder desde la terminal de Windows al servidor y te resultará más cómodo trabajar con dicha máquina además de que esta es la forma real con la que se suele trabajar con los servidores en remoto.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Con la máquina virtual apagada, abre <strong>Configuración → Red → Adaptador 1 (NAT) → Avanzadas → Reenvío de puertos</strong> y añade esta regla:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Nombre</th>\n<th>Protocolo</th>\n<th>IP anfitrión</th>\n<th style=\"text-align:right\">Puerto anfitrión</th>\n<th style=\"text-align:right\">Puerto invitado</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>SSH</td>\n<td>TCP</td>\n<td>127.0.0.1</td>\n<td style=\"text-align:right\">2222</td>\n<td style=\"text-align:right\">22</td>\n</tr>\n</tbody>\n</table>\n</div><p>La dirección <code>127.0.0.1</code> limita el acceso al propio equipo anfitrión. El puerto <code>2222</code> evita interferir con un posible servidor SSH instalado en Windows.</p>",
+          "id": "configurar-reenvio-ssh",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Inicia el servidor desde VirtualBox e instala OpenSSH Server. Habilítalo para que arranque automáticamente y comprueba que está activo:</p>\n<pre><code class=\"language-bash\">sudo apt update\nsudo apt install -y openssh-server\nsudo systemctl enable --now ssh\nsudo systemctl status ssh\n</code></pre>\n<p>El estado debe indicar <code>active (running)</code>.</p>",
+          "id": "instalar-ssh",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Desde PowerShell en Windows, conecta con el usuario de tu servidor:</p>\n<pre><code class=\"language-powershell\">ssh TU_USUARIO@localhost -p 2222\n</code></pre>\n<p>Sustituye <code>TU_USUARIO</code> por el usuario creado durante la instalación de Ubuntu. Si es la primera conexión, confirma la huella SSH escribiendo <code>yes</code>.</p>",
+          "id": "probar-ssh-windows",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura de PowerShell que muestre una sesión SSH conectada al servidor Linux mediante el puerto <code>2222</code>.</p>",
+          "id": "captura-ssh-windows",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
       "id": "red-servidor",
       "titulo": "Configura el gateway con Netplan",
       "descripcion": "",
       "duracionMinutos": 35,
       "obligatorio": true,
-      "orden": 3,
-      "archivo": "pasos/03-red-servidor.md",
+      "orden": 4,
+      "archivo": "pasos/04-red-servidor.md",
       "segments": [
         {
           "type": "html",
@@ -239,8 +310,8 @@
       "descripcion": "",
       "duracionMinutos": 20,
       "obligatorio": true,
-      "orden": 4,
-      "archivo": "pasos/04-red-escritorio.md",
+      "orden": 5,
+      "archivo": "pasos/05-red-escritorio.md",
       "segments": [
         {
           "type": "html",
@@ -280,12 +351,12 @@
       "descripcion": "",
       "duracionMinutos": 20,
       "obligatorio": true,
-      "orden": 5,
-      "archivo": "pasos/05-reenvio-ipv4.md",
+      "orden": 6,
+      "archivo": "pasos/06-reenvio-ipv4.md",
       "segments": [
         {
           "type": "html",
-          "html": "<p>El servidor no reenvía paquetes entre interfaces por defecto. Activa el reenvío de forma persistente en <code>/etc/sysctl.conf</code>.</p>",
+          "html": "<p>El reenvío IPv4 permite que un equipo reciba un paquete por una interfaz de red y lo envíe por otra según su tabla de rutas. En esta topología, el Ubuntu Server recibe por su interfaz interna los paquetes del cliente Ubuntu Desktop y debe reenviarlos por su interfaz NAT para que puedan salir hacia Internet.</p>\n<p>El servidor no reenvía paquetes entre interfaces por defecto: actúa como destino final de los paquetes que recibe. Activar <code>net.ipv4.ip_forward</code> lo convierte en un encaminador. Este ajuste no modifica direcciones IP; la traducción de direcciones necesaria para salir a Internet se configurará mediante NAT en el paso siguiente. Activa el reenvío de forma persistente en <code>/etc/sysctl.conf</code>.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -321,8 +392,8 @@
       "descripcion": "",
       "duracionMinutos": 30,
       "obligatorio": true,
-      "orden": 6,
-      "archivo": "pasos/06-nat-iptables.md",
+      "orden": 7,
+      "archivo": "pasos/07-nat-iptables.md",
       "segments": [
         {
           "type": "html",
@@ -392,8 +463,8 @@
       "descripcion": "",
       "duracionMinutos": 25,
       "obligatorio": true,
-      "orden": 7,
-      "archivo": "pasos/07-pruebas-entrega.md",
+      "orden": 8,
+      "archivo": "pasos/08-pruebas-entrega.md",
       "segments": [
         {
           "type": "html",
@@ -453,8 +524,8 @@
       "descripcion": "",
       "duracionMinutos": 75,
       "obligatorio": true,
-      "orden": 8,
-      "archivo": "pasos/08-subredes-enrutamiento.md",
+      "orden": 9,
+      "archivo": "pasos/09-subredes-enrutamiento.md",
       "segments": [
         {
           "type": "html",
@@ -574,8 +645,8 @@
       "descripcion": "",
       "duracionMinutos": 15,
       "obligatorio": true,
-      "orden": 9,
-      "archivo": "pasos/09-reflexion.md",
+      "orden": 10,
+      "archivo": "pasos/10-reflexion.md",
       "segments": [
         {
           "type": "question",
