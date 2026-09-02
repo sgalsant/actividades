@@ -1,0 +1,49 @@
+schema_version: "1.0"
+
+actividad:
+  id: instalacion-wordpress-lamp-servicios-en-red
+  titulo: Instalación y despliegue de WordPress
+  subtitulo: Despliegue seguro sobre un servidor LAMP con HTTPS
+  version: 1.0.0
+  descripcion: >
+    Despliega WordPress manualmente en Ubuntu Server 24.04 LTS, con una base de
+    datos de mínimo privilegio, VirtualHost HTTPS, protección adicional de
+    wp-admin y evidencias documentadas.
+  autor: Santiago Galván Sánchez
+  modulo: Servicios en red
+  curso: 2º SMR
+  duracion_minutos: 720
+  tema: indigo
+  publicada: true
+  licencia:
+    nombre: CC BY-NC-SA 4.0
+    nombre_completo: Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional
+    url: https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es
+
+navegacion:
+  modo: asistente
+  permitir_anterior: true
+  permitir_saltar: true
+  mostrar_indice: true
+  mostrar_progreso: true
+  exigir_obligatorios_para_avanzar: false
+
+alumno:
+  campos:
+    - id: nombre
+      etiqueta: Nombre y apellidos
+      tipo: texto
+      obligatorio: true
+
+trabajo:
+  autoguardado: true
+  intervalo_autoguardado_segundos: 5
+  permitir_exportar: true
+  permitir_importar: true
+  extension: aulawork
+  patron_nombre: "{actividad}_{alumno}_{fecha}.aulawork"
+
+limites:
+  tamano_maximo_captura_mb: 8
+  tamano_maximo_adjunto_mb: 20
+  tamano_maximo_paquete_mb: 100
