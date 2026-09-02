@@ -1,0 +1,703 @@
+{
+  "schemaVersion": "1.0",
+  "generator": {
+    "name": "AulaStep",
+    "version": "0.9.0"
+  },
+  "activity": {
+    "id": "instalacion-wordpress-lamp-servicios-en-red",
+    "titulo": "Instalación y despliegue de WordPress",
+    "subtitulo": "Despliegue seguro sobre un servidor LAMP con HTTPS",
+    "version": "1.0.0",
+    "descripcion": "Despliega WordPress manualmente en Ubuntu Server 24.04 LTS, con una base de datos de mínimo privilegio, VirtualHost HTTPS, protección adicional de wp-admin y evidencias documentadas.",
+    "autor": "Santiago Galván Sánchez",
+    "modulo": "Servicios en red",
+    "curso": "2º SMR",
+    "duracionMinutos": 720,
+    "tema": "indigo",
+    "licencia": {
+      "nombre": "CC BY-NC-SA 4.0",
+      "nombre_completo": "Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional",
+      "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es",
+      "condiciones": [
+        "se reconozca adecuadamente la autoría;",
+        "no se utilice con fines comerciales;",
+        "cualquier obra derivada se distribuya bajo esta misma licencia;",
+        "se indiquen claramente los cambios realizados sobre el material original."
+      ]
+    }
+  },
+  "navegacion": {
+    "modo": "asistente",
+    "permitir_anterior": true,
+    "permitir_saltar": true,
+    "mostrar_indice": true,
+    "mostrar_progreso": true,
+    "exigir_obligatorios_para_avanzar": false
+  },
+  "alumno": {
+    "campos": [
+      {
+        "id": "nombre",
+        "etiqueta": "Nombre y apellidos",
+        "tipo": "texto",
+        "obligatorio": true
+      }
+    ]
+  },
+  "trabajo": {
+    "autoguardado": true,
+    "intervalo_autoguardado_segundos": 5,
+    "permitir_exportar": true,
+    "permitir_importar": true,
+    "extension": "aulawork",
+    "patron_nombre": "{actividad}_{alumno}_{fecha}.aulawork"
+  },
+  "limites": {
+    "tamano_maximo_captura_mb": 8,
+    "tamano_maximo_adjunto_mb": 20,
+    "tamano_maximo_paquete_mb": 100
+  },
+  "steps": [
+    {
+      "id": "presentacion-wordpress",
+      "titulo": "Presentación, escenario y requisitos",
+      "descripcion": "",
+      "duracionMinutos": 30,
+      "obligatorio": true,
+      "orden": 0,
+      "archivo": "pasos/00-presentacion.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>El Instituto Tecnológico Central necesita publicar su portal institucional con WordPress. Trabajarás como administrador o administradora junior y realizarás una instalación manual, sin instaladores automáticos.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>El objetivo no es solo que WordPress funcione: debes demostrar que puedes desplegar una aplicación web sobre LAMP con HTTPS, aislamiento de base de datos, permisos correctos, registros propios y una protección adicional del panel administrativo.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<h2>Resultado esperado</h2>\n<ul>\n<li>Dominio: <code>wordpress.127.0.0.1.nip.io</code>.</li>\n<li>Directorio web: <code>/var/www/wordpress</code>.</li>\n<li>HTTPS obligatorio en el puerto publicado por tu práctica (<code>443</code> o <code>8443</code>).</li>\n<li>HTTP redirigido automáticamente a HTTPS.</li>\n<li>Base de datos y usuario exclusivos para WordPress; nunca el usuario <code>root</code>.</li>\n<li><code>/wp-admin</code> protegido mediante autenticación HTTP y con el acceso de WordPress.</li>\n<li>Logs independientes: <code>/var/log/apache2/wordpress_access.log</code> y <code>/var/log/apache2/wordpress_error.log</code>.</li>\n<li>Un tema no predeterminado y una entrada de blog publicada.</li>\n</ul>\n<h2>Antes de empezar</h2>\n<ol>\n<li>Lee toda la actividad y crea un snapshot de la máquina virtual.</li>\n<li>Comprueba que Apache, MariaDB y PHP del servidor LAMP previo están operativos.</li>\n<li>Anota las decisiones, errores y tiempo invertido mientras trabajas; no intentes reconstruirlos al final.</li>\n<li>Consulta primero la documentación oficial de WordPress cuando necesites confirmar un requisito o resolver un error.</li>\n</ol>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>Escribe tu plan de trabajo en cinco fases, indicando qué comprobarás antes de avanzar a la siguiente fase.</p>",
+          "id": "plan-despliegue",
+          "required": true,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Tengo un snapshot de la VM y he comprobado que los servicios LAMP previos están disponibles.</p>",
+          "id": "entorno-lamp-listo",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "preparacion-entorno-wordpress",
+      "titulo": "Preparación del entorno y descarga",
+      "descripcion": "",
+      "duracionMinutos": 60,
+      "obligatorio": true,
+      "orden": 1,
+      "archivo": "pasos/01-preparacion-entorno.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<h2>A. Preparación del entorno</h2>\n<p>Comprueba los requisitos de PHP, MariaDB/MySQL y Apache de la versión de WordPress que vayas a instalar. Registra la versión descargada: usar <code>latest.tar.gz</code> no elimina la obligación de documentar qué versión concreta has desplegado.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Crea el directorio de destino, descarga WordPress desde su origen oficial, extrae el archivo y deja sus archivos directamente en <code>/var/www/wordpress</code>.</p>\n<pre><code class=\"language-bash\">cd /tmp\nwget https://wordpress.org/latest.tar.gz\ntar -xzf latest.tar.gz\nsudo mkdir -p /var/www/wordpress\nsudo cp -a wordpress/. /var/www/wordpress/\ngrep '\\$wp_version' /var/www/wordpress/wp-includes/version.php\n</code></pre>\n<p>No copies el directorio contenedor <code>wordpress</code> dentro de <code>/var/www/wordpress</code>: el <code>index.php</code> debe quedar en el DocumentRoot.</p>",
+          "id": "descargar-wordpress",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Asigna la propiedad a Apache y aplica permisos base seguros. Revisa después que los directorios sean ejecutables y los archivos no sean escribibles para otros usuarios.</p>\n<pre><code class=\"language-bash\">sudo chown -R www-data:www-data /var/www/wordpress\nsudo find /var/www/wordpress -type d -exec chmod 755 {} \\;\nsudo find /var/www/wordpress -type f -exec chmod 644 {} \\;\nsudo ls -ld /var/www/wordpress\n</code></pre>",
+          "id": "ajustar-permisos-wordpress",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>No uses permisos <code>777</code>. Si WordPress pide FTP durante una actualización, revisa la propiedad y los permisos antes de ampliar privilegios.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura de la terminal donde se vean la descarga, extracción y versión de WordPress.</p>",
+          "id": "captura-descarga-extraccion",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Qué versión de WordPress has instalado?</p>",
+          "id": "version-wordpress",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "base-datos-wordpress",
+      "titulo": "Base de datos con mínimo privilegio",
+      "descripcion": "",
+      "duracionMinutos": 60,
+      "obligatorio": true,
+      "orden": 2,
+      "archivo": "pasos/02-base-datos.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<h2>B. Configuración de base de datos</h2>\n<p>WordPress necesita una base de datos propia y un usuario que solo pueda operar sobre ella. El usuario de la aplicación no debe ser <code>root</code> ni tener privilegios globales.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Accede a MariaDB/MySQL como administrador y adapta los marcadores por nombres y una contraseña robusta que hayas elegido. Conserva los comandos realmente ejecutados para tu documento final.</p>\n<pre><code class=\"language-sql\">CREATE DATABASE wordpress_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\nCREATE USER 'wordpress_user'@'localhost' IDENTIFIED BY 'cambia-esta-contrasena';\nGRANT SELECT, INSERT, UPDATE, DELETE ON wordpress_db.* TO 'wordpress_user'@'localhost';\nFLUSH PRIVILEGES;\nSHOW GRANTS FOR 'wordpress_user'@'localhost';\n</code></pre>\n<p>Puedes crear la base de datos antes de conceder privilegios; no concedas <code>ALL PRIVILEGES</code>, <code>DROP</code> ni permisos sobre otras bases de datos salvo que hayas justificado una necesidad real.</p>",
+          "id": "crear-bd-y-usuario",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Comprueba que el usuario puede conectarse a su base de datos y que sus permisos están restringidos a ella.</p>\n<pre><code class=\"language-bash\">mysql -u wordpress_user -p wordpress_db\n</code></pre>",
+          "id": "verificar-usuario-bd",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura de MariaDB/MySQL mostrando la base de datos, el usuario y sus privilegios. No muestres la contraseña.</p>",
+          "id": "captura-bd-usuario",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        },
+        {
+          "type": "question",
+          "html": "<p>Explica por qué no debes configurar WordPress con el usuario root de MariaDB/MySQL.</p>",
+          "id": "principio-minimo-privilegio",
+          "required": true,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "virtualhost-https-wordpress",
+      "titulo": "VirtualHost, HTTPS y logs independientes",
+      "descripcion": "",
+      "duracionMinutos": 90,
+      "obligatorio": true,
+      "orden": 3,
+      "archivo": "pasos/03-virtualhost-https.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<h2>C y D. Configuración del VirtualHost y SSL/HTTPS</h2>\n<p>Necesitas dos VirtualHost: uno para redirigir HTTP y otro para servir WordPress mediante TLS. Usa los certificados autofirmados creados en la práctica anterior o un certificado equivalente disponible en tu servidor.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Crea <code>/etc/apache2/sites-available/wordpress.conf</code>. Sustituye las rutas del certificado por las que existan realmente en tu servidor.</p>\n<pre><code class=\"language-apache\">&lt;VirtualHost *:80&gt;\n    ServerName wordpress.127.0.0.1.nip.io\n    Redirect permanent / https://wordpress.127.0.0.1.nip.io/\n&lt;/VirtualHost&gt;\n\n&lt;VirtualHost *:443&gt;\n    ServerName wordpress.127.0.0.1.nip.io\n    DocumentRoot /var/www/wordpress\n\n    SSLEngine on\n    SSLCertificateFile /ruta/al/certificado.crt\n    SSLCertificateKeyFile /ruta/a/la-clave.key\n\n    ErrorLog ${APACHE_LOG_DIR}/wordpress_error.log\n    CustomLog ${APACHE_LOG_DIR}/wordpress_access.log combined\n\n    &lt;Directory /var/www/wordpress&gt;\n        Options FollowSymLinks\n        AllowOverride All\n        Require all granted\n    &lt;/Directory&gt;\n&lt;/VirtualHost&gt;\n</code></pre>\n<p>Si tu VM publica <code>443</code> como <code>8443</code> en el equipo anfitrión, accede por <code>https://wordpress.127.0.0.1.nip.io:8443/</code> y ajusta la redirección para que conserve el puerto publicado. Explica esa decisión en tu documentación.</p>",
+          "id": "crear-virtualhost-wordpress",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Habilita los módulos y el sitio, valida la sintaxis y recarga Apache solo si la comprobación es correcta.</p>\n<pre><code class=\"language-bash\">sudo a2enmod ssl rewrite\nsudo a2ensite wordpress.conf\nsudo apache2ctl configtest\nsudo systemctl reload apache2\n</code></pre>",
+          "id": "habilitar-sitio-https",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Comprueba que HTTP redirige a HTTPS y que se generan los dos logs propios.</p>\n<pre><code class=\"language-bash\">curl -I http://wordpress.127.0.0.1.nip.io/\nsudo ls -l /var/log/apache2/wordpress_access.log /var/log/apache2/wordpress_error.log\n</code></pre>",
+          "id": "verificar-https-redireccion",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura del contenido completo de <code>wordpress.conf</code>.</p>",
+          "id": "captura-virtualhost",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura del navegador mostrando WordPress con HTTPS. Si el certificado es autofirmado, documenta la advertencia aceptada en el laboratorio.</p>",
+          "id": "captura-https",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "proteccion-wp-admin",
+      "titulo": "Protección HTTP adicional de wp-admin",
+      "descripcion": "",
+      "duracionMinutos": 60,
+      "obligatorio": true,
+      "orden": 4,
+      "archivo": "pasos/04-proteccion-wp-admin.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<h2>E. Protección del panel de administración</h2>\n<p>La cuenta de Apache es una barrera independiente de la cuenta administradora de WordPress. Ambas deben ser diferentes y sus contraseñas no deben aparecer en capturas ni en el informe entregado.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Crea un archivo de credenciales fuera del DocumentRoot y añade una persona usuaria para Apache.</p>\n<pre><code class=\"language-bash\">sudo htpasswd -c /etc/apache2/.htpasswd-wordpress nombre_usuario_web\nsudo chmod 640 /etc/apache2/.htpasswd-wordpress\nsudo chown root:www-data /etc/apache2/.htpasswd-wordpress\n</code></pre>\n<p>Usa <code>htpasswd /etc/apache2/.htpasswd-wordpress otro_usuario</code> para añadir más cuentas sin sobrescribir el archivo.</p>",
+          "id": "crear-usuario-apache",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Añade este bloque dentro del VirtualHost HTTPS y vuelve a validar la configuración antes de recargar Apache.</p>\n<pre><code class=\"language-apache\">&lt;Directory /var/www/wordpress/wp-admin&gt;\n    AuthType Basic\n    AuthName &quot;Administración de WordPress&quot;\n    AuthUserFile /etc/apache2/.htpasswd-wordpress\n    Require valid-user\n&lt;/Directory&gt;\n</code></pre>\n<pre><code class=\"language-bash\">sudo apache2ctl configtest\nsudo systemctl reload apache2\n</code></pre>",
+          "id": "proteger-directorio-admin",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>No sitúes el archivo <code>.htpasswd</code> dentro de <code>/var/www/wordpress</code>. Debe quedar fuera de los archivos que Apache puede servir directamente.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura de la ventana de autenticación HTTP al abrir <code>/wp-admin</code> antes de entrar a WordPress.</p>",
+          "id": "captura-auth-admin",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Qué protege la autenticación HTTP que no protege por sí sola el inicio de sesión de WordPress?</p>",
+          "id": "doble-autenticacion",
+          "required": true,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "instalacion-web-wordpress",
+      "titulo": "Instalación web y configuración inicial",
+      "descripcion": "",
+      "duracionMinutos": 75,
+      "obligatorio": true,
+      "orden": 5,
+      "archivo": "pasos/05-instalacion-web.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<h2>F. Configuración de WordPress</h2>\n<p>Abre la URL HTTPS del sitio. Completa el instalador usando la base de datos y el usuario creados en el paso anterior. WordPress generará <code>wp-config.php</code>; revisa que sus valores de <code>DB_NAME</code>, <code>DB_USER</code>, <code>DB_PASSWORD</code> y <code>DB_HOST</code> coinciden con tu configuración.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Completa el asistente con un título de sitio, una cuenta administradora de WordPress, una contraseña robusta y una dirección de correo válida.</p>\n<p>No uses como nombre de cuenta <code>admin</code>, no reutilices las credenciales de MariaDB ni las de la autenticación HTTP, y no documentes contraseñas reales en la tabla de credenciales.</p>",
+          "id": "configurar-wordpress-web",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Comprueba que el archivo de configuración no tiene permisos excesivos y que Apache conserva la propiedad necesaria.</p>\n<pre><code class=\"language-bash\">sudo chown www-data:www-data /var/www/wordpress/wp-config.php\nsudo chmod 640 /var/www/wordpress/wp-config.php\nsudo ls -l /var/www/wordpress/wp-config.php\n</code></pre>",
+          "id": "revisar-wp-config",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura del escritorio de <code>/wp-admin</code> tras superar la autenticación HTTP y el acceso de WordPress.</p>",
+          "id": "captura-panel-wordpress",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        },
+        {
+          "type": "file",
+          "html": "<p>Adjunta una copia saneada de <code>wordpress.conf</code>. Elimina o sustituye cualquier dato secreto antes de adjuntarla.</p>",
+          "id": "adjunto-wordpress-conf",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": ".conf,.txt",
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "personalizacion-wordpress",
+      "titulo": "Personalización básica y publicación",
+      "descripcion": "",
+      "duracionMinutos": 45,
+      "obligatorio": true,
+      "orden": 6,
+      "archivo": "pasos/06-personalizacion.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<h2>G. Personalización básica</h2>\n<p>Completa la configuración general del sitio y demuestra que el CMS no es solo accesible: debe publicar contenido visible para visitantes.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Desde <strong>Apariencia &gt; Temas</strong>, instala o activa un tema diferente del predeterminado que muestra tu instalación. Indica el nombre y versión del tema en tu documentación.</p>",
+          "id": "activar-tema-wordpress",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Desde <strong>Entradas &gt; Añadir nueva</strong>, publica una entrada de blog propia con título, contenido y fecha. Revisa después la portada del sitio en una sesión sin privilegios.</p>",
+          "id": "publicar-entrada-wordpress",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Desde <strong>Ajustes &gt; Generales</strong>, revisa el título, descripción, idioma y direcciones URL. Las direcciones deben usar HTTPS para evitar enlaces inseguros.</p>",
+          "id": "configuracion-general-sitio",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura de la vista pública donde se vea la entrada publicada y el tema activo.</p>",
+          "id": "captura-sitio-publico",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        },
+        {
+          "type": "question",
+          "html": "<p>Indica el tema activado y el título de tu primera entrada, separados por un punto y coma.</p>",
+          "id": "tema-y-entrada",
+          "required": true,
+          "questionType": "short-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "verificacion-logs-wordpress",
+      "titulo": "Verificación final y logs",
+      "descripcion": "",
+      "duracionMinutos": 45,
+      "obligatorio": true,
+      "orden": 7,
+      "archivo": "pasos/07-verificacion-logs.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<h2>H. Verificación de logs</h2>\n<p>Los logs independientes permiten analizar este sitio sin mezclar sus accesos y errores con otros VirtualHost del servidor.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Visita la portada y <code>/wp-admin</code>, provoca una petición controlada a una URL inexistente y revisa los registros del sitio.</p>\n<pre><code class=\"language-bash\">sudo tail -n 20 /var/log/apache2/wordpress_access.log\nsudo tail -n 20 /var/log/apache2/wordpress_error.log\n</code></pre>\n<p>No generes errores destructivos ni expongas contraseñas para obtener la evidencia.</p>",
+          "id": "generar-y-revisar-logs",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Confirma cada condición antes de preparar la entrega:</p>\n<ul>\n<li>El dominio resuelve y sirve WordPress por HTTPS.</li>\n<li>HTTP redirige a HTTPS.</li>\n<li>La base de datos usa un usuario limitado.</li>\n<li><code>wp-admin</code> pide primero autenticación HTTP.</li>\n<li>Los archivos son de <code>www-data</code> y no tienen permisos globales de escritura.</li>\n<li>Los logs específicos contienen actividad.</li>\n<li>El tema distinto y la entrada publicada son visibles.</li>\n</ul>",
+          "id": "checklist-tecnico-final",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura de la terminal mostrando ambos archivos de log con actividad.</p>",
+          "id": "captura-logs-wordpress",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        },
+        {
+          "type": "question",
+          "html": "<p>Describe un problema real que hayas encontrado, qué comprobaste para diagnosticarlo y cómo lo resolviste. Si no hubo incidencias, explica qué verificación preventiva habría detectado una configuración incorrecta.</p>",
+          "id": "incidencia-resuelta",
+          "required": true,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "documentacion-entrega-wordpress",
+      "titulo": "Documentación profesional y entrega",
+      "descripcion": "",
+      "duracionMinutos": 90,
+      "obligatorio": true,
+      "orden": 8,
+      "archivo": "pasos/08-documentacion-entrega.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p>Prepara un único PDF llamado <code>Apellido_Nombre_WordPress.pdf</code>, de un máximo de 20 MB. Debe permitir repetir tu instalación sin revelar secretos.</p>\n<h2>Estructura obligatoria</h2>\n<ol>\n<li>Portada: título, nombre completo, fecha y módulo.</li>\n<li>Índice de contenidos.</li>\n<li>Guía de instalación, con las secciones A-H de esta actividad.</li>\n<li>Ocho capturas: descarga, BD, VirtualHost, HTTPS, autenticación HTTP, panel, sitio público y logs.</li>\n<li>Tabla de tiempos por fase y total.</li>\n<li>Tabla de credenciales: recurso, usuario, contraseña protegida o enmascarada y notas.</li>\n<li>Reflexión personal de 200 a 300 palabras.</li>\n<li>Referencias consultadas, incluyendo la documentación oficial de WordPress.</li>\n</ol>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>No incluyas contraseñas reales, claves privadas ni el contenido completo de <code>wp-config.php</code> si contiene secretos. Documenta nombres de usuario, recursos y permisos, pero enmascara las contraseñas.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Completa una tabla con estas fases: investigación y planificación, preparación del entorno, base de datos, VirtualHost, instalación de WordPress, seguridad, personalización y documentación. Indica el total y las dificultades reales encontradas.</p>",
+          "id": "completar-tabla-tiempo",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "file",
+          "html": "<p>Adjunta tu PDF final revisado y con todas las evidencias. Comprueba antes que se abre correctamente y no supera 20 MB.</p>",
+          "id": "entrega-pdf-wordpress",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": ".pdf",
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>He revisado requisitos, ortografía, ocho capturas, tamaño del PDF y ausencia de secretos antes de entregar.</p>",
+          "id": "entrega-revisada",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    },
+    {
+      "id": "reflexion-final-wordpress",
+      "titulo": "Reflexión final y exportación",
+      "descripcion": "",
+      "duracionMinutos": 30,
+      "obligatorio": true,
+      "orden": 9,
+      "archivo": "pasos/09-reflexion.md",
+      "segments": [
+        {
+          "type": "reflection",
+          "html": "<p>Redacta entre 200 y 300 palabras. Responde: ¿cuáles fueron los mayores desafíos técnicos?, ¿qué conceptos de actividades previas aplicaste?, ¿qué harías diferente en una segunda instalación? y ¿qué medidas adicionales aplicarías en producción real?</p>",
+          "id": "reflexion-final-wordpress",
+          "required": true,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Para producción real podrías investigar, entre otras medidas, actualizaciones controladas, copias de seguridad verificadas, WAF, limitación de intentos de acceso, desactivación de edición desde el panel, monitorización y certificados de una entidad de confianza. Indica solo las que comprendas y puedas justificar.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<h2>Referencias mínimas</h2>\n<ul>\n<li><a href=\"https://wordpress.org/documentation/\" target=\"_blank\" rel=\"noopener noreferrer\">Documentación oficial de WordPress</a></li>\n<li><a href=\"https://wordpress.org/support/article/how-to-install-wordpress/\" target=\"_blank\" rel=\"noopener noreferrer\">Guía oficial de instalación</a></li>\n<li><a href=\"https://es.wordpress.org/\" target=\"_blank\" rel=\"noopener noreferrer\">WordPress en español</a></li>\n</ul>\n<p>Cuando hayas terminado, exporta tu trabajo desde AulaStep. Guarda el archivo <code>.aulawork</code> junto a tu PDF hasta que recibas confirmación de la entrega.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>He exportado mi trabajo como archivo <code>.aulawork</code> y conservo una copia junto al PDF final.</p>",
+          "id": "exportacion-aulawork",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        }
+      ]
+    }
+  ]
+}
