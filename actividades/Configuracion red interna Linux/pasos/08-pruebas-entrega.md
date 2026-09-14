@@ -21,7 +21,7 @@ ping www.google.es
 ```
 
 :::note{}
-Si responde `8.8.8.8` pero no el nombre de dominio, NAT funciona y debes revisar DNS. Si no responde ninguna dirección externa, revisa gateway, reenvío IPv4 y la regla `MASQUERADE`.
+Si responde `8.8.8.8` pero no el nombre de dominio, entonces NAT está funcionando correctamente y debes revisar DNS. Si no responde ninguna dirección externa, revisa gateway, reenvío IPv4 y la regla `MASQUERADE`, comprobando que has indicado la interfaz de red de salida y no la que apunta a la red interna.
 :::
 
 :::evidence{id="captura-conectividad" type="screenshot" required="true"}

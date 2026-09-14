@@ -5,12 +5,14 @@ duracion_minutos: 20
 obligatorio: true
 ---
 
-El adaptador NAT del servidor permite que la máquina virtual salga a Internet, pero el sistema operativo anfitrión Windows no puede iniciar conexiones hacia ella directamente. 
+SSH (Secure Shell) es un protocolo que permite abrir una terminal remota de forma cifrada. En las actividades, podrás administrar el servidor Linux desde Windows sin usar directamente la consola de VirtualBox.
+
+El adaptador NAT del servidor permite que la máquina virtual salga a Internet, pero el sistema operativo anfitrión Windows no puede iniciar conexiones hacia ella directamente. Para esto vamos a usar el reenvío de puertos que nos ofrece Virtualbox.
 
 Configura una regla de reenvío de puertos en la máquina virtual del servidor para que VirtualBox dirija las conexiones SSH desde Windows al servidor Linux. De esta forma, podrás acceder desde la terminal de Windows al servidor y te resultará más cómodo trabajar con dicha máquina además de que esta es la forma real con la que se suele trabajar con los servidores en remoto.
 
 :::task{id="configurar-reenvio-ssh" required="true"}
-Con la máquina virtual apagada, abre **Configuración → Red → Adaptador 1 (NAT) → Avanzadas → Reenvío de puertos** y añade esta regla:
+Con la máquina virtual del servidor apagada, abre **Configuración → Red → Adaptador 1 (NAT) → Avanzadas → Reenvío de puertos** y añade esta regla:
 
 | Nombre | Protocolo | IP anfitrión | Puerto anfitrión | Puerto invitado |
 |---|---|---|---:|---:|
@@ -39,7 +41,15 @@ Desde PowerShell en Windows, conecta con el usuario de tu servidor:
 ssh TU_USUARIO@localhost -p 2222
 ```
 
-Sustituye `TU_USUARIO` por el usuario creado durante la instalación de Ubuntu. Si es la primera conexión, confirma la huella SSH escribiendo `yes`.
+Sustituye `TU_USUARIO` por el nombre del usuario empleado en el servidor. Si has clonado la máquina base proporcionada para la actividad, el usuario y contraseña son `analuisa`. Si es la primera conexión, confirma la huella SSH escribiendo `yes`. 
+:::
+
+:::warning{}
+Si en el momento de conectar con ssh al servidor se indica que ya se encuentra registrada una clave identificativa para ese servidor "remote host identification has changed, elimina dicha huella, ejecutando en la máquina anfitriona Windows: 
+
+```powershell
+ssh-keygen -R "[localhost]:2222"
+```
 :::
 
 :::evidence{id="captura-ssh-windows" type="screenshot" required="true"}

@@ -9,9 +9,11 @@ Configura los adaptadores antes de iniciar las máquinas:
 
 | Máquina | Adaptador | Modo |
 |---|---|---|
-| Ubuntu Server | 1 | NAT |
-| Ubuntu Server | 2 | Red interna `red-interna` |
+| Ubuntu Server | 1 (eth0)| NAT |
+| Ubuntu Server | 2 (eth1)| Red interna `red-interna` |
 | Ubuntu Desktop | 1 | Red interna `red-interna` |
+
+![Topología del reto 1](../recursos/media/image1.png)
 
 En VirtualBox, selecciona cada máquina, abre **Configuración → Red**, selecciona el adaptador indicado y aplica el modo correspondiente antes de pasar al siguiente.
 

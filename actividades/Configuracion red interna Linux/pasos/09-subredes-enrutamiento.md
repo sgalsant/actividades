@@ -7,7 +7,7 @@ obligatorio: true
 
 En el reto 2 añadirás una segunda red `192.168.2.0/24`, un segundo Ubuntu Server y una tercera red `192.168.3.0/24`.
 
-![Topología del reto 2](recursos/media/image7.png)
+![Topología del reto 2](../recursos/media/image7.png)
 
 | Equipo | Interfaz | Conexión y dirección |
 |---|---|---|
@@ -55,7 +55,7 @@ Servidor 1 muestra una interfaz con `192.168.2.1/24` y una ruta a `192.168.3.0/2
 :::task{id="configurar-servidor-dos" required="true"}
 1. En VirtualBox, crea el segundo servidor con dos adaptadores en modo **Red interna**: `red-interna-2` conecta con Servidor 1 y `red-interna-3` conecta con Desktop 2. Comprueba con `ip a` que los nombres reales corresponden a esos enlaces; el ejemplo usa `enp0s3` y `enp0s8`.
 
-2. Habilita el reenvío IPv4 como hiciste en el reto 1: añade `net.ipv4.ip_forward=1` en `/etc/sysctl.conf`, ejecuta `sudo sysctl -p` y comprueba el valor con `sysctl net.ipv4.ip_forward`.
+2. Habilita el reenvío IPv4 como hiciste en el reto 1 `net.ipv4.ip_forward=1`.
 
 3. En una máquina base puede existir un YAML previo. Haz una copia de seguridad y retíralo de `/etc/netplan/` para evitar que Netplan lo fusione con esta configuración. Después crea `/etc/netplan/network-config.yaml`, ajustando los nombres de interfaz si es necesario:
 
@@ -83,7 +83,7 @@ network:
         - 192.168.3.1/24
 ```
 
-4. Protege, aplica y revisa la configuración:
+4. Configura los permisos del archivo de configuración de red para que solo el propietario del archivo tenga permisos de lectura y escritura, aplica y revisa la configuración:
 
 ```bash
 sudo chmod 600 /etc/netplan/network-config.yaml
