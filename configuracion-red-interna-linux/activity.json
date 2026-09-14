@@ -8,7 +8,7 @@
     "id": "configuracion-red-interna-linux",
     "titulo": "Configuración de una red interna Linux",
     "subtitulo": "Ubuntu Server como gateway con NAT y enrutamiento entre subredes",
-    "version": "1.2.3",
+    "version": "1.8.0",
     "descripcion": "Configura una red interna en VirtualBox donde Ubuntu Server da salida a Internet a equipos Ubuntu Desktop mediante Netplan, acceso SSH desde Windows, reenvío IPv4 y NAT.",
     "autor": "Santiago Galván Sánchez",
     "modulo": "Servicios en red",
@@ -70,7 +70,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p><img src=\"recursos/media/image1.png\" alt=\"Topología del reto 1\" /></p>\n<p>Empezamos con una configuración básica donde simulamos una intranet de una empresa conectada a Internet a través de un router Ubuntu Server.</p>\n<p>En esta actividad configurarás dos máquinas virtuales: un Ubuntu Server que funcionará como un router y un Ubuntu Desktop que será una máquina de trabajo conectada a la intranet de la empresa.</p>\n<p>Es importante habituarse al trabajo con máquinas virtuales y configuración de multiples redes ya que será nuestro escenario habitual de trabajo.</p>",
+          "html": "<p>Empezamos con una configuración básica donde simulamos una intranet de una empresa conectada a Internet a través de un router Ubuntu Server.</p>\n<p><img src=\"recursos/media/image1.png\" alt=\"Topología del reto 1\" />\nEn esta actividad configurarás dos máquinas virtuales: un Ubuntu Server que funcionará como un router y un Ubuntu Desktop que será una máquina de trabajo conectada a la intranet de la empresa.</p>\n<p>Es importante habituarse al trabajo con máquinas virtuales y configuración de multiples redes ya que será nuestro escenario habitual de trabajo.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -97,16 +97,6 @@
           "options": null,
           "accept": null,
           "label": null
-        },
-        {
-          "type": "checkpoint",
-          "html": "<p>Distingo los roles de la topología: la interfaz NAT del servidor sale a Internet, su interfaz de red interna conecta con Ubuntu Desktop y el servidor será el gateway del cliente.</p>",
-          "id": "roles-topologia",
-          "required": true,
-          "questionType": null,
-          "options": null,
-          "accept": null,
-          "label": null
         }
       ]
     },
@@ -121,7 +111,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>Parte de las máquinas base de Ubuntu Desktop y Ubuntu Server en VirtualBox. Crea una clonación enlazada de cada una y genera nuevas direcciones MAC para todos sus adaptadores.</p>",
+          "html": "<aside class=\"as-callout as-callout--tip\" role=\"note\"><span class=\"as-callout-label\">Consejo</span><div class=\"as-callout-body\"><p>En este curso, las actividades se realizarán con Ubuntu Server y Ubuntu Desktop versiones 26.04</p></div></aside>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -131,7 +121,17 @@
         },
         {
           "type": "html",
-          "html": "<aside class=\"as-callout as-callout--tip\" role=\"note\"><span class=\"as-callout-label\">Consejo</span><div class=\"as-callout-body\"><p>Una clonación enlazada reutiliza el disco base y reduce el espacio ocupado. No uses la misma MAC en las dos máquinas: VirtualBox y la red no podrían distinguirlas correctamente.</p></div></aside>",
+          "html": "<p>A partir de las máquinas base de Ubuntu Desktop y Ubuntu Server en VirtualBox, crea una clonación enlazada de cada una y genera nuevas direcciones MAC para todos sus adaptadores.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--tip\" role=\"note\"><span class=\"as-callout-label\">Consejo</span><div class=\"as-callout-body\"><p>Una clonación enlazada reutiliza el disco base y reduce el espacio ocupado. Ten cuidado de no usar la misma MAC en varias máquinas ya que se producirá problemas en la comunicación a través de la red.</p></div></aside>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -172,7 +172,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>Configura los adaptadores antes de iniciar las máquinas:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Máquina</th>\n<th>Adaptador</th>\n<th>Modo</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Ubuntu Server</td>\n<td>1</td>\n<td>NAT</td>\n</tr>\n<tr>\n<td>Ubuntu Server</td>\n<td>2</td>\n<td>Red interna <code>red-interna</code></td>\n</tr>\n<tr>\n<td>Ubuntu Desktop</td>\n<td>1</td>\n<td>Red interna <code>red-interna</code></td>\n</tr>\n</tbody>\n</table>\n</div><p>En VirtualBox, selecciona cada máquina, abre <strong>Configuración → Red</strong>, selecciona el adaptador indicado y aplica el modo correspondiente antes de pasar al siguiente.</p>",
+          "html": "<p>Configura los adaptadores antes de iniciar las máquinas:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Máquina</th>\n<th>Adaptador</th>\n<th>Modo</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Ubuntu Server</td>\n<td>1 (eth0)</td>\n<td>NAT</td>\n</tr>\n<tr>\n<td>Ubuntu Server</td>\n<td>2 (eth1)</td>\n<td>Red interna <code>red-interna</code></td>\n</tr>\n<tr>\n<td>Ubuntu Desktop</td>\n<td>1</td>\n<td>Red interna <code>red-interna</code></td>\n</tr>\n</tbody>\n</table>\n</div><p><img src=\"recursos/media/image1.png\" alt=\"Topología del reto 1\" /></p>\n<p>En VirtualBox, selecciona cada máquina, abre <strong>Configuración → Red</strong>, selecciona el adaptador indicado y aplica el modo correspondiente antes de pasar al siguiente.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -213,7 +213,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>El adaptador NAT del servidor permite que la máquina virtual salga a Internet, pero el sistema operativo anfitrión Windows no puede iniciar conexiones hacia ella directamente.</p>\n<p>Configura una regla de reenvío de puertos en la máquina virtual del servidor para que VirtualBox dirija las conexiones SSH desde Windows al servidor Linux. De esta forma, podrás acceder desde la terminal de Windows al servidor y te resultará más cómodo trabajar con dicha máquina además de que esta es la forma real con la que se suele trabajar con los servidores en remoto.</p>",
+          "html": "<p>SSH (Secure Shell) es un protocolo que permite abrir una terminal remota de forma cifrada. En las actividades, podrás administrar el servidor Linux desde Windows sin usar directamente la consola de VirtualBox.</p>\n<p>El adaptador NAT del servidor permite que la máquina virtual salga a Internet, pero el sistema operativo anfitrión Windows no puede iniciar conexiones hacia ella directamente. Para esto vamos a usar el reenvío de puertos que nos ofrece Virtualbox.</p>\n<p>Configura una regla de reenvío de puertos en la máquina virtual del servidor para que VirtualBox dirija las conexiones SSH desde Windows al servidor Linux. De esta forma, podrás acceder desde la terminal de Windows al servidor y te resultará más cómodo trabajar con dicha máquina además de que esta es la forma real con la que se suele trabajar con los servidores en remoto.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -223,7 +223,7 @@
         },
         {
           "type": "task",
-          "html": "<p>Con la máquina virtual apagada, abre <strong>Configuración → Red → Adaptador 1 (NAT) → Avanzadas → Reenvío de puertos</strong> y añade esta regla:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Nombre</th>\n<th>Protocolo</th>\n<th>IP anfitrión</th>\n<th style=\"text-align:right\">Puerto anfitrión</th>\n<th style=\"text-align:right\">Puerto invitado</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>SSH</td>\n<td>TCP</td>\n<td>127.0.0.1</td>\n<td style=\"text-align:right\">2222</td>\n<td style=\"text-align:right\">22</td>\n</tr>\n</tbody>\n</table>\n</div><p>La dirección <code>127.0.0.1</code> limita el acceso al propio equipo anfitrión. El puerto <code>2222</code> evita interferir con un posible servidor SSH instalado en Windows.</p>",
+          "html": "<p>Con la máquina virtual del servidor apagada, abre <strong>Configuración → Red → Adaptador 1 (NAT) → Avanzadas → Reenvío de puertos</strong> y añade esta regla:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Nombre</th>\n<th>Protocolo</th>\n<th>IP anfitrión</th>\n<th style=\"text-align:right\">Puerto anfitrión</th>\n<th style=\"text-align:right\">Puerto invitado</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>SSH</td>\n<td>TCP</td>\n<td>127.0.0.1</td>\n<td style=\"text-align:right\">2222</td>\n<td style=\"text-align:right\">22</td>\n</tr>\n</tbody>\n</table>\n</div><p>La dirección <code>127.0.0.1</code> limita el acceso al propio equipo anfitrión. El puerto <code>2222</code> evita interferir con un posible servidor SSH instalado en Windows.</p>",
           "id": "configurar-reenvio-ssh",
           "required": true,
           "questionType": null,
@@ -243,9 +243,19 @@
         },
         {
           "type": "task",
-          "html": "<p>Desde PowerShell en Windows, conecta con el usuario de tu servidor:</p>\n<pre><code class=\"language-powershell\">ssh TU_USUARIO@localhost -p 2222\n</code></pre>\n<p>Sustituye <code>TU_USUARIO</code> por el usuario creado durante la instalación de Ubuntu. Si es la primera conexión, confirma la huella SSH escribiendo <code>yes</code>.</p>",
+          "html": "<p>Desde PowerShell en Windows, conecta con el usuario de tu servidor:</p>\n<pre><code class=\"language-powershell\">ssh TU_USUARIO@localhost -p 2222\n</code></pre>\n<p>Sustituye <code>TU_USUARIO</code> por el nombre del usuario empleado en el servidor. Si has clonado la máquina base proporcionada para la actividad, el usuario y contraseña son <code>analuisa</code>. Si es la primera conexión, confirma la huella SSH escribiendo <code>yes</code>.</p>",
           "id": "probar-ssh-windows",
           "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>Si en el momento de conectar con ssh al servidor se indica que ya se encuentra registrada una clave identificativa para ese servidor &quot;remote host identification has changed, elimina dicha huella, ejecutando en la máquina anfitriona Windows:</p>\n<pre><code class=\"language-powershell\">ssh-keygen -R &quot;[localhost]:2222&quot;\n</code></pre></div></aside>",
+          "id": "",
+          "required": false,
           "questionType": null,
           "options": null,
           "accept": null,
@@ -356,7 +366,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>El reenvío IPv4 permite que un equipo reciba un paquete por una interfaz de red y lo envíe por otra según su tabla de rutas. En esta topología, el Ubuntu Server recibe por su interfaz interna los paquetes del cliente Ubuntu Desktop y debe reenviarlos por su interfaz NAT para que puedan salir hacia Internet.</p>\n<p>El servidor no reenvía paquetes entre interfaces por defecto: actúa como destino final de los paquetes que recibe. Activar <code>net.ipv4.ip_forward</code> lo convierte en un encaminador. Este ajuste no modifica direcciones IP; la traducción de direcciones necesaria para salir a Internet se configurará mediante NAT en el paso siguiente. Activa el reenvío de forma persistente en <code>/etc/sysctl.conf</code>.</p>",
+          "html": "<p>El reenvío IPv4 permite que un equipo reciba un paquete por una interfaz de red y lo envíe por otra según su tabla de rutas. En esta topología, el Ubuntu Server recibe por su interfaz interna los paquetes del cliente Ubuntu Desktop y debe reenviarlos por su interfaz NAT para que puedan salir hacia Internet.</p>\n<p>El servidor no reenvía paquetes entre interfaces por defecto: actúa como destino final de los paquetes que recibe. Activar <code>net.ipv4.ip_forward</code> lo convierte en un encaminador. Este ajuste no modifica direcciones IP; la traducción de direcciones necesaria para salir a Internet se configurará mediante NAT en el paso siguiente.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -366,7 +376,7 @@
         },
         {
           "type": "task",
-          "html": "<ol>\n<li>Abre el archivo de configuración de <code>sysctl</code>:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo nano /etc/sysctl.conf\n</code></pre>\n<ol start=\"2\">\n<li>Busca la línea siguiente. Si empieza por <code>#</code>, elimina ese carácter; si no existe, añádela. El valor <code>1</code> activa el reenvío, <code>0</code> lo desactiva y cualquier valor distinto de cero lo mantiene activo:</li>\n</ol>\n<pre><code class=\"language-ini\">net.ipv4.ip_forward=1\n</code></pre>\n<ol start=\"3\">\n<li>Guarda el archivo y carga la configuración sin reiniciar:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo sysctl -p\n</code></pre>\n<ol start=\"4\">\n<li>Comprueba el valor activo. Debe mostrar <code>net.ipv4.ip_forward = 1</code>:</li>\n</ol>\n<pre><code class=\"language-bash\">sysctl net.ipv4.ip_forward\n</code></pre>",
+          "html": "<ol>\n<li>En el servidor, activamos ip_forward registrandolo en un nuevo fichero de configuración en el directorio /etc/sysctl.d:</li>\n</ol>\n<pre><code class=\"language-bash\">echo 'net.ipv4.ip_forward = 1' | sudo tee /etc/sysctl.d/99-ip-forward.conf\n</code></pre>\n<ol start=\"2\">\n<li>Rearga la configuración sin reiniciar:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo sysctl --system\n</code></pre>\n<ol start=\"3\">\n<li>Comprueba el valor activo. Debe mostrar <code>net.ipv4.ip_forward = 1</code>:</li>\n</ol>\n<pre><code class=\"language-bash\">sysctl net.ipv4.ip_forward\n</code></pre>",
           "id": "habilitar-ip-forward",
           "required": true,
           "questionType": null,
@@ -397,7 +407,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>La red <code>192.168.1.0/24</code> usa direcciones privadas. NAT con <code>MASQUERADE</code> sustituye la dirección de origen del cliente por la de la interfaz externa del servidor.</p>",
+          "html": "<p>La red <code>192.168.1.0/24</code> usa direcciones privadas. El servicio NAT ejecutado con el parámetro <code>MASQUERADE</code>, sustituye la dirección ip de origen del cliente por la ip de la interfaz externa del servidor.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -417,7 +427,7 @@
         },
         {
           "type": "html",
-          "html": "<p><img src=\"recursos/media/image6.png\" alt=\"Instalación de iptables-persistent\" /></p>",
+          "html": "<p>Si se reiniciara el servidor, se perderían las reglas configuradas con iptables, porque los cambios no se conservan de forma permanente. Para mantenerlas después de cada reinicio, instalaremos el paquete iptables-persistent. Este paquete guarda las reglas en archivos de configuración y las vuelve a aplicar automáticamente al iniciar el sistema.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -427,7 +437,7 @@
         },
         {
           "type": "task",
-          "html": "<ol>\n<li>Instala <code>iptables-persistent</code> para conservar las reglas después de reiniciar:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo apt install iptables-persistent\n</code></pre>\n<ol start=\"2\">\n<li>Guarda la configuración actual y consulta las reglas almacenadas:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo netfilter-persistent save\nsudo iptables-save\n</code></pre>",
+          "html": "<ol>\n<li>Instala <code>iptables-persistent</code> para conservar las reglas después de reiniciar:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo apt install iptables-persistent\n</code></pre>\n<p><img src=\"recursos/media/image6.png\" alt=\"Instalación de iptables-persistent\" /></p>\n<ol start=\"2\">\n<li>Guarda la configuración actual y consulta las reglas almacenadas:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo netfilter-persistent save\nsudo iptables-save\n</code></pre>",
           "id": "persistir-reglas-iptables",
           "required": true,
           "questionType": null,
@@ -437,7 +447,7 @@
         },
         {
           "type": "html",
-          "html": "<p>Las reglas persistentes se guardan en <code>/etc/iptables/rules.v4</code>. Si las modificas después de instalar <code>iptables-persistent</code>, vuelve a ejecutar <code>sudo netfilter-persistent save</code> para no perderlas al reiniciar.</p>\n<p>Para borrar las reglas actuales antes de volver a probar una configuración, usa:</p>\n<pre><code class=\"language-bash\">sudo iptables -F\nsudo iptables -t nat -F\n</code></pre>",
+          "html": "<p>Las reglas persistentes se guardan en <code>/etc/iptables/rules.v4</code>. Si las modificas después de instalar <code>iptables-persistent</code>, vuelve a ejecutar <code>sudo netfilter-persistent save</code> para no perderlas al reiniciar.</p>\n<p>Solo en el caso que quieras borras las reglas de iptables, usa:</p>\n<pre><code class=\"language-bash\">sudo iptables -F\nsudo iptables -t nat -F\n</code></pre>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -478,7 +488,7 @@
         },
         {
           "type": "html",
-          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Si responde <code>8.8.8.8</code> pero no el nombre de dominio, NAT funciona y debes revisar DNS. Si no responde ninguna dirección externa, revisa gateway, reenvío IPv4 y la regla <code>MASQUERADE</code>.</p></div></aside>",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Si responde <code>8.8.8.8</code> pero no el nombre de dominio, entonces NAT está funcionando correctamente y debes revisar DNS. Si no responde ninguna dirección externa, revisa gateway, reenvío IPv4 y la regla <code>MASQUERADE</code>, comprobando que has indicado la interfaz de red de salida y no la que apunta a la red interna.</p></div></aside>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -579,7 +589,7 @@
         },
         {
           "type": "task",
-          "html": "<ol>\n<li>\n<p>En VirtualBox, crea el segundo servidor con dos adaptadores en modo <strong>Red interna</strong>: <code>red-interna-2</code> conecta con Servidor 1 y <code>red-interna-3</code> conecta con Desktop 2. Comprueba con <code>ip a</code> que los nombres reales corresponden a esos enlaces; el ejemplo usa <code>enp0s3</code> y <code>enp0s8</code>.</p>\n</li>\n<li>\n<p>Habilita el reenvío IPv4 como hiciste en el reto 1: añade <code>net.ipv4.ip_forward=1</code> en <code>/etc/sysctl.conf</code>, ejecuta <code>sudo sysctl -p</code> y comprueba el valor con <code>sysctl net.ipv4.ip_forward</code>.</p>\n</li>\n<li>\n<p>En una máquina base puede existir un YAML previo. Haz una copia de seguridad y retíralo de <code>/etc/netplan/</code> para evitar que Netplan lo fusione con esta configuración. Después crea <code>/etc/netplan/network-config.yaml</code>, ajustando los nombres de interfaz si es necesario:</p>\n</li>\n</ol>\n<pre><code class=\"language-bash\">sudo mkdir -p /etc/netplan.backup\nsudo cp -a /etc/netplan/. /etc/netplan.backup/\nsudo rm -f /etc/netplan/*.yaml\nsudo nano /etc/netplan/network-config.yaml\n</code></pre>\n<pre><code class=\"language-yaml\">network:\n  version: 2\n  ethernets:\n    enp0s3:\n      addresses:\n        - 192.168.2.2/24\n      nameservers:\n        addresses: [8.8.8.8]\n      routes:\n        - to: default\n          via: 192.168.2.1\n    enp0s8:\n      addresses:\n        - 192.168.3.1/24\n</code></pre>\n<ol start=\"4\">\n<li>Protege, aplica y revisa la configuración:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo chmod 600 /etc/netplan/network-config.yaml\nsudo netplan apply\nip a\nip route\n</code></pre>",
+          "html": "<ol>\n<li>\n<p>En VirtualBox, crea el segundo servidor con dos adaptadores en modo <strong>Red interna</strong>: <code>red-interna-2</code> conecta con Servidor 1 y <code>red-interna-3</code> conecta con Desktop 2. Comprueba con <code>ip a</code> que los nombres reales corresponden a esos enlaces; el ejemplo usa <code>enp0s3</code> y <code>enp0s8</code>.</p>\n</li>\n<li>\n<p>Habilita el reenvío IPv4 como hiciste en el reto 1 <code>net.ipv4.ip_forward=1</code>.</p>\n</li>\n<li>\n<p>En una máquina base puede existir un YAML previo. Haz una copia de seguridad y retíralo de <code>/etc/netplan/</code> para evitar que Netplan lo fusione con esta configuración. Después crea <code>/etc/netplan/network-config.yaml</code>, ajustando los nombres de interfaz si es necesario:</p>\n</li>\n</ol>\n<pre><code class=\"language-bash\">sudo mkdir -p /etc/netplan.backup\nsudo cp -a /etc/netplan/. /etc/netplan.backup/\nsudo rm -f /etc/netplan/*.yaml\nsudo nano /etc/netplan/network-config.yaml\n</code></pre>\n<pre><code class=\"language-yaml\">network:\n  version: 2\n  ethernets:\n    enp0s3:\n      addresses:\n        - 192.168.2.2/24\n      nameservers:\n        addresses: [8.8.8.8]\n      routes:\n        - to: default\n          via: 192.168.2.1\n    enp0s8:\n      addresses:\n        - 192.168.3.1/24\n</code></pre>\n<ol start=\"4\">\n<li>Configura los permisos del archivo de configuración de red para que solo el propietario del archivo tenga permisos de lectura y escritura, aplica y revisa la configuración:</li>\n</ol>\n<pre><code class=\"language-bash\">sudo chmod 600 /etc/netplan/network-config.yaml\nsudo netplan apply\nip a\nip route\n</code></pre>",
           "id": "configurar-servidor-dos",
           "required": true,
           "questionType": null,
