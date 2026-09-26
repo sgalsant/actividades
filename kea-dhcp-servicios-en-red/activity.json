@@ -8,12 +8,12 @@
     "id": "kea-dhcp-servicios-en-red",
     "titulo": "Kea DHCP en Servicios en red",
     "subtitulo": "Configuracion, ampliacion y verificacion de un servidor DHCP",
-    "version": "1.0.0",
-    "descripcion": "El alumnado instala y configura Kea DHCP en Ubuntu Server, valida la asignacion dinamica en una primera red, amplia el servicio a una segunda red y crea una reserva fija por MAC.",
+    "version": "1.1.19",
+    "descripcion": "El alumnado instala y configura Kea DHCP en Ubuntu Server, valida la asignacion dinamica en una primera red, amplia el servicio a una segunda red, crea una reserva fija por MAC y extiende el servicio a una tercera red mediante un relay DHCP en Ubuntu Server 1.",
     "autor": "LLM Wiki Template",
     "modulo": "Servicios en red",
     "curso": "2º SMR",
-    "duracionMinutos": 120,
+    "duracionMinutos": 160,
     "tema": "oceano",
     "licencia": {
       "nombre": "CC BY-NC-SA 4.0",
@@ -70,7 +70,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<h2>Objetivos de la práctica</h2>\n<ul>\n<li>Configurar un servidor DHCP con Kea en Ubuntu Server 2.</li>\n<li>Repartir direcciones IP dinámicas en la red interna 3 (<code>192.168.3.0/24</code>).</li>\n<li>Ampliar la configuración para dar servicio también en la red interna 2 (<code>192.168.2.0/24</code>).</li>\n<li>Crear una reserva de IP fija para Ubuntu Server 1 en la red interna 2.</li>\n</ul>\n<h2>Escenario de la topología</h2>\n<p>Según la topología ya desplegada en VirtualBox:</p>\n<ul>\n<li>Ubuntu Server 1:\n<ul>\n<li><code>eth0</code>: DHCP (internet)</li>\n<li><code>eth1</code>: <code>192.168.1.1</code> (red interna 1)</li>\n<li><code>eth2</code>: <code>192.168.2.1</code> (red interna 2)</li>\n</ul>\n</li>\n<li>Ubuntu Server 2 (servidor DHCP):\n<ul>\n<li><code>eth0</code>: <code>192.168.2.2</code> (red interna 2)</li>\n<li><code>eth1</code>: <code>192.168.3.1</code> (red interna 3)</li>\n</ul>\n</li>\n<li>Ubuntu Desktop 1: <code>192.168.1.2</code> (red interna 1, cliente de Server 1)</li>\n<li>Ubuntu Desktop 2: <code>192.168.3.2</code> (red interna 3, cliente de Server 2 vía DHCP)</li>\n</ul>\n<p><img src=\"recursos/media/image1.png\" alt=\"Topología del escenario\" /></p>",
+          "html": "<h2>Objetivos de la práctica</h2>\n<ul>\n<li>Configurar un servidor DHCP con Kea en Ubuntu Server 2.</li>\n<li>Repartir direcciones IP dinámicas en la red interna 3 (<code>192.168.3.0/24</code>).</li>\n<li>Ampliar la configuración para dar servicio también en la red interna 2 (<code>192.168.2.0/24</code>).</li>\n<li>Crear una reserva de IP fija para Ubuntu Server 1 en la red interna 2.</li>\n<li>Atender la red interna 1 (<code>192.168.1.0/24</code>) con Kea desde Ubuntu Server 2 mediante un relay DHCP instalado en Ubuntu Server 1.</li>\n</ul>\n<h2>Escenario de la topología</h2>\n<p>Según la topología ya desplegada en VirtualBox:</p>\n<ul>\n<li>Ubuntu Server 1:\n<ul>\n<li><code>eth0</code>: DHCP (internet)</li>\n<li><code>eth1</code>: <code>192.168.1.1</code> (red interna 1)</li>\n<li><code>eth2</code>: <code>192.168.2.1</code> (red interna 2)</li>\n</ul>\n</li>\n<li>Ubuntu Server 2 (servidor DHCP):\n<ul>\n<li><code>eth0</code>: <code>192.168.2.2</code> (red interna 2)</li>\n<li><code>eth1</code>: <code>192.168.3.1</code> (red interna 3)</li>\n</ul>\n</li>\n<li>Ubuntu Desktop 1: <code>192.168.1.2</code> inicialmente estática (red interna 1); al final pasará a DHCP y obtendrá una dirección de Kea mediante Server 1.</li>\n<li>Ubuntu Desktop 2: red interna 3; obtendrá por DHCP una dirección del rango <code>192.168.3.100–192.168.3.200</code> (no conservará <code>192.168.3.2</code> si estaba configurada manualmente).</li>\n</ul>\n<p><img src=\"recursos/media/image1.png\" alt=\"Topología del escenario\" /></p>\n<p>La dirección <code>192.168.1.2</code> que aparece en el esquema representa el <strong>estado inicial</strong> de Ubuntu Desktop 1, no la dirección que conservará al activar DHCP.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -80,7 +80,17 @@
         },
         {
           "type": "html",
-          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>Antes de seguir, identifica qué interfaz de red conecta cada máquina con la red interna que vas a usar.</p></div></aside>",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>La identificación de las interfaces de cada red interna forma parte de las tareas posteriores.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--warning\" role=\"note\"><span class=\"as-callout-label\">Atención</span><div class=\"as-callout-body\"><p>Haz las pruebas en redes internas aisladas de VirtualBox. No conectes Kea a una red compartida donde ya haya otro servidor DHCP.</p></div></aside>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -111,19 +121,9 @@
         },
         {
           "type": "task",
-          "html": "<p>Instala <code>kea-dhcp4-server</code> y verifica que el servicio queda registrado en el sistema.</p>",
+          "html": "<p>En Ubuntu Server 2, instala <code>kea-dhcp4-server</code> y comprueba que systemd reconoce el servicio. Un estado inicial inactivo o fallido no impide continuar: todavía no has adaptado la configuración a tu red.</p>\n<pre><code class=\"language-bash\">sudo apt update\nsudo apt install kea-dhcp4-server -y\nsystemctl status kea-dhcp4-server --no-pager\n</code></pre>",
           "id": "instalar-kea",
           "required": true,
-          "questionType": null,
-          "options": null,
-          "accept": null,
-          "label": null
-        },
-        {
-          "type": "html",
-          "html": "<pre><code class=\"language-bash\">sudo apt update\nsudo apt install kea-dhcp4-server -y\nsystemctl status kea-dhcp4-server\n</code></pre>",
-          "id": "",
-          "required": false,
           "questionType": null,
           "options": null,
           "accept": null,
@@ -162,7 +162,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>Configura Kea para repartir direcciones en la red interna <strong>192.168.3.0/24</strong>.</p>\n<h3>Configuración base de Kea</h3>\n<pre><code class=\"language-json\">{\n  &quot;Dhcp4&quot;: {\n    &quot;interfaces-config&quot;: {\n      &quot;interfaces&quot;: [ &quot;enp0s8&quot; ]\n    },\n    &quot;lease-database&quot;: {\n      &quot;type&quot;: &quot;memfile&quot;,\n      &quot;persist&quot;: true,\n      &quot;name&quot;: &quot;/var/lib/kea/kea-leases4.csv&quot;\n    },\n    &quot;subnet4&quot;: [\n      {\n        &quot;subnet&quot;: &quot;192.168.3.0/24&quot;,\n        &quot;pools&quot;: [\n          { &quot;pool&quot;: &quot;192.168.3.100 - 192.168.3.200&quot; }\n        ],\n        &quot;option-data&quot;: [\n          { &quot;name&quot;: &quot;routers&quot;, &quot;data&quot;: &quot;192.168.3.1&quot; },\n          { &quot;name&quot;: &quot;domain-name-servers&quot;, &quot;data&quot;: &quot;8.8.8.8&quot; }\n        ]\n      }\n    ]\n  }\n}\n</code></pre>",
+          "html": "<p><img src=\"recursos/media/red-dhcp.png\" alt=\"Topología de la práctica: Kea DHCP se instalará en Ubuntu Server 2 y atenderá la red interna 3, 192.168.3.0/24.\" /></p>\n<p>El servidor DHCP Kea se instalará en <strong>Ubuntu Server 2</strong> y, en este paso, entregará direcciones a los equipos de la <strong>red interna 3 (192.168.3.0/24)</strong>.</p>\n<p>La primera configuración de Kea repartirá direcciones en la red interna <strong>192.168.3.0/24</strong>.</p>\n<p>El nombre <code>enp0s8</code> del ejemplo es orientativo y puede diferir del de Ubuntu Server 2.</p>\n<h3>Configuración base de Kea</h3>\n<pre><code class=\"language-json\">{\n  &quot;Dhcp4&quot;: {\n    &quot;interfaces-config&quot;: {\n      &quot;interfaces&quot;: [ &quot;enp0s8&quot; ]\n    },\n    &quot;lease-database&quot;: {\n      &quot;type&quot;: &quot;memfile&quot;,\n      &quot;persist&quot;: true,\n      &quot;name&quot;: &quot;/var/lib/kea/kea-leases4.csv&quot;\n    },\n    &quot;subnet4&quot;: [\n      {\n        &quot;id&quot;: 1,\n        &quot;subnet&quot;: &quot;192.168.3.0/24&quot;,\n        &quot;pools&quot;: [\n          { &quot;pool&quot;: &quot;192.168.3.100 - 192.168.3.200&quot; }\n        ],\n        &quot;option-data&quot;: [\n          { &quot;name&quot;: &quot;routers&quot;, &quot;data&quot;: &quot;192.168.3.1&quot; },\n          { &quot;name&quot;: &quot;domain-name-servers&quot;, &quot;data&quot;: &quot;8.8.8.8&quot; }\n        ]\n      }\n    ]\n  }\n}\n</code></pre>\n<h3>Qué significa cada parámetro</h3>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Parámetro</th>\n<th>Función en esta práctica</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>Dhcp4</code></td>\n<td>Agrupa la configuración del servidor DHCP para IPv4.</td>\n</tr>\n<tr>\n<td><code>interfaces-config.interfaces</code></td>\n<td>Enumera las interfaces donde Kea recibe solicitudes DHCP. Debe incluir la interfaz de la red interna 3, no la conectada a otra red.</td>\n</tr>\n<tr>\n<td><code>lease-database.type: memfile</code></td>\n<td>Guarda las concesiones en el backend de archivo de Kea, sin base de datos externa.</td>\n</tr>\n<tr>\n<td><code>lease-database.persist: true</code></td>\n<td>Conserva las concesiones en disco para recuperarlas tras reiniciar el servicio.</td>\n</tr>\n<tr>\n<td><code>lease-database.name</code></td>\n<td>Ruta del archivo CSV de concesiones; <strong>no</strong> es el archivo de configuración.</td>\n</tr>\n<tr>\n<td><code>subnet4</code> y <code>subnet</code></td>\n<td>Definen las redes IPv4 atendidas; aquí, <code>192.168.3.0/24</code>.</td>\n</tr>\n<tr>\n<td><code>id</code></td>\n<td>Identificador numérico único y positivo de esta subred dentro de la configuración de Kea. Se asigna <code>1</code> a <code>192.168.3.0/24</code>; conserva ese ID al ampliar la configuración y no lo reutilices para otra subred.</td>\n</tr>\n<tr>\n<td><code>pools.pool</code></td>\n<td>Delimita las direcciones <strong>dinámicas</strong> que se pueden conceder: <code>.100</code> a <code>.200</code>.</td>\n</tr>\n<tr>\n<td><code>option-data.name: routers</code> y <code>data</code></td>\n<td>Anuncian <code>192.168.3.1</code> como puerta de enlace al cliente. Esto no activa por sí solo el enrutamiento ni el acceso a Internet.</td>\n</tr>\n<tr>\n<td><code>option-data.name: domain-name-servers</code> y <code>data</code></td>\n<td>Anuncian <code>8.8.8.8</code> como DNS; su uso requiere conectividad hacia ese servidor.</td>\n</tr>\n</tbody>\n</table>\n</div><p>Kea selecciona la subred adecuada según la red por la que llega la solicitud. Una interfaz en <code>interfaces-config</code> <strong>no sustituye</strong> a la definición de <code>subnet4</code>.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -172,19 +172,9 @@
         },
         {
           "type": "task",
-          "html": "<p>Edita <code>/etc/kea/kea-dhcp4.conf</code>, define la interfaz correcta y crea un pool para <code>192.168.3.100 - 192.168.3.200</code>.</p>",
+          "html": "<p>En Ubuntu Server 2, identifica la interfaz de la red interna 3 con <code>ip -br link</code>. Este respaldo y renombrado es una <strong>inicialización de una sola vez</strong>: conserva el archivo predeterminado del paquete antes de crear la configuración de la práctica en la ruta original. Primero ejecuta <code>test</code> para comprobar que no exista ya <code>/etc/kea/kea-dhcp4.conf.default.bak</code>. Si el comando no termina correctamente, <strong>detente</strong>: no des por hecho que el <code>mv</code> se realizó ni sobrescribas ese respaldo; inspecciona ambos archivos, conserva cualquier configuración actual y elige un nombre de respaldo distinto antes de continuar. Solo si la comprobación confirma que el nombre está libre, ejecuta el <code>mv</code>; luego pega el ejemplo completo anterior en <code>/etc/kea/kea-dhcp4.conf</code>, sustituyendo <code>enp0s8</code> por la interfaz real; confirma que el pool es <code>192.168.3.100 - 192.168.3.200</code>. Valida y revisa el resultado antes de reiniciar. Si editar o validar falla, detente, corrige o recupera la configuración y no reinicies hasta que la validación pase:</p>\n<pre><code class=\"language-bash\">ip -br link\nsudo test ! -e /etc/kea/kea-dhcp4.conf.default.bak\necho $?\n</code></pre>\n<p>Continúa solo si <code>echo $?</code> muestra <code>0</code>, que significa que el nombre de respaldo está libre. Si muestra otro valor, detente e inspecciona los archivos; no ejecutes <code>mv</code> ni continúes con la edición.</p>\n<pre><code class=\"language-bash\">sudo mv /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.default.bak\nsudo nano /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Después de guardar el archivo, valida la configuración y revisa la salida. <strong>No reinicies si Kea informa un error.</strong></p>\n<pre><code class=\"language-bash\">sudo -u _kea kea-dhcp4 -t /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Solo si la validación termina sin errores, reinicia Kea y comprueba el estado:</p>\n<pre><code class=\"language-bash\">sudo systemctl restart kea-dhcp4-server\nsystemctl status kea-dhcp4-server --no-pager\n</code></pre>\n<p>Ejecuta cada comando por separado. Si necesitas recuperar el archivo predeterminado, restáuralo con <code>mv</code>:</p>\n<pre><code class=\"language-bash\">sudo mv /etc/kea/kea-dhcp4.conf.default.bak /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Valida el archivo restaurado y comprueba que no haya errores:</p>\n<pre><code class=\"language-bash\">sudo -u _kea kea-dhcp4 -t /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Solo si la validación pasa, reinicia Kea y consulta su estado:</p>\n<pre><code class=\"language-bash\">sudo systemctl restart kea-dhcp4-server\nsystemctl status kea-dhcp4-server --no-pager\n</code></pre>\n<p>La tarea termina cuando la prueba ejecutada como usuario <code>_kea</code> no informa errores y <code>systemctl status kea-dhcp4-server</code> muestra <code>active (running)</code>. <code>systemctl status</code> consulta el estado y los mensajes recientes; <code>sudo systemctl restart kea-dhcp4-server</code> vuelve a iniciar el servicio para que cargue la configuración editada.</p>",
           "id": "configurar-subred-3",
           "required": true,
-          "questionType": null,
-          "options": null,
-          "accept": null,
-          "label": null
-        },
-        {
-          "type": "html",
-          "html": "<pre><code class=\"language-bash\">cd /etc/kea\nsudo mv kea-dhcp4.conf kea-dhcp4.conf.old\nsudo nano kea-dhcp4.conf\nsudo systemctl restart kea-dhcp4-server\n</code></pre>",
-          "id": "",
-          "required": false,
           "questionType": null,
           "options": null,
           "accept": null,
@@ -243,19 +233,9 @@
         },
         {
           "type": "task",
-          "html": "<p>Revisa el estado del servicio y los logs si aparece algún fallo.</p>",
+          "html": "<p>En Ubuntu Server 2, comprueba que Kea permanece activo y revisa sus mensajes recientes. Si hay un error, corrige la configuración, vuelve a ejecutar <code>sudo -u _kea kea-dhcp4 -t /etc/kea/kea-dhcp4.conf</code> y reinicia solo cuando la prueba sea correcta.</p>\n<pre><code class=\"language-bash\">systemctl status kea-dhcp4-server --no-pager\nsudo journalctl -u kea-dhcp4-server -n 30 --no-pager\n</code></pre>\n<p>En Ubuntu Desktop 2, confirma que la interfaz de la red interna 3 está configurada para obtener IPv4 automáticamente y renueva su conexión desde la interfaz gráfica de red. Comprueba con <code>ip -br -4 address</code> que recibe una dirección entre <code>192.168.3.100</code> y <code>192.168.3.200</code>, no la antigua <code>192.168.3.2</code> estática. Un servicio activo no demuestra por sí solo que el cliente haya recibido una concesión. En Ubuntu Server 2, busca la IP obtenida en el fichero persistente de concesiones:</p>\n<pre><code class=\"language-bash\">sudo grep -F 'IP_OBTENIDA' /var/lib/kea/kea-leases4.csv\n</code></pre>\n<p>Sustituye <code>IP_OBTENIDA</code> por la dirección que recibió Desktop 2. La línea encontrada debe corresponder a esa IP y al cliente probado.</p>",
           "id": "verificar-servicio",
           "required": true,
-          "questionType": null,
-          "options": null,
-          "accept": null,
-          "label": null
-        },
-        {
-          "type": "html",
-          "html": "<pre><code class=\"language-bash\">sudo systemctl status kea-dhcp4-server\ntail /var/log/syslog -n 20\n</code></pre>",
-          "id": "",
-          "required": false,
           "questionType": null,
           "options": null,
           "accept": null,
@@ -317,7 +297,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>Amplía el servicio para cubrir la red interna <strong>192.168.2.0/24</strong> y añade una reserva fija para Ubuntu Server 1.</p>\n<h3>Configuración ampliada de Kea</h3>\n<pre><code class=\"language-json\">{\n  &quot;Dhcp4&quot;: {\n    &quot;interfaces-config&quot;: {\n      &quot;interfaces&quot;: [ &quot;enp0s8&quot;, &quot;enp0s3&quot; ]\n    },\n    &quot;lease-database&quot;: {\n      &quot;type&quot;: &quot;memfile&quot;,\n      &quot;persist&quot;: true,\n      &quot;name&quot;: &quot;/var/lib/kea/kea-leases4.csv&quot;\n    },\n    &quot;subnet4&quot;: [\n      {\n        &quot;subnet&quot;: &quot;192.168.3.0/24&quot;,\n        &quot;pools&quot;: [\n          { &quot;pool&quot;: &quot;192.168.3.100 - 192.168.3.200&quot; }\n        ],\n        &quot;option-data&quot;: [\n          { &quot;name&quot;: &quot;routers&quot;, &quot;data&quot;: &quot;192.168.3.1&quot; },\n          { &quot;name&quot;: &quot;domain-name-servers&quot;, &quot;data&quot;: &quot;8.8.8.8&quot; }\n        ]\n      },\n      {\n        &quot;subnet&quot;: &quot;192.168.2.0/24&quot;,\n        &quot;pools&quot;: [\n          { &quot;pool&quot;: &quot;192.168.2.100 - 192.168.2.150&quot; }\n        ],\n        &quot;reservations&quot;: [\n          {\n            &quot;hw-address&quot;: &quot;08:00:27:de:ad:be&quot;,\n            &quot;ip-address&quot;: &quot;192.168.2.1&quot;\n          }\n        ]\n      }\n    ]\n  }\n}\n</code></pre>",
+          "html": "<p>Esta ampliación cubre la red interna <strong>192.168.2.0/24</strong> y añade una reserva fija para Ubuntu Server 1.</p>\n<h3>Configuración ampliada de Kea</h3>\n<pre><code class=\"language-json\">{\n  &quot;Dhcp4&quot;: {\n    &quot;interfaces-config&quot;: {\n      &quot;interfaces&quot;: [ &quot;enp0s8&quot;, &quot;enp0s3&quot; ]\n    },\n    &quot;lease-database&quot;: {\n      &quot;type&quot;: &quot;memfile&quot;,\n      &quot;persist&quot;: true,\n      &quot;name&quot;: &quot;/var/lib/kea/kea-leases4.csv&quot;\n    },\n    &quot;subnet4&quot;: [\n      {\n        &quot;id&quot;: 1,\n        &quot;subnet&quot;: &quot;192.168.3.0/24&quot;,\n        &quot;pools&quot;: [\n          { &quot;pool&quot;: &quot;192.168.3.100 - 192.168.3.200&quot; }\n        ],\n        &quot;option-data&quot;: [\n          { &quot;name&quot;: &quot;routers&quot;, &quot;data&quot;: &quot;192.168.3.1&quot; },\n          { &quot;name&quot;: &quot;domain-name-servers&quot;, &quot;data&quot;: &quot;8.8.8.8&quot; }\n        ]\n      },\n      {\n        &quot;id&quot;: 2,\n        &quot;subnet&quot;: &quot;192.168.2.0/24&quot;,\n        &quot;pools&quot;: [\n          { &quot;pool&quot;: &quot;192.168.2.100 - 192.168.2.150&quot; }\n        ],\n        &quot;reservations&quot;: [\n          {\n            &quot;hw-address&quot;: &quot;08:00:27:de:ad:be&quot;,\n            &quot;ip-address&quot;: &quot;192.168.2.1&quot;\n          }\n        ]\n      }\n    ]\n  }\n}\n</code></pre>\n<p>Los parámetros de la primera subred se explican en el <a href=\"#/paso/subred-3\" class=\"as-step-link\" data-step-link=\"subred-3\">paso anterior</a>. La ampliación añade:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Parámetro</th>\n<th>Función en esta práctica</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>interfaces-config.interfaces</code> (segunda entrada)</td>\n<td>Hace que Kea también escuche en la interfaz de Ubuntu Server 2 conectada a la red interna 2. Ambos nombres del ejemplo son orientativos.</td>\n</tr>\n<tr>\n<td><code>subnet4</code> (segundo objeto)</td>\n<td>Define <code>192.168.2.0/24</code> además de la red 3; no reemplaza la primera subred.</td>\n</tr>\n<tr>\n<td><code>id</code> (segundo objeto)</td>\n<td>Asigna el ID único <code>2</code> a <code>192.168.2.0/24</code>; la primera subred conserva el ID <code>1</code>. Los ID deben ser enteros positivos, únicos en la configuración y mantenerse sin cambios al ampliarla.</td>\n</tr>\n<tr>\n<td><code>pools.pool</code> de la red 2</td>\n<td>Reserva <code>192.168.2.100 - 192.168.2.150</code> para concesiones dinámicas.</td>\n</tr>\n<tr>\n<td><code>reservations</code></td>\n<td>Define una asignación específica dentro de la subred 2.</td>\n</tr>\n<tr>\n<td><code>hw-address</code></td>\n<td>Identifica la MAC de <strong>la interfaz de Ubuntu Server 1 conectada a la red 2</strong>, no la de otra tarjeta. La MAC mostrada es solo un ejemplo.</td>\n</tr>\n<tr>\n<td><code>ip-address</code></td>\n<td>Concede <code>192.168.2.1</code> a esa MAC. Está en la subred 2 y fuera del pool dinámico, para que no se asigne a otro cliente.</td>\n</tr>\n</tbody>\n</table>\n</div><p>La red 2 no anuncia DNS ni puerta de enlace en este ejemplo; no se deducen esas opciones de la red 3. La reserva <strong>no cambia la interfaz del cliente a DHCP</strong>: hay que configurar Ubuntu Server 1 aparte.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -327,19 +307,9 @@
         },
         {
           "type": "task",
-          "html": "<p>Actualiza <code>kea-dhcp4.conf</code> para incluir la nueva subred y una reserva por <code>hw-address</code>.</p>",
+          "html": "<p>En Ubuntu Server 1, consulta la MAC de la interfaz conectada a la red interna 2 con <code>ip link show</code> y anótala. En Ubuntu Server 2, identifica con <code>ip -br -4 address</code> sus interfaces de las redes 2 y 3. Antes de editar <code>kea-dhcp4.conf</code>, guarda una copia de seguridad; luego aplica el ejemplo ampliado, conserva la red 3, sustituye los nombres de interfaz y la MAC, y comprueba que <code>192.168.2.1</code> no aparece en el pool dinámico ni está asignada a otro equipo. Ejecuta los comandos uno por uno. Valida el archivo y revisa el resultado antes de reiniciar; si la validación falla, detente, restaura la copia y vuelve a validarla. Reinicia Kea solo cuando la prueba pase.</p>\n<pre><code class=\"language-bash\">ip -br -4 address\nsudo cp --archive --no-clobber /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.pre-subnet-2.bak\nsudo nano /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Valida el archivo y revisa el resultado. Si Kea informa un error, detente y corrige o restaura la copia; no reinicies.</p>\n<pre><code class=\"language-bash\">sudo -u _kea kea-dhcp4 -t /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Solo si la validación pasa sin errores, reinicia Kea y consulta el estado:</p>\n<pre><code class=\"language-bash\">sudo systemctl restart kea-dhcp4-server\nsystemctl status kea-dhcp4-server --no-pager\n</code></pre>\n<p>Para restaurar la copia tras un error, ejecuta este comando desde Ubuntu Server 2:</p>\n<pre><code class=\"language-bash\">sudo cp /etc/kea/kea-dhcp4.conf.pre-subnet-2.bak /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Valida la configuración restaurada y revisa la salida:</p>\n<pre><code class=\"language-bash\">sudo -u _kea kea-dhcp4 -t /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Solo si la validación pasa, reinicia Kea y comprueba el estado:</p>\n<pre><code class=\"language-bash\">sudo systemctl restart kea-dhcp4-server\nsystemctl status kea-dhcp4-server --no-pager\n</code></pre>\n<p>La opción <code>--no-clobber</code> conserva la primera copia de seguridad si repites el paso.\nLa tarea termina con la configuración válida y <code>systemctl status kea-dhcp4-server</code> muestra <code>active (running)</code> en Ubuntu Server 2. <code>status</code> consulta el estado; <code>sudo systemctl restart kea-dhcp4-server</code> reinicia el servicio para cargar la configuración validada.</p>",
           "id": "ampliar-configuracion",
           "required": true,
-          "questionType": null,
-          "options": null,
-          "accept": null,
-          "label": null
-        },
-        {
-          "type": "html",
-          "html": "<pre><code class=\"language-bash\">sudo nano /etc/kea/kea-dhcp4.conf\nsudo systemctl restart kea-dhcp4-server\n</code></pre>",
-          "id": "",
-          "required": false,
           "questionType": null,
           "options": null,
           "accept": null,
@@ -357,9 +327,19 @@
         },
         {
           "type": "task",
-          "html": "<p>Cambia la interfaz de Ubuntu Server 1 que conecta con la red interna 2 para que obtenga configuración por DHCP.</p>",
+          "html": "<p>Desde la <strong>consola de VirtualBox</strong> de Ubuntu Server 1, localiza con <code>ip -br -4 address</code> la interfaz de la red interna 2 y el archivo de Netplan que la configura en <code>/etc/netplan/</code>. Guarda una copia de ese archivo. Cambia <strong>solo esa interfaz</strong> de dirección estática <code>192.168.2.1</code> a <code>dhcp4: true</code>, sin alterar las interfaces de las redes 1 o Internet. Aplica la configuración desde la consola y comprueba que la interfaz recibe <code>192.168.2.1</code>.</p>\n<pre><code class=\"language-bash\">ip -br -4 address\nls /etc/netplan/\nsudo cp /etc/netplan/NOMBRE.yaml /etc/netplan/NOMBRE.yaml.bak\nsudo nano /etc/netplan/NOMBRE.yaml\nsudo netplan generate\nsudo netplan apply\nip -br -4 address\n</code></pre>\n<p>Sustituye <code>NOMBRE.yaml</code> por el nombre real; no copies el marcador literalmente. Si <code>netplan generate</code> informa errores, corrige el archivo antes de aplicar. Si tras <code>netplan apply</code> no aparece la dirección reservada o se pierde conectividad, restaura <strong>desde la consola</strong> la copia y reaplica la configuración anterior:</p>\n<pre><code class=\"language-bash\">sudo cp /etc/netplan/NOMBRE.yaml.bak /etc/netplan/NOMBRE.yaml\nsudo netplan apply\n</code></pre>\n<p>Revisa después la MAC, la interfaz, el servicio y la subred antes de repetir la prueba. No uses SSH para este cambio: podrías quedarte fuera del equipo.</p>",
           "id": "cambiar-server1-a-dhcp",
           "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<p>Cuando Ubuntu Server 1 haya recibido la reserva, comprueba en Ubuntu Server 2 que Kea la registró en su fichero de concesiones:</p>\n<pre><code class=\"language-bash\">sudo grep -F '192.168.2.1' /var/lib/kea/kea-leases4.csv\n</code></pre>\n<p>La línea encontrada debe corresponder a la IP reservada <code>192.168.2.1</code> y a la MAC real configurada en <code>hw-address</code>. Si no aparece, confirma que Server 1 solicitó la dirección por DHCP y que Kea usa el backend <code>memfile</code> con ese nombre de fichero.</p>",
+          "id": "",
+          "required": false,
           "questionType": null,
           "options": null,
           "accept": null,
@@ -389,7 +369,7 @@
     },
     {
       "id": "pruebas-finales",
-      "titulo": "Pruebas finales del escenario",
+      "titulo": "Pruebas de las redes internas 2 y 3",
       "descripcion": "",
       "duracionMinutos": 20,
       "obligatorio": true,
@@ -398,7 +378,7 @@
       "segments": [
         {
           "type": "html",
-          "html": "<p>Ahora toca demostrar que todo funciona junto.</p>",
+          "html": "<p>Antes de incorporar el relay, las pruebas se centran en las dos redes conectadas directamente a Kea.</p>",
           "id": "",
           "required": false,
           "questionType": null,
@@ -408,19 +388,9 @@
         },
         {
           "type": "task",
-          "html": "<p>Reinicia Kea y comprueba que no quedan errores pendientes.</p>",
+          "html": "<p>En Ubuntu Server 2, valida la configuración final y revisa el resultado. <code>systemctl status kea-dhcp4-server</code> permite consultar el estado; después de validar cambios de configuración, ejecuta <code>sudo systemctl restart kea-dhcp4-server</code> para que Kea los cargue. Si la validación falla, no reinicies: corrige el archivo primero. Ejecuta cada comando por separado. La tarea termina cuando el servicio está activo y el registro no muestra errores de configuración del último arranque.</p>\n<pre><code class=\"language-bash\">sudo -u _kea kea-dhcp4 -t /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Revisa la salida. Si la configuración es válida, reinicia el servicio y comprueba su estado y los registros recientes:</p>\n<pre><code class=\"language-bash\">sudo systemctl restart kea-dhcp4-server\nsystemctl status kea-dhcp4-server --no-pager\nsudo journalctl -u kea-dhcp4-server -n 30 --no-pager\n</code></pre>",
           "id": "reiniciar-servicio",
           "required": true,
-          "questionType": null,
-          "options": null,
-          "accept": null,
-          "label": null
-        },
-        {
-          "type": "html",
-          "html": "<pre><code class=\"language-bash\">sudo systemctl restart kea-dhcp4-server\nsudo systemctl status kea-dhcp4-server\n</code></pre>",
-          "id": "",
-          "required": false,
           "questionType": null,
           "options": null,
           "accept": null,
@@ -438,7 +408,7 @@
         },
         {
           "type": "task",
-          "html": "<p>Verifica que Ubuntu Server 1 recibe la reserva esperada en la red interna 2.</p>",
+          "html": "<p>En Ubuntu Server 1, comprueba en el archivo de Netplan que la interfaz de la red interna 2 tiene <code>dhcp4: true</code> y no una dirección estática. Sustituye <code>INTERFAZ</code> por su nombre real: <code>ip</code> debe mostrar <code>192.168.2.1</code> y, si Netplan usa <code>systemd-networkd</code>, <code>networkctl status INTERFAZ</code> debe mostrar los datos DHCP de <strong>esa</strong> interfaz. La dirección correcta por sí sola no prueba la reserva si la interfaz siguiera configurada de forma estática. Si no aparece, revisa la MAC de esa interfaz frente a <code>hw-address</code> y los mensajes de Kea en Ubuntu Server 2.</p>\n<pre><code class=\"language-bash\">ip -br -4 address\nnetworkctl status INTERFAZ\n</code></pre>",
           "id": "comprobar-server1",
           "required": true,
           "questionType": null,
@@ -448,7 +418,7 @@
         },
         {
           "type": "task",
-          "html": "<p>Verifica que Ubuntu Desktop 2 sigue recibiendo una IP de la red interna 3.</p>",
+          "html": "<p>En Ubuntu Desktop 2, reconecta la interfaz de la red interna 3 desde la interfaz gráfica para solicitar una concesión nueva. Comprueba con <code>ip -br -4 address</code> que la dirección se mantiene dentro de <code>192.168.3.100 - 192.168.3.200</code>. Si conserva <code>192.168.3.2</code>, revisa que IPv4 esté configurado en automático y no en manual.</p>\n<pre><code class=\"language-bash\">ip -br -4 address\n</code></pre>\n<p>En Ubuntu Server 2, confirma que la concesión de Desktop 2 está registrada en el CSV persistente de Kea:</p>\n<pre><code class=\"language-bash\">sudo grep -F 'IP_OBTENIDA' /var/lib/kea/kea-leases4.csv\n</code></pre>\n<p>Sustituye <code>IP_OBTENIDA</code> por la dirección del pool <code>192.168.3.100–192.168.3.200</code> obtenida por el cliente y confirma que la línea corresponde a esa concesión.</p>",
           "id": "comprobar-desktop2",
           "required": true,
           "questionType": null,
@@ -458,8 +428,139 @@
         },
         {
           "type": "evidence",
-          "html": "<p>Captura de las pruebas finales con los dos clientes funcionando.</p>",
+          "html": "<p>Captura de las pruebas de Ubuntu Server 1 y Ubuntu Desktop 2 con sus direcciones asignadas.</p>",
           "id": "captura-pruebas-finales",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "relay-red-interna-1",
+      "titulo": "DHCP para la red interna 1 mediante relay",
+      "descripcion": "",
+      "duracionMinutos": 35,
+      "obligatorio": true,
+      "orden": 6,
+      "archivo": "pasos/06-relay-red-interna-1.md",
+      "segments": [
+        {
+          "type": "html",
+          "html": "<p><img src=\"recursos/media/red-dhcp-relay1.png\" alt=\"Topología del relay DHCP; el área resaltada en naranja identifica la red y el cliente atendidos mediante el relay.\" /></p>\n<p>Kea seguirá instalado <strong>solo en Ubuntu Server 2</strong>. Para atender también <code>192.168.1.0/24</code>, Ubuntu Server 1 reenviará las solicitudes DHCP de la red interna 1 hacia Kea por la red interna 2.</p>\n<p>El recorrido será: <strong>Ubuntu Desktop 1 → Ubuntu Server 1 (relay) → Ubuntu Server 2 (Kea)</strong>. El relay no asigna direcciones; Kea decide qué dirección ofrecer.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<aside class=\"as-callout as-callout--note\" role=\"note\"><span class=\"as-callout-label\">Nota</span><div class=\"as-callout-body\"><p>El esquema de la presentación muestra <code>192.168.1.2</code> en Ubuntu Desktop 1 como configuración <strong>inicial estática</strong>. En esta fase cambiarás ese cliente a DHCP para comprobar una concesión nueva.</p></div></aside>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<h3>1. Amplía Kea con la red remota</h3>\n<p>Añade este <strong>tercer objeto</strong> al array <code>subnet4</code> de <code>/etc/kea/kea-dhcp4.conf</code> en Ubuntu Server 2. Los comentarios <code>// NUEVA SUBRED...</code> son marcadores visuales, no parámetros DHCP. Para consultar cómo queda el archivo completo después del cambio, despliega la configuración de referencia. Las interfaces <code>enp0s8</code> y <code>enp0s3</code>, y la MAC de ejemplo de esa referencia son ilustrativas: conserva en tu archivo los nombres reales y la MAC que obtuviste en los pasos anteriores. No sobrescribas ciegamente tu configuración; incorpora el objeto nuevo y conserva las subredes y la reserva existentes.</p>\n<pre><code class=\"language-json\">{\n  // NUEVA SUBRED: red interna 1 (añadir este objeto al array subnet4)\n  &quot;id&quot;: 3,\n  &quot;subnet&quot;: &quot;192.168.1.0/24&quot;,\n  &quot;pools&quot;: [\n    { &quot;pool&quot;: &quot;192.168.1.100 - 192.168.1.150&quot; }\n  ],\n  &quot;option-data&quot;: [\n    { &quot;name&quot;: &quot;routers&quot;, &quot;data&quot;: &quot;192.168.1.1&quot; }\n  ]\n  // FIN NUEVA SUBRED\n}\n</code></pre>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<details class=\"as-details as-details--details\"><summary>Ver configuración completa de Kea</summary><div class=\"as-details-body\"><p>Configuración final de referencia. Sustituye las interfaces y la MAC ilustrativas por las reales de tu práctica; los comentarios solo delimitan visualmente el objeto que se añade.</p>\n<pre><code class=\"language-json\">{\n  &quot;Dhcp4&quot;: {\n    &quot;interfaces-config&quot;: {\n      &quot;interfaces&quot;: [ &quot;enp0s8&quot;, &quot;enp0s3&quot; ]\n    },\n    &quot;lease-database&quot;: {\n      &quot;type&quot;: &quot;memfile&quot;,\n      &quot;persist&quot;: true,\n      &quot;name&quot;: &quot;/var/lib/kea/kea-leases4.csv&quot;\n    },\n    &quot;subnet4&quot;: [\n      {\n        &quot;id&quot;: 1,\n        &quot;subnet&quot;: &quot;192.168.3.0/24&quot;,\n        &quot;pools&quot;: [\n          { &quot;pool&quot;: &quot;192.168.3.100 - 192.168.3.200&quot; }\n        ],\n        &quot;option-data&quot;: [\n          { &quot;name&quot;: &quot;routers&quot;, &quot;data&quot;: &quot;192.168.3.1&quot; },\n          { &quot;name&quot;: &quot;domain-name-servers&quot;, &quot;data&quot;: &quot;8.8.8.8&quot; }\n        ]\n      },\n      {\n        &quot;id&quot;: 2,\n        &quot;subnet&quot;: &quot;192.168.2.0/24&quot;,\n        &quot;pools&quot;: [\n          { &quot;pool&quot;: &quot;192.168.2.100 - 192.168.2.150&quot; }\n        ],\n        &quot;reservations&quot;: [\n          {\n            &quot;hw-address&quot;: &quot;08:00:27:de:ad:be&quot;,\n            &quot;ip-address&quot;: &quot;192.168.2.1&quot;\n          }\n        ]\n      },\n      // NUEVA SUBRED: red interna 1\n      {\n        &quot;id&quot;: 3,\n        &quot;subnet&quot;: &quot;192.168.1.0/24&quot;,\n        &quot;pools&quot;: [\n          { &quot;pool&quot;: &quot;192.168.1.100 - 192.168.1.150&quot; }\n        ],\n        &quot;option-data&quot;: [\n          { &quot;name&quot;: &quot;routers&quot;, &quot;data&quot;: &quot;192.168.1.1&quot; }\n        ]\n      }\n      // FIN NUEVA SUBRED\n    ]\n  }\n}\n</code></pre></div></details>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Parámetro</th>\n<th>Función</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>subnet</code></td>\n<td>Declara la red remota que Kea atenderá mediante el relay.</td>\n</tr>\n<tr>\n<td><code>id</code></td>\n<td>Asigna el ID único <code>3</code> a esta tercera subred. Los ID de las otras redes se mantienen: <code>1</code> para <code>192.168.3.0/24</code> y <code>2</code> para <code>192.168.2.0/24</code>. Deben ser enteros positivos, únicos y conservarse al ampliar la configuración.</td>\n</tr>\n<tr>\n<td><code>pools.pool</code></td>\n<td>Limita las concesiones dinámicas a <code>192.168.1.100–192.168.1.150</code>; la IP <code>192.168.1.1</code> de Server 1 queda fuera.</td>\n</tr>\n<tr>\n<td><code>option-data</code> / <code>routers</code></td>\n<td>Indica al cliente su puerta de enlace, <code>192.168.1.1</code>. Anunciarla <strong>no habilita por sí mismo</strong> el acceso a Internet.</td>\n</tr>\n</tbody>\n</table>\n</div><p>Kea elige esta subred por la dirección de relay <code>giaddr</code> (<code>192.168.1.1</code>) que añade Ubuntu Server 1. La red 1 <strong>no pertenece</strong> a <code>interfaces-config.interfaces</code>: Ubuntu Server 2 no tiene una interfaz conectada a ella. En esta topología tampoco hace falta una cláusula <code>relay</code> adicional en Kea.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>En Ubuntu Server 2, guarda una copia del archivo una sola vez, añade el tercer objeto conservando los anteriores y sus comas JSON, y valida <strong>antes</strong> de reiniciar. Ejecuta cada comando por separado y revisa la salida de la validación; si detecta un error, corrígelo sin reiniciar Kea. Reinicia solo después de una validación correcta y comprueba luego el estado.</p>\n<pre><code class=\"language-bash\">sudo cp --archive --no-clobber /etc/kea/kea-dhcp4.conf /etc/kea/kea-dhcp4.conf.pre-relay.bak\nsudo nano /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Valida el archivo y revisa la salida. Si Kea informa un error, corrígelo y vuelve a validar; no reinicies hasta que pase.</p>\n<pre><code class=\"language-bash\">sudo -u _kea kea-dhcp4 -t /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Solo después de una validación correcta, reinicia Kea y consulta su estado:</p>\n<pre><code class=\"language-bash\">sudo systemctl restart kea-dhcp4-server\nsystemctl status kea-dhcp4-server --no-pager\n</code></pre>\n<p>Si la validación pasa pero el reinicio falla, consulta <code>sudo journalctl -u kea-dhcp4-server -n 40 --no-pager</code>, restaura la configuración anterior, valídala y reiníciala solo si la prueba pasa. Comprueba de nuevo que está activa. Ejecuta cada comando por separado:</p>\n<pre><code class=\"language-bash\">sudo cp /etc/kea/kea-dhcp4.conf.pre-relay.bak /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Valida la configuración restaurada y revisa la salida:</p>\n<pre><code class=\"language-bash\">sudo -u _kea kea-dhcp4 -t /etc/kea/kea-dhcp4.conf\n</code></pre>\n<p>Solo si la validación pasa, reinicia Kea y comprueba su estado:</p>\n<pre><code class=\"language-bash\">sudo systemctl restart kea-dhcp4-server\nsystemctl status kea-dhcp4-server --no-pager\n</code></pre>\n<p>No continúes con el relay hasta corregir el fallo y volver a tener la nueva configuración válida, Kea <code>active</code> y las tres subredes definidas.</p>",
+          "id": "configurar-subred-relay",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<h3>2. Revisa los requisitos de red ya configurados</h3>\n<p>La ruta de retorno de Ubuntu Server 2 hacia <code>192.168.1.0/24</code> y el reenvío IPv4 de Ubuntu Server 1 ya se configuraron en la actividad previa de redes. No los vuelvas a modificar aquí. El relay gestiona los mensajes DHCP de descubrimiento, oferta, solicitud y confirmación (DORA), pero no sustituye el enrutamiento IP general: durante la renovación T1, el cliente puede comunicarse directamente por unicast con Kea usando la ruta y el reenvío ya preparados. Esto no implica NAT ni garantiza acceso a Internet.</p>\n<h3>3. Instala y configura el relay en Ubuntu Server 1</h3>\n<p><img src=\"recursos/media/red-dhcp-relay.png\" alt=\"Topología DHCP: Ubuntu Server 1 aloja el relay y reenvía solicitudes de la red interna 1 hacia Kea, instalado en Ubuntu Server 2.\" /></p>\n<p>¿Por qué hace falta un relay en Ubuntu Server 1? Un cliente que aún no tiene una dirección IP envía un <code>DHCPDISCOVER</code> como broadcast local para encontrar un servidor. Ese broadcast se queda en <code>192.168.1.0/24</code>: los routers no lo reenvían a la red <code>192.168.2.0/24</code>, donde está Kea. Sin relay, Kea no recibe la solicitud inicial y el cliente no obtiene una concesión.</p>\n<p><code>isc-dhcp-relay</code> salva ese límite entre subredes, pero no convierte el broadcast en tráfico de difusión que atraviese routers. El flujo es:</p>\n<ol>\n<li>El relay recibe el broadcast del cliente por la interfaz downstream de la red 1 (<code>-id</code>).</li>\n<li>Lo reenvía como unicast al servidor indicado en <code>SERVERS</code> (<code>192.168.2.2</code>), usando la interfaz upstream de la red 2 (<code>-iu</code>), y establece <code>giaddr=192.168.1.1</code>.</li>\n<li>Kea usa <code>giaddr</code> para reconocer que la solicitud corresponde a <code>192.168.1.0/24</code>, elegir el pool adecuado y enviar su respuesta a esa dirección del relay.</li>\n<li>El relay recibe la respuesta en Server 1 y la entrega al cliente en la red 1, según el comportamiento DHCP del cliente; esa entrega local no depende de que un router propague broadcasts entre redes.</li>\n</ol>\n<p>Los papeles siguen separados: <strong>Kea es el servidor DHCP</strong>, selecciona el pool y concede la dirección; <strong><code>isc-dhcp-relay</code> solo transporta las solicitudes y respuestas entre el cliente y Kea</strong>. El flujo sigue el procedimiento de relay descrito en <a href=\"https://www.rfc-editor.org/rfc/rfc2131.html\" target=\"_blank\" rel=\"noopener noreferrer\">RFC 2131, secciones 4.1 y 4.3</a>.</p>\n<p>El paquete configura su servicio desde <code>/etc/default/isc-dhcp-relay</code>:</p>\n<div class=\"table-scroll\"><table>\n<thead>\n<tr>\n<th>Parámetro</th>\n<th>Valor/función en esta práctica</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>SERVERS</code></td>\n<td>Dirección del servidor DHCP Kea: <code>192.168.2.2</code>.</td>\n</tr>\n<tr>\n<td><code>INTERFACES</code></td>\n<td>Se deja vacío; así no se añaden listeners genéricos <code>-i</code> aparte de las interfaces delimitadas con <code>-id</code> y <code>-iu</code>.</td>\n</tr>\n<tr>\n<td><code>OPTIONS</code></td>\n<td>Incluye <code>-id &lt;interfaz-red-1&gt; -iu &lt;interfaz-red-2&gt;</code> para definir respectivamente la interfaz downstream que recibe clientes y la upstream que llega a Kea.</td>\n</tr>\n</tbody>\n</table>\n</div><p>Los nombres <code>eth1</code> y <code>eth2</code> del diagrama son ejemplos; comprueba los nombres reales en Ubuntu Server 1 y sustitúyelos. No incluyas la interfaz conectada a Internet como interfaz downstream ni upstream.</p>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>En Ubuntu Server 1, identifica las interfaces con <code>ip -br -4 address</code> y distingue la conectada a <code>192.168.1.0/24</code> de la conectada a <code>192.168.2.0/24</code>. Instala <code>isc-dhcp-relay</code>; si aparece el diálogo del paquete, indica <code>192.168.2.2</code> como servidor DHCP y las interfaces de las redes 1 y 2. Luego guarda una copia del archivo de configuración y revisa <code>/etc/default/isc-dhcp-relay</code> para que los tres parámetros queden así, sustituyendo <code>&lt;interfaz-red-1&gt;</code> y <code>&lt;interfaz-red-2&gt;</code> por los nombres reales:</p>\n<pre><code class=\"language-conf\">SERVERS=&quot;192.168.2.2&quot;\nINTERFACES=&quot;&quot;\nOPTIONS=&quot;-id &lt;interfaz-red-1&gt; -iu &lt;interfaz-red-2&gt;&quot;\n</code></pre>\n<p><code>-id</code> marca la interfaz downstream que recibe las solicitudes broadcast de los clientes; <code>-iu</code> marca la interfaz upstream desde la que se contacta con Kea. Mantén fuera la interfaz de Internet. Reinicia el servicio y comprueba su estado y registros:</p>\n<pre><code class=\"language-bash\">sudo apt update\nsudo apt install isc-dhcp-relay\nsudo cp /etc/default/isc-dhcp-relay /etc/default/isc-dhcp-relay.pre-relay.bak\nsudo nano /etc/default/isc-dhcp-relay\nsudo systemctl restart isc-dhcp-relay\nsystemctl status isc-dhcp-relay --no-pager\nsudo journalctl -u isc-dhcp-relay -n 30 --no-pager\n</code></pre>\n<p>Si el servicio no arranca, usa los registros para corregir la dirección del servidor o los nombres de interfaz y vuelve a reiniciar. Para deshacer la edición, restaura la copia, revisa sus valores —los predeterminados del instalador pueden no servir para esta práctica— y reinicia:</p>\n<pre><code class=\"language-bash\">sudo cp /etc/default/isc-dhcp-relay.pre-relay.bak /etc/default/isc-dhcp-relay\nsudo nano /etc/default/isc-dhcp-relay\nsudo systemctl restart isc-dhcp-relay\nsystemctl status isc-dhcp-relay --no-pager\n</code></pre>\n<p>La tarea termina cuando <code>isc-dhcp-relay</code> está <code>active</code> y no muestra errores de interfaces o de arranque. Para Kea, <code>systemctl status kea-dhcp4-server</code> consulta su estado y <code>sudo systemctl restart kea-dhcp4-server</code> reinicia el servicio para cargar los cambios validados.</p>",
+          "id": "instalar-configurar-relay",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "html",
+          "html": "<h3>4. Comprueba la concesión desde la red interna 1</h3>",
+          "id": "",
+          "required": false,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>En Ubuntu Desktop 1, abre la configuración de la conexión de la red interna 1, cambia IPv4 de <strong>Manual</strong> a <strong>Automático (DHCP)</strong>, guarda y desactiva/activa esa conexión. Comprueba la dirección y la ruta desde una terminal:</p>\n<pre><code class=\"language-bash\">ip -br -4 address\nip -4 route\nip -4 route get 192.168.2.2\n</code></pre>\n<p>La interfaz debe obtener una IP entre <code>192.168.1.100</code> y <code>192.168.1.150</code>, la puerta de enlace anunciada debe ser <code>192.168.1.1</code> y la ruta hacia Kea (<code>192.168.2.2</code>) debe pasar por <code>192.168.1.1</code>. <strong>Conservar <code>192.168.1.2</code> no demuestra que el relay funcione</strong>: sería la antigua dirección estática. Si no llega una concesión, revisa que el cliente esté en DHCP, que el relay esté <code>active</code>, que se mantengan los requisitos de ruta y reenvío configurados previamente, y consulta los registros en ambos servidores:</p>\n<pre><code class=\"language-bash\"># En Ubuntu Server 1\nsudo journalctl -u isc-dhcp-relay -n 40 --no-pager\n# En Ubuntu Server 2\nsudo journalctl -u kea-dhcp4-server -n 40 --no-pager\n</code></pre>\n<p>Cuando Desktop 1 reciba una IP del pool remoto, confirma en Ubuntu Server 2 que Kea registró esa concesión:</p>\n<pre><code class=\"language-bash\">sudo grep -F 'IP_OBTENIDA' /var/lib/kea/kea-leases4.csv\n</code></pre>\n<p>Sustituye <code>IP_OBTENIDA</code> por la dirección entre <code>192.168.1.100</code> y <code>192.168.1.150</code>; comprueba que la fila corresponde al cliente de la red 1.</p>",
+          "id": "comprobar-cliente-relay",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "checkpoint",
+          "html": "<p>Ubuntu Desktop 1 recibe por DHCP una dirección del pool <code>192.168.1.100–192.168.1.150</code> a través del relay; las redes internas 2 y 3 siguen funcionando.</p>",
+          "id": "relay-red-interna-1-operativo",
+          "required": true,
+          "questionType": null,
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "evidence",
+          "html": "<p>Adjunta una captura que muestre la IP obtenida por Ubuntu Desktop 1 y otra información que permita verificar el relay, como el estado del servicio en Ubuntu Server 1 o la concesión registrada por Kea.</p>",
+          "id": "captura-relay-red-interna-1",
           "required": true,
           "questionType": null,
           "options": null,
@@ -474,12 +575,150 @@
       "descripcion": "",
       "duracionMinutos": 10,
       "obligatorio": true,
-      "orden": 6,
-      "archivo": "pasos/06-reflexion.md",
+      "orden": 7,
+      "archivo": "pasos/07-reflexion.md",
       "segments": [
         {
+          "type": "question",
+          "html": "<p>¿Por qué hace falta un relay DHCP para atender una red situada detrás de Ubuntu Server 1?</p>",
+          "id": "quiz-broadcast-relay",
+          "required": true,
+          "questionType": "single-choice",
+          "options": [
+            {
+              "id": "quiz-broadcast-relay-op1",
+              "html": "<p>Porque los routers reenvían automáticamente los broadcast DHCP a todas las redes conectadas.</p>"
+            },
+            {
+              "id": "quiz-broadcast-relay-op2",
+              "html": "<p>Porque el broadcast inicial del cliente no cruza el router; el relay lo recibe en la red local y lo reenvía al servidor Kea.</p>"
+            },
+            {
+              "id": "quiz-broadcast-relay-op3",
+              "html": "<p>Porque Kea solo puede conceder direcciones si está instalado también en el cliente.</p>"
+            }
+          ],
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Qué afirmación describe correctamente el trabajo de Kea y del relay?</p>",
+          "id": "quiz-roles-giaddr",
+          "required": true,
+          "questionType": "single-choice",
+          "options": [
+            {
+              "id": "quiz-roles-giaddr-op1",
+              "html": "<p>El relay transporta las solicitudes y respuestas; Kea asigna la dirección y usa <code>giaddr</code> para identificar la subred correspondiente.</p>"
+            },
+            {
+              "id": "quiz-roles-giaddr-op2",
+              "html": "<p>El relay asigna la dirección del pool y Kea solo registra la concesión; <code>giaddr</code> identifica al relay para la puerta de enlace.</p>"
+            },
+            {
+              "id": "quiz-roles-giaddr-op3",
+              "html": "<p>Kea reenvía el broadcast entre redes y el relay decide qué subred y pool debe utilizarse.</p>"
+            }
+          ],
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Cómo deben configurarse los valores <code>id</code> de los objetos <code>subnet4</code>?</p>",
+          "id": "quiz-ids-subred",
+          "required": true,
+          "questionType": "single-choice",
+          "options": [
+            {
+              "id": "quiz-ids-subred-op1",
+              "html": "<p>Se pueden repetir entre subredes si cada una tiene un prefijo de red distinto.</p>"
+            },
+            {
+              "id": "quiz-ids-subred-op2",
+              "html": "<p>Deben ser únicos en la configuración; conviene conservarlos al ampliarla para que cada subred mantenga una identidad estable.</p>"
+            },
+            {
+              "id": "quiz-ids-subred-op3",
+              "html": "<p>Deben coincidir con el último octeto de la puerta de enlace de cada subred.</p>"
+            }
+          ],
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Cuál es la secuencia adecuada antes de reiniciar Kea tras editar su configuración?</p>",
+          "id": "quiz-validacion-kea",
+          "required": true,
+          "questionType": "single-choice",
+          "options": [
+            {
+              "id": "quiz-validacion-kea-op1",
+              "html": "<p>Reiniciar el servicio y después ejecutar la validación como <code>root</code>.</p>"
+            },
+            {
+              "id": "quiz-validacion-kea-op2",
+              "html": "<p>Validar <code>/etc/kea/kea-dhcp4.conf</code> como usuario <code>_kea</code> y reiniciar solo si la validación no informa errores.</p>"
+            },
+            {
+              "id": "quiz-validacion-kea-op3",
+              "html": "<p>Reiniciar primero el relay y luego editar la configuración de Kea sin validarla.</p>"
+            }
+          ],
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>¿Cómo puedes comprobar que Kea registró la concesión asignada a un cliente?</p>",
+          "id": "quiz-registro-concesion",
+          "required": true,
+          "questionType": "single-choice",
+          "options": [
+            {
+              "id": "quiz-registro-concesion-op1",
+              "html": "<p>Buscar la dirección asignada en <code>/etc/kea/kea-dhcp4.conf</code>.</p>"
+            },
+            {
+              "id": "quiz-registro-concesion-op2",
+              "html": "<p>Consultar únicamente el estado <code>active</code> de <code>kea-dhcp4-server</code>.</p>"
+            },
+            {
+              "id": "quiz-registro-concesion-op3",
+              "html": "<p>Buscar la IP obtenida o la MAC del cliente en <code>/var/lib/kea/kea-leases4.csv</code>.</p>"
+            }
+          ],
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "question",
+          "html": "<p>Relaciona cada definición con el tipo de dirección usado en esta actividad:</p>\n<ol>\n<li>Configurada manualmente en el propio cliente.</li>\n<li>Reservada por Kea para la MAC de un cliente concreto.</li>\n<li>Elegida por Kea de un pool y concedida mediante DHCP.</li>\n</ol>",
+          "id": "quiz-tipos-direccion-ip",
+          "required": true,
+          "questionType": "single-choice",
+          "options": [
+            {
+              "id": "quiz-tipos-direccion-ip-op1",
+              "html": "<ol>\n<li>IP fija; 2. IP dinámica; 3. IP estática.</li>\n</ol>"
+            },
+            {
+              "id": "quiz-tipos-direccion-ip-op2",
+              "html": "<ol>\n<li>IP estática; 2. IP fija; 3. IP dinámica.</li>\n</ol>"
+            },
+            {
+              "id": "quiz-tipos-direccion-ip-op3",
+              "html": "<ol>\n<li>IP dinámica; 2. IP estática; 3. IP fija.</li>\n</ol>"
+            }
+          ],
+          "accept": null,
+          "label": null
+        },
+        {
           "type": "reflection",
-          "html": "<p>¿Qué parte te resultó más delicada: la configuración inicial, la ampliación a la segunda red o la reserva por MAC? ¿Qué revisarías antes si tuvieras que repetir la práctica desde cero?</p>",
+          "html": "<p>¿Qué parte te resultó más delicada: la configuración inicial, la reserva por MAC o el relay para la red interna 1? Si Ubuntu Desktop 1 no recibiera una dirección, ¿qué comprobarías primero en el cliente, en el relay y en Kea?</p>",
           "id": "reflexion-final",
           "required": true,
           "questionType": "long-text",
@@ -488,20 +727,30 @@
           "label": null
         },
         {
-          "type": "task",
-          "html": "<p>Exporta tu trabajo en formato <code>.aulawork</code> antes de cerrar la actividad.</p>",
-          "id": "exportar-aulawork",
-          "required": true,
-          "questionType": null,
+          "type": "question",
+          "html": "<p>¿Qué te ha parecido la actividad? Valórala en conjunto teniendo en cuenta su claridad, interés y utilidad. Las estrellas son solo visuales: escribe únicamente el número entero que corresponda.</p>\n<ul>\n<li><strong>1</strong> · ⭐☆☆☆☆ · Muy mala</li>\n<li><strong>2</strong> · ⭐⭐☆☆☆ · Floja</li>\n<li><strong>3</strong> · ⭐⭐⭐☆☆ · Aceptable</li>\n<li><strong>4</strong> · ⭐⭐⭐⭐☆ · Buena</li>\n<li><strong>5</strong> · ⭐⭐⭐⭐⭐ · Excelente</li>\n</ul>",
+          "id": "valoracion-actividad",
+          "required": false,
+          "questionType": "numeric",
           "options": null,
           "accept": null,
           "label": null
         },
         {
-          "type": "html",
-          "html": "<p>Recuerda incluir las evidencias solicitadas y comprobar que el nombre del archivo exportado sigue el patrón de la actividad.</p>",
-          "id": "",
+          "type": "question",
+          "html": "<p>¿Qué parte te resultó más útil y qué mejorarías de la actividad?</p>",
+          "id": "comentario-actividad",
           "required": false,
+          "questionType": "long-text",
+          "options": null,
+          "accept": null,
+          "label": null
+        },
+        {
+          "type": "task",
+          "html": "<p>Revisa que has completado las respuestas y adjuntado las capturas pedidas. Después exporta el trabajo en formato <code>.aulawork</code> y comprueba que el archivo se ha descargado con el nombre esperado antes de cerrar la actividad.</p>",
+          "id": "exportar-aulawork",
+          "required": true,
           "questionType": null,
           "options": null,
           "accept": null,
