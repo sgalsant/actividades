@@ -38,9 +38,10 @@ Actividad AulaStep para montar, verificar y ampliar un servidor DHCP con Kea en 
 - [[pasos/02-subred-3]]: primera subred DHCP para la red interna 3.
 - [[pasos/03-verificacion]]: comprobacion de servicio, concesiones y logs.
 - [[pasos/04-subred-2-y-reserva]]: segunda subred y reserva por MAC.
-- [[pasos/05-pruebas-finales]]: validacion final del escenario.
-- [[pasos/06-reflexion]]: reflexion y entrega.
+- [[pasos/05-pruebas-finales]]: validación de las redes internas 2 y 3.
+- [[pasos/06-relay-red-interna-1]]: extensión a la red interna 1 mediante un relay DHCP.
+- [[pasos/07-reflexion]]: reflexión y entrega.
 
 ## Enfoque didactico
 
-La actividad trabaja configuracion de servicios de red, lectura de logs, verificacion de cliente y uso de evidencias. La secuencia sigue el patron reutilizable derivado de la fuente original e incluye la topologia inicial y los objetivos de la practica.
+La actividad trabaja configuración de servicios de red, lectura de logs, verificación de clientes y uso de evidencias. Primero comprueba las redes conectadas directamente a Kea; después incorpora una red remota atendida mediante relay DHCP.

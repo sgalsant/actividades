@@ -8,14 +8,14 @@ obligatorio: true
 Instala Kea en **Ubuntu Server 2** y comprueba que el paquete queda disponible para la práctica.
 
 :::task{id="instalar-kea" required="true"}
-Instala `kea-dhcp4-server` y verifica que el servicio queda registrado en el sistema.
-:::
+En Ubuntu Server 2, instala `kea-dhcp4-server` y comprueba que systemd reconoce el servicio. Un estado inicial inactivo o fallido no impide continuar: todavía no has adaptado la configuración a tu red.
 
 ```bash
 sudo apt update
 sudo apt install kea-dhcp4-server -y
-systemctl status kea-dhcp4-server
+systemctl status kea-dhcp4-server --no-pager
 ```
+:::
 
 :::note{}
 Si el servicio no arranca todavía, no pasa nada: en este paso solo queremos dejarlo instalado y listo para configurar.
